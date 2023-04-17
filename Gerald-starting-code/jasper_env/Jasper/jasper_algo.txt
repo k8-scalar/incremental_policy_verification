@@ -1,0 +1,156 @@
+Incremental verification
+
+=============================================================================================================================
+Global Variables
+=============================================================================================================================
+
+KANOMatrix: Bit[n][n] # n = number of pods
+memory: [1..n, 1..n] ---> select x {ALLOW_Ing} x {ALLOW_Eg}
+VMMatrix: Bit[m][m] # m = number of pods
+GetVM: [1..n] -> [1..m] 
+ 
+The initial cluster state is defined as (KANOMatrix=[], VMMatrix[already exists e.g [101, 010, 110], getVM=None, memory=None)
+
+=============================================================================================================================
+Control flow
+=============================================================================================================================
+
+                     STEP 1                                        Local variables                                                         STEP 2	
+                                              
+
+ Process next Event, six possible  cases
+  e = add/delete newPod 			--> Bit[n][n] deltaKANOMatrix; CONTEXT C(see below), Bit[m][m] deltaVMMatrix=[all 0]   --->	   verify (deltaKANOMatrix, deltaVMMatrix, C) 
+ e = add/delete newNetworkPolicy 	       --> Bit[n][n] deltaKANOMatrix; CONTEXT C (see below), Bit[m][m]deltaVMMatrix=[all 0]   --->	   verify (deltaKANOMatrix, deltaVMMatrix, C) 
+ e = add/delete Attach/DetachSG/VM	        --> Bit[m][m] deltaVMMatrix; CONTEXT C; Bit[n][n] deltaKANOMatrix [all 0]              --->      verify (deltaKANOMatrix, deltaVMMatrix, C) 
+
+------------------
+Class structures for context variable
+-------------------
+
+Class CONTEXT{
+#contains relevant information for a particular event
+  self.PODegress ∈ 2^N,
+  self.PODingress ∈ 2^N,
+  self.nps=∅∈ 2^(select x {ALLOW_Ing} x {ALLOW_Eg}),
+  self.operation ∈ {"AddPod","AddNP"}
+  addPODEgress(self, i):
+	self.PODEgress +=[i]
+  addPODIngress(self, j):
+	self.PODIngress +=[j]
+  addNP(self, nps):
+	self.nps +=nps 
+}
+
+------------------------------------------------------------------------------------------------------------------------------
+Procedures STEP1
+------------------------------------------------------------------------------------------------------------------------------
+
+processNextEvent(e):
+
+  if e == add_np:
+  #Assumption: np only processed if np is not an offender
+        np=e.getnp()  
+	NewKANOMatrix:=computeforNP(np, KANOMatrix, operation:= "add")
+	deltaKANOMatrix = computeDelta(KANOMatrix, NewKANOMatrix)
+        deltaVMMatrix = [all 0's]
+	C = CONTEXT()
+	for ([i,j], e) in deltaKANOMatrix
+		if e ==1:
+			memory[i,j] = np
+			C.addPODEgress(i)
+			C.addPODIngress(j)
+			C.addNP([np]))
+	KANOMatrix:= New KANOMatrix
+        verify(deltaKANOMatrix, deltaVMMatrix, C)
+
+   elif e == delete_np:
+    #Assumption: np only processed if np is not an offender
+        np == e.getnp()
+ 	New KANOMatrix:=computeforNP(np, KANOMatrix, operation:= "delete")
+	KANOMatrix:= New KANOMatrix
+
+   elif e == add_pod: 	
+   #Assumption: there is a matching set of nps deployed in the cluster
+        pod=e.getpod()
+	NewKANOMatrix:=computeforPOD(pod, KANOMatrix, operation:= "add")
+	KANOMatrix:= padding(KANOMatrix, "0") #add row and column to KANOMatrix for new Pod
+	deltaKANOMatrix = compute_delta(KANOMatrix, NewKANOMatrix)
+        deltaVMMatrix = [all 0's]
+	C = CONTEXT()
+	for ([i,j], e) in deltaKANOMatrix
+		if e ==1:
+			memory[i,j] = np #can be more than one np matching the pod => not because otherwise it is redundant
+			C.addPODEgress(i)
+			C.addPODIngress(j)
+			C.addnp(nps)
+	KANOMatrix:= NewKANOMatrix
+        verify(deltaKANOMatrix, deltaVMMatrix, C)
+
+  elif e == delete pod:
+        pod=e.getpod()
+	NewKANOMatrix:=computeforPOD(pod, KANOMatrix, operation:= "delete")
+	KANOMatrix:= NewKANOMatrix
+	remove pod from memory [i,j]
+
+
+compute_delta(KANOMatrix, NewKANOMatrix):
+    Bit[n][n] deltaKanoMatrix = [all 0's]
+    for ([i,j], e) in KANOMatrix:
+         if KANOMatrix[i,j] != NewKANOMatrix[i,j]:
+            deltaKANOMatrix[i,j] = 1
+     return deltaKanoMatrix 
+------------------------------------------------------------------------------------------------------------------------------
+Procedures STEP2
+------------------------------------------------------------------------------------------------------------------------------
+
+
+	verify (deltaKANOMatrix, deltaVMMatrix, context): 
+		if deltaKanoMatrix has '1's: 
+			DesiredVMMatrix = [-1 -1 ... -1
+      				   	   -1 -1 ... -1
+					   -1 -1 ... -1]
+			for ([i,j],e) in enumerate(deltaKANOMatrix):
+				if e ==1
+				then DesiredVMMatrix[getVM(i), getVM(j)] = KANOMatrix[i,j]
+			compare(DesiredVMMatrix, VMMatrix, context)
+
+	compare(DesiredVMMatrix, VMMatrix, context):
+		for ([k,p],e) in enumerate(DesiredMatrix):
+			i: = DesiredVMMatrix[k,p][1], j: = DesiredVMMatrix[k,p][2]
+			if e[0]>-1 and DesiredMatrix[k,p][0]!=VM Matrix[k,p] and (i in context.podEgress or j in context.podIngress):
+			then
+				if e[0]=0, then print(VMMatrix at [k,p] allows too much)
+				else print(conflict for pods i,j and VMs k,p and network policies Memory[i,j]) #*** remove NP?
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

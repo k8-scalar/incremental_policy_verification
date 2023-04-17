@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod4
+  namespace: default
+  labels:
+    User: user1
+spec:
+  nodeName: worker-2
+  containers:
+  - image: ''
+    name: user1
+    ports:
+    - containerPort: 80
+      protocol: http

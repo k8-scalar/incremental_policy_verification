@@ -5,8 +5,6 @@ metadata:
   namespace: default
   labels:
     User: user1
-    key3: value9
-    key4: value2
 spec:
   nodeName: worker-2
   containers:
@@ -14,4 +12,4 @@ spec:
     name: user1
     ports:
     - containerPort: 80
-      protocol: TCP
+      protocol: http

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod0
+  namespace: default
+  labels:
+    User: user2
+    key4: value5
+    key1: value7
+spec:
+  nodeName: worker-1
+  containers:
+  - image: ''
+    name: user2
+    ports:
+    - containerPort: 80
+      protocol: TCP
