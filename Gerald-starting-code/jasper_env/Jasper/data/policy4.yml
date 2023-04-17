@@ -6,17 +6,18 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      User: user3
-      key2: value2
+      User: user2
+      key4: value5
+      key1: value7
   policyTypes:
   - Ingress
   ingress:
   - from:
     - podSelector:
         matchLabels:
-          User: user1
-          key3: value9
+          User: user0
+          key3: value7
           key4: value2
     ports:
-    - protocol: http
-      port: 8080
+    - protocol: TCP
+      port: 80

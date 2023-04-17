@@ -31,7 +31,7 @@ def pods():
             updatedPod = event["object"]
             podName = updatedPod.metadata.name
             labels = updatedPod.metadata.labels
-            filename="/home/ubuntu/current/src_dir/{}.yaml".format(podName)
+            filename="/home/ubuntu/master-thesis-jasper-goris/jasper_env/Jasper/src_dir/{}.yaml".format(podName)
 
 
             #if updatedPod.status.phase == "Running":
@@ -71,14 +71,14 @@ def pods():
                             os.makedirs(os.path.dirname(filename), exist_ok=True)
                             with open(filename, 'w+') as f:
                                 f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
-                            os.system('cp -a {} /home/ubuntu/current/data/'.format(filename))
+                            os.system('cp -a {} /home/ubuntu/master-thesis-jasper-goris/jasper_env/Jasper/data/'.format(filename))
                         else:
                             continue
 
 
             elif event['type'] == "DELETED":
                 print (f'Pod {podName} has been romoved from the cluster')
-                os.system('rm -f /home/ubuntu/current/data/{}.yaml'.format(podName))
+                os.system('rm -f /home/ubuntu/master-thesis-jasper-goris/jasper_env/Jasper/data/{}.yaml'.format(podName))
 
 
     except ProtocolError:
@@ -96,14 +96,14 @@ def policies():
             #with timing_processtime("Time taken: "):
             if event['type'] =="ADDED":
                 print (f'Policy {PolName} added on on the cluster')
-                filename="/home/ubuntu/current/src_dir/{}.yaml".format(PolName)
+                filename="/home/ubuntu/master-thesis-jasper-goris/jasper_env/Jasper/src_dir/{}.yaml".format(PolName)
                 os.makedirs(os.path.dirname(filename), exist_ok=True)
                 with open(filename, 'w+') as f:
                     os.system("kubectl  get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
-                os.system('cp -a {} /home/ubuntu/current/data/'.format(filename))
+                os.system('cp -a {} /home/ubuntu/master-thesis-jasper-goris/jasper_env/Jasper/data/'.format(filename))
             elif event['type'] =="DELETED":
                 print (f'Pod {PolName} has been romoved from the cluster')
-                os.system('rm -f /home/ubuntu/current/data/{}.yaml'.format(PolName))
+                os.system('rm -f /home/ubuntu/master-thesis-jasper-goris/jasper_env/Jasper/data/{}.yaml'.format(PolName))
     except ProtocolError:
       print("watchPolicyEvents ProtocolError, continuing..")
 

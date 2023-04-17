@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod3
+  name: pod2
   namespace: default
   labels:
     User: user0
-    key1: value0
-    key0: value0
-    key3: value9
+    key3: value7
+    key4: value2
 spec:
   nodeName: worker-1
   containers:
