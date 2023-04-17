@@ -1,0 +1,37 @@
+eerst microsegmentation tools bekeken...
+algemene papers over kubernetes security, worst practices...
+opgesplits over nuttigheid
+
+Algemene topics bekeken:
+tools -> authentication & authorization ->  impersonation -
+> overworked, maar gat in kubernetes?
+
+momenteel onderzoek naar detection of problematic policies in mind. 
+maar afhankelijk van segmentation tools natuurlijk...
+
+research of literatuur paper?
+
+________________________________________________________________________________________________
+
+Grashopper paper and references. 
+Microsegmentation papers are border of research, related but not necessary
+GAP analysis, understand what state of the art supports
+what do the tools do, what do they miss
+Kano matrix, which machines.
+OpenStack API, Kubernetes API and Grashopper
+
+What are the current capablities of the microsegmentation
+DO THE MATRIX
+Distrinet-cloud account: Send email with R-number to 
+	deploy kubernetes on there instead of openstack
+	openstack will be reworked so it might be asolete 
+	minicube for initial research since it is single node, so Openstack will be needed
+	run nodes as docker containers: search for it.
+
+ADD them to Gitlab. 
+
+20 november: slide of problem, state of the art, 20 mins ppt, start working on that.
+what do you mean on verifying the policies, than see if tools can solve these questions? If not or yes follow in.
+
+\The main problem is.... Existing state-of-the-art 14,21,25 (in paper)
+related work

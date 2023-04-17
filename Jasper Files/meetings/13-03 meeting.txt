@@ -1,0 +1,9 @@
+sudo kubeadm reset
+sudo rm -rf /etc/cni/net.d
+
+sudo -s 
+iptables -F && iptables -x ....
+
+
+
+vxlan NEEDED

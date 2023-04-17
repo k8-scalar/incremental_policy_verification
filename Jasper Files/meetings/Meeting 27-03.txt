@@ -1,0 +1,6 @@
+1. Get Cluster running
+2. Generate Kano matrix
+3. Jasper.Algo (focus first on KanoDelta
+
+
+Introduction chapter: what are containers, why deployed, how to manage dynamically -> tools, e.g. Kubernetes = industry standard, talk about kubernetes , why security, why policies -> make a story.

@@ -1,0 +1,43 @@
+Kano shows problems between 
+
+	•Show all reachable and all isolated pods.
+	• Show policies which cause reachability between different
+	users and isolation with kube-system.
+	• Advise deleting policies to solve policy shadow.
+	• Show conﬂicting policy pairs.
+	• Warn about other user deﬁned constraints.
+
+cluster = multiple nodes -> node = multiple pods -> pod = multiple containers (e.g. docker images)
+
+Kubernetes default allows all traffic between pods in cluster!! dangerous
+
+Kano = verification and advice between containers, regardless of the pod or VM it is on
+Grasshopper = if VM's arent seperated container attacks can spread to all the VM's in the cluster 
+	-> verification VM's and between containers -> combine this and enforce policies
+
+
+*** 	GrassHopper creates security groups, 
+	Kano verifies policies, 
+	??? extends Kano to detect consistency with security groups,
+	??? leverages Kubectl and automatically resolve the inconsistencies (after checking for agreement)
+
+	
+_________________________________________________________________________________________
+
+Grasshopper enforces security
+but the one defining kano also defines security groups -> other cluster manager specifies security groups for 
+decouple grashoppe, but focus on Kano
+grashopper does not generate matrix, but when pod is deployed it could.
+First part of grasshopper uses Kano -> that gets put in offender component and gives kano matrix, another part is allocation of pods 
+
+make matrix, based on Kano matrix and allocation of pods-to-nodes matrix ()
+This matrix shows communication, so needs to be updated every once in a while for which we can Leverage code from grasshopper 
+
+RESEARCH QUESTIONS
+e.g. 5G time to detect inconsistencies should be low
+this case: how quickly can we detect this, 
+how can we define a resolution strategy from this
+
+!!!!also: define plan and milestones(measure where I stand myself) (but not too detailed)!!!!!
+
+Reference promotors and gerald in ppt

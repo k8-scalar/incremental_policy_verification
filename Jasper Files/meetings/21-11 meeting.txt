@@ -1,0 +1,30 @@
+If the solution would take much longer than the deployment time it might become redundant fast due to another deployment.
+--> mention increase in workload = autoscaling = more replicas = more calculations --> same response time needed aka very fast
+	time = pod to be ready, (see grasshopper paper for amount of seconds), we wanna be faster than that
+
+mention grashopper and the difference between assumptions that grashopper makes, seeing polciies are single case of truth
+my case: 2 truths exist, no one is definetly truth since they are managed by different people = part of the problem, not necesarilly my thesis scope though
+	but do say the reason between inconsistency.
+
+THE PLAN PART
+
+only 2 matrix besides kano: 	- pod-to-vm matrix
+					- generate inter-vm matrix based on the kano and pod-to-vm
+
+inter-VM would be the final desired matrix = which VM should be able to comumunicate with each other. Intra vs inter? (2 pods on same VM dont need to be in the matrix)
+security groups define per vm-ingress and eggress rules but at vm level
+
+3rd matrix needs to be compared with nr2.
+
+Desired and actual are not correct, cause depends on perspectives (see 2 truths)
+
+NFVGUARD
+ = only within openstack, not combined with kubernetes
+	applying virtualization to networking elements
+	only looks at config of virtual elements 
+	virtual links administratively process with filters and filters need to be deployed
+
+	some techniques to enfore consistency of virtualiszation changes and what needs to change on different places to support 
+	use some workflow steps, each needs to work
+
+MICROSEGMENTATION TOOLS, how do they not solve our problem (since it is a core problem)

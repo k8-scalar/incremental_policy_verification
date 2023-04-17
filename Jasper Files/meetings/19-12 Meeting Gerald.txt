@@ -1,0 +1,21 @@
+Policy selects pod
+Pod default
+
+deny-all global policy
+
+parser.py makes Yaml based on Generate.py
+generate.py:
+	podN = amount of pods
+	policyN = amount of policies
+	valueL = random values between 0 and...
+-------------------------------------------------------
+
+TODO:
+1. play with Kano cloud code
+2. Incremental change of added policy:
+	events:
+	-pod create & delete
+	-networkpolicy create & delete
+
+	2.A look at K8-s watch code
+	2.B ....

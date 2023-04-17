@@ -1,0 +1,43 @@
+stap 2: matrix genereren vanuit security groups zodat het het openstack principe overstijgt
+		security policies worden bij meerdere cloud providers gebruikt. 
+		cloud providers reiken aan VMs labels en security groups aan. 
+	
+	niet per se openstack 
+	maar abstractie: bv grafentheorie gebruiken van VM naar VM
+
+NFVGuard dieper op ingaan: Multiple truths probleem? Dieper ingaan
+
+
+KANO algo 1 2x uitvoeren, eenmaal ing, eenmaal egress. algo 1 is egre. 
+	reachability is intersectie van deze 2
+
+	Gerald Kano bevragen.
+
+slide 7: Kano ingress vs egress snede niet gegeven
+
+Kano en NFVGuard herbekijken
+
+Thesis part alinea 2 Herbekijken: Pods kloppen niet...
+
+milestones op kritische pad aka korste weg naar het doel. 
+Milestones moeten ook stap "schrijf thesis uit", "literature study"
+	Algoritme moet uitgaan van huidige pod-to-vm dus hergebruik die. 
+	voeg stap "zoeken welke changes in config welke veranderingen doorbrengen" en leverage grashopper daarin
+	stap 2 is statisch mogelijks?
+
+opsplitsen in 2 slides: zo zie ik het algoritme en Hoe zie ik de planning
+
+Zoals Grasshopper research questions moet ik er voor mezelf maken
+	e.g. vraag 2: hoeveel tijd is er nodig om een missende of overbodige least privilige security groep te detecteren na het aanpassen van een policy of pod
+	e.g. vraag 3: ik ga ook een monitoring component hebben, die gaat ook invloed hebben op performantie.
+	vraag 1 kan bijna hergebruikt worden
+
+in een thesisscope is er veel aandacht voor de generaliseerbaarheid van de oplossing. Begrijpen van een probleem op alle facetten en hoe lost hij dit op.
+Wat zijn de randen van wat ik bereikt heb.
+
+fysiek samenzitten met Gerald voor Kano samen door te hebben
+
+
+
+Grashopper heeft 2 implementations: SAT3 and bitmatrix. Enkel bitmatrix nodig.
+

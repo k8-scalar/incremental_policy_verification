@@ -1,0 +1,7 @@
+calico operator based installation
+kubectl ip pool -> vxlan modus to connect nodes (-n kube-system
+qdnqn calico networking source
+calico -> ook pod cidr aanpassen : kubectl edit cm -n kube-system kubeadm-config => PodCIDR={CALICOCIDR}
+102.168.0.0 vaak gebruikt, maar overlapt mogelijk met bestaande Openstacak IP range,
+
+if failed: Create calico cluster met ubuntu node voor code running.

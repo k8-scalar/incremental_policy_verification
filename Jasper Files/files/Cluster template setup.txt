@@ -1,0 +1,25 @@
+INFO
+	Container Orchestration Engine = Kubernetes
+	no checkboxes enabled
+NODE SPEC
+	Image = fedora-coreos-v31
+	Keypair - (zelf aan te maken op voorhand bij compute -> key-pairs)
+	Flavor = flv-1vcpu-02048-20d 
+	Master Flavor = flv-2vcpu-02048-30d
+	Volume driver = empty
+	Docker storage driver = Overlay2
+	Docker volume size = 5gb
+	Insecure registry = empty
+NETWORK
+	Network Driver = Calico
+	HTTP Proxy = empty
+	HTTPS Proxy = empty
+	No Proxy = empty
+	External Network ID  = net.vlan991.provider
+	Fixed Network = net.prj.stud.{RNUMMER}.01
+	Fixed Subnet = sub.prj.stud.{RNUMMER}.01
+	DNS = empty
+	Master LB = unchecked
+ 	Floating IP = checked
+LABELS
+	labels = hyperkube_prefix=docker.io/rancher/,kube_tag=v1.21.13-rancher1,container_runtime=containerd

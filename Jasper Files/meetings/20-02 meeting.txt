@@ -1,0 +1,26 @@
+Minikube -> only 1 node so DONT use
+Dnet cluster needed!!!!
+
+monitoring SG/VM's is hard -> might leave that -> only focus on add/delete newpod and 
+
+inspector.py on gitlab: implementations needed
+k8s-watch uses namespace test!
+
+k8s-watch watches cluster, puts changes into data folder
+inspector watches data folder and does the algorithm
+
+
+
+what if many events happen at the same time? does the algorithm work fast enough to keep up? Testable?
+vm matrix uses all VMs, not only ones with kubernetes node (but has blacklist)
+sorting of VMs in the VM matrix (2 is in last position now).
+
+(step 5 can be done simultaneously)
+1. DNET ACCESS
+2. SET UP K8S SETUP (FEW VMS, POLICIES, CONTAINERS...) (think about namespace test) (use kubeadm to install kubernetes on master and all nodes) (1 master, multiple nodes)
+(calico ebpf as CNI?)
+3. SSH into master, setup scripts
+4. get K8s-watcher en inspector working (first jasper.sh) (will create data and src_dir folder) (kubctl apply -f testpod.yml) (src_dir needs manual cleaning once in a while)
+5. Implementation of the algorithm!
+
+(deactivate command to stop shell)

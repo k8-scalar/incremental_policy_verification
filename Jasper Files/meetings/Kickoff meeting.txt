@@ -1,0 +1,34 @@
+Superclusters and namespace permissions for private are not aligned
+Some solutions exist, by microsegmentation tools (Cisco, VMWare, Calico, Alto)-> Literature
+
+1. try understanding current prototypes
+2. define a Delta (what are you going to add)
+3. is there a tool to dynamically detect inconsistencies. (take into account pod creations on VM's and intercommunication between VM's, so it may change instantly)
+4. Be notfied about problematic pod deployments and new network  policies that create conflicts
+
+generate VM to VM matrix that encodes inter-VM communications by network policies and pod deployments locations (to see who should be able to send to eachother)
+compare to matrix that represent actual VM communication status
+simulate this with a nr of matrix figurations that represent popular settings (e.g. public and private cloud)
+
+openstack = pioneer of kubernetes. CS department has openstack with kubernetes on
+TIME COMPLEXITY OF THE SOLUTION IS IMPORTANT
+
+out of scope: why are the settings wrong and possible resolves
+
+KANO not needed if we assume policies are valid
+
+
+
+HOW AND WHO
+- be independent, but 2-weekly meetings, mails for unsolvable problems
+- Gerald = Phd student works with Erikson in Stockholm, not in Leuven till April, but in leuven between december and januari
+- Gerald or Gerry main coach, to be decided.
+- 3rd promotor will be in presentations, but not 
+
+
+
+
+impersonation of authorisation???
+
+look into known kubernetes risks that have been resolved
+Try some out yourself?
