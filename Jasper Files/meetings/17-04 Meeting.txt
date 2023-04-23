@@ -1,0 +1,15 @@
+DeltaVM changes, but we only look at what changes for the DesiredVMMatrix
+Taken zonder success of falen maken.
+
+memory[i,j] = np #can be more than one np matching the pod => not because otherwise it is redundant
+
+= We gaan ervan uit dat er geen redundante np's zijn in het algoritme.
+
+Matrix generatie van VM matrix is buiten scope.
+Veranderingen op VM levels etc zijn buiten scope.
+
+enkel inconsistencies np en pod deployments & sg en vms behandelen
+
+
+TODO:
+Planning herwerken.
