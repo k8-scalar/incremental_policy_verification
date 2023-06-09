@@ -1,7 +1,7 @@
-from kano.model import ReachabilityMatrix
-from kano.algorithm import *
+from model import ReachabilityMatrix
+from algorithm import *
 from generate import ConfigFiles
-from kano.parser import ConfigParser
+from parser import ConfigParser
 from pprint import pprint
 
 import unittest
