@@ -3,10 +3,10 @@ import random
 import yaml
 from collections import OrderedDict
 #from ..kano.model import *
-from model import *
+from kano.model import *
 
 class ConfigFiles:
-    def __init__(self, directory='/ubuntu/home/current-cluster-objects', dir2='events', podN=5,nsN=5,policyN=5,podLL=5,nsLL=5,keyL=5,valueL=10,userL=5,selectedLL=3,allowNSLL=3,allowpodLL=3, nodeN=3):
+    def __init__(self, directory='data', dir2='events', podN=5,nsN=5,policyN=5,podLL=5,nsLL=5,keyL=5,valueL=10,userL=5,selectedLL=3,allowNSLL=3,allowpodLL=3, nodeN=3):
         self.podN = podN
         self.nsN = nsN
         self.policyN = policyN
