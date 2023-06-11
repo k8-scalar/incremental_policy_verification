@@ -119,7 +119,7 @@ class ConfigParser:
 
 def main():
    cp = ConfigParser()
-   cp.parse('/ubuntu/home/current-cluster-objects')
+   cp.parse('data')
    cp.print_all()
 
 if __name__ == '__main__':

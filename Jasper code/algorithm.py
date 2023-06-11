@@ -1,4 +1,4 @@
-from .model import *
+from model import *
 
 
 def all_reachable(matrix: ReachabilityMatrix) -> List[int]:
