@@ -55,7 +55,7 @@ def pods():
                             #updatedPod.status.conditions = ["Initialized","ContainersReady","Ready"] in addition to "PodScheduled"
 
                             node_name=f"{updatedPod.spec.node_name}"
-                            print (f'Pod {podName} added on node {node_name}')
+                            print (f'Pod {podName} has been updated on node {node_name}')
 
                             u_pod = {}
 
@@ -82,7 +82,7 @@ def pods():
             elif event['type'] =="ADDED" and not updatedPod.spec.node_name ==None:
                 filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(podName)
                 node_name=f"{updatedPod.spec.node_name}"
-                print (f'Pod {podName} already exists on node {node_name}')
+                print (f'Pod {podName} has been created on node {node_name}')
 
                 u_pod = {}
 
@@ -127,15 +127,22 @@ def policies():
                 continue
             #with timing_processtime("Time taken: "):
             if event['type'] =="ADDED":
-                print (f'Policy {PolName} currently exists on on the cluster')
+                print (f'Policy {PolName} has been added on on the cluster')
                 filename="home/ubuntu/temp/{}.yaml".format(PolName)
                 os.makedirs(os.path.dirname(filename), exist_ok=True)
                 with open(filename, 'w+') as f:
-                    os.system("kubectl  get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
+                    os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
                 os.system('cp -a {} /home/ubuntu/current-cluster-objects/'.format(filename))
             elif event['type'] =="DELETED":
-                print (f'Pod {PolName} has been romoved from the cluster')
+                print (f'Policy {PolName} has been removed from the cluster')
                 os.system('rm -f /home/ubuntu/current-cluster-objects/{}.yaml'.format(PolName))
+            elif event['type'] =="MODIFIED":
+                print (f'Policy {PolName} has been updated on the cluster')
+                with open(filename, 'w+') as f:
+                    os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
+                os.system('cp -a {} /home/ubuntu/current-cluster-objects/'.format(filename))
+
+
     except ProtocolError:
       print("watchPolicyEvents ProtocolError, continuing..")
 

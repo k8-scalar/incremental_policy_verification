@@ -1,3 +1,4 @@
+from re import L
 from typing import *
 from dataclasses import dataclass, field
 from bitarray import bitarray
@@ -125,7 +126,7 @@ class Policy:
 class ReachabilityMatrix:
     @staticmethod
     def build_matrix(containers: List[Container], policies: List[Policy], 
-            check_self_ingress_traffic=False, 
+            containers_talk_to_themselves=False, 
             build_transpose_matrix=False):
         n_container = len(containers)
         n_policies = len(policies)
@@ -134,9 +135,11 @@ class ReachabilityMatrix:
 
         in_matrix = [bitarray('0' * n_container) for _ in range(n_container)]
         out_matrix = [bitarray('0' * n_container) for _ in range(n_container)]
-        have_seen = bitarray('1' * n_container)
+        have_seen = bitarray('0' * n_container)
 
-        index_map = [] # Just to know which index to which pod
+        # Map to know which indexes refer to which policies and pods.
+        # and map with all found labels.
+        index_map = [] 
         for i, policy in enumerate(policies):
             index_map.append('{}:{}'.format(i,policy.name))
         for idx, cont_info in enumerate (containers):
@@ -144,30 +147,32 @@ class ReachabilityMatrix:
         for i, container in enumerate(containers):
             for key, value in container.labels.items():
                 labelMap[key][i] = True
-                
+        print(f'index map: {index_map}\n' )
+        print(f'label map: {list(labelMap)}\n' )
+
         for i, policy in enumerate(policies):
+            # print(f'------------------------POLICY {policy.name}--------------------')
             select_set = bitarray(n_container)
             select_set.setall(True)
             allow_set = bitarray(n_container)
             allow_set.setall(True)
 
-            # work as all direction being egress
+
+            # read the labels and set the select and allow sets
             for k, v in policy.working_selector.labels.items():
                 if k in labelMap.keys(): #all keys in containers
                     select_set &= labelMap[k]
-
                 else:
                     if not policy.working_selector.labels:
                         continue
                     select_set.setall(False)
-
 
             for items in  policy.working_allow:
                 for k, v in items.labels.items():
                     if k in labelMap.keys():
                         allow_set &= labelMap[k]
 
-            # dealing with not matched values (needs a customized predicate)
+            # dealing with non-matched values (needs a customized predicate)
             for idx, cont_info in enumerate (containers):
                 if select_set[idx] and not policy.select_policy(containers[idx]):
                     select_set[idx] = False
@@ -175,9 +180,10 @@ class ReachabilityMatrix:
                 if allow_set[idx] and not policy.allow_policy(containers[idx]):
                     allow_set[idx] = False
 
-            
+            # store the select and allow set in their working_set
             policy.store_bcp(select_set, allow_set)
 
+            # Check for deny or allow all policies.
             for items in policy.working_allow:
                 if items.is_allow_all:
                     allow_set.setall(True)
@@ -187,8 +193,17 @@ class ReachabilityMatrix:
             if policy.working_selector.is_allow_all:
                 select_set.setall(True)
             elif policy.working_selector.is_deny_all:
-                select_set.setall(False)           
+                select_set.setall(False)    
 
+            # DEBUGGING PURPOSES
+            # if(policy.direction.direction == False):
+            #     print("Policy type = Egress")
+            # else:
+            #     print("Policy type = Ingress")
+            # print(f"select set =  {select_set}")
+            # print(f"allow set = {allow_set}\n")
+
+            # Now we put the in_matrix (Ingress) and out_matrix (Egress) together
             for idx in range(n_container):
                 if allow_set[idx]:
                     if policy.is_ingress() and not have_seen[idx]:
@@ -204,22 +219,40 @@ class ReachabilityMatrix:
                         for j in range(n_container):
                             in_matrix[j][idx] = False
                         have_seen[idx] = True
+                        
                     if policy.is_ingress():   
                         in_matrix[idx] |= allow_set
                     else:
-                        out_matrix[idx] |= allow_set
+                        for i in range(n_container):
+                            if allow_set[i]:
+                                out_matrix[i] |= select_set
                     containers[idx].select_policies.append(i)
 
+            # DEBUG PURPOSES    
+            # print(f"Matrices after accounting for this policy:")
+            # print(f"out_matrix: {out_matrix}")
+            # print(f"in_matrix: {in_matrix}\n")
+
+
+        # DEBUGGING PURPOSES
+        # print("-------------------MAKING THE FINAL MATRIX---------------------------\n")
+        # print(f"total out_matrix: {out_matrix}")
+        # print(f"total in_matrix: {in_matrix}\n")
+
+
+        # Time to create the final kano matrix.
         matrix = [bitarray('0' * n_container) for _ in range(n_container)]
 
-        ##container accepting connections from itself??
         for i in range(n_container):
-            if check_self_ingress_traffic:
-                in_matrix[i][i] = True
-            matrix[i] = in_matrix[i] & out_matrix[i]
-            #matrix[i]=matrix[i].to01()
-            #matrix[i]='[' + ' '.join(matrix[i]) + ']'
-            #print(matrix[i])
+            for j in range(n_container): 
+                matrix[i] = in_matrix[i] & out_matrix[i]
+            #container accepting connections from itself
+            if containers_talk_to_themselves:
+                matrix[i][i] = True
+            # These next 3 lines is for cleanly printing out the matrix.
+            matrix[i]=matrix[i].to01()
+            matrix[i]='[' + ' '.join(matrix[i]) + ']'
+            print(matrix[i])
 
         return ReachabilityMatrix(n_container, n_policies, index_map,  matrix, build_transpose_matrix)
 

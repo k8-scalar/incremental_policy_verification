@@ -1,6 +1,6 @@
 import time
 from yaml.loader import FullLoader
-from .model import *
+from model import *
 from yaml import load, dump, load_all
 import os
 try:
@@ -56,8 +56,7 @@ class ConfigParser:
                 select = data['spec']['podSelector']['matchLabels']
             except KeyError:
                 select = {}
-            if 'Ingress' in data['spec']['policyTypes']:
-                
+            if 'ingress' in data['spec']:
                 for ing in data['spec']['ingress']:
                     allow = []
                     ports = None
@@ -81,7 +80,7 @@ class ConfigParser:
                     self.policies.append(new_policy)
 
 
-            if 'Egress' in data['spec']['policyTypes']:
+            if 'egress' in data['spec']:
                 for eg in data['spec']['egress']:
                     allow = []
                     ports = None
@@ -117,11 +116,10 @@ class ConfigParser:
         for p in self.policies:
             print(p)
 
-def main():
-   cp = ConfigParser()
-   cp.parse('/ubunut/home/current-cluster-objects')
-   cp.print_all()
-
-if __name__ == '__main__':
-    main()
+# def main():
+#    cp = ConfigParser()
+#    cp.parse('current-cluster-objects')
+   
+# if __name__ == '__main__':
+#     main()
 
