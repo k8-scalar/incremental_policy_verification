@@ -1,0 +1,18 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: green-from-green
+  namespace: test
+spec:
+  podSelector:
+    matchLabels:
+      color: green
+  policyTypes:
+    - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          color: green
+    ports:
+      - port: 80
