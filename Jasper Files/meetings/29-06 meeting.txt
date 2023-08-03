@@ -1,0 +1,26 @@
+Grashopper: Use Kano to check for bad networkpolicies, uses NP as base to create security group rules in line with NP
+
+My thesis: Use kano to check for bad NP and check with Security group rules whether or not they are contradicting.
+
+
+Grasshopper assumes cluster admin trust NP, which is wrong since tenants can apply NP
+I dont take a base truth, just assume conflicts and give the origins
+
+Sheduling doesnt take into account that SG info and NP can be defined incrementally, dynamically.
+e.g running applications, we want to reschedule, but first make sure it is allowed.
+
+already deployed pods are scheduled, new policies need to be checked to not contradict placements
+also pre-check of new placements.
+
+compute desired from kano.
+compare desired with other.
+
+Main questions should be focussed on what cant be solved already! sheduling can usually prevent, but new policies for existing pods can cause new conflicts.
+
+1 problem: what is the dafult resolution strategy? What is the base truth. 
+Maybe have the option to select the base truth: SG or NP? He advises NOT to write about it.only what I implement myself. 
+
+Or find the pods that are unable to send or receive, delete them, so they reschedule and replace correctly.
+We could simply node-to-pod affinity constraints e.g.
+Provide a simple very-cluster specific solution. 
+I NEED A RESOLUTION STEP TO BE COMPLETE.

@@ -1,0 +1,16 @@
+Done: 
+	Watcher v2 -> Modified policies, issues in existing code (like modified status of pods not working)
+	Kano v2 -> Model generation not correct: Updated, correct Kano generation based on watcher v2 file structure
+
+TODO:
+	Run kanoV2 based on WatcherV2 events
+	Run Specific parts of kano algo depending on new policy?
+	
+	Generate Kano Delta matrix (AKA PROCEDURE PART 1 of algo)
+	
+	
+	
+	Problem: Do we run delta calculation sequentially? -> backlog of events possible
+		or concurrently -> What if they both influence the same parts of the matrix?
+
+
