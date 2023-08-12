@@ -1,0 +1,60 @@
+------------------
+New algorithm:
+------------------
+
+Kanomatrix[pod,pod] -> {0,1} - current pod connectivity
+VMmatrix[node,node] -> {0,1} - current node connectivity
+Policies[pod,pod] -> set of policies - remember policies responsible for pod connectivity
+getVM: pod -> node
+
+Context:
+        event: current event (add pod, remove pod, add np, remove np, conflict resolution)
+        affected_pairs: set of pod pairs affected by event
+
+============================================================
+
+new event (generic specification, implementation could be optimized for specific event):
+
+    Analyze new network policy and compute NewKanomatrix
+    Compute VMmatrix_new from NewKanoMatrix
+        For all [i,j]: NewKanoMatrix[i,j] = 1 -> set VMmatrix_new[getVM(i),getVM(j)]
+    Compute deltaKano = NewKanomatrix XOR Kanomatrix
+        deltaKano[i,j] = 1 -> changed
+        deltaKano[i,j] = 0 -> unchanged
+    For all pairs (i,j) where deltaKano is 1:
+        record in Context.affected_pairs
+        If event = add np 
+            Add np to Policies[i,j]
+	Elseif event = add pod
+            Find all policies that match or target pod and update Policies[pod,j] and Policies[i,pod]
+        
+    Compute affectedVMconnections[node,node]-> set of pod pairs
+        Initially all emptylist
+        For each entry (i,j) in Context.affected_pairs:
+            Add (i,j) to affectedVMConnections[getVM(i),getVM(j)] set
+     
+    check = verify(VMmatrix, VMmatrix_new, affectedVMconnections)
+
+    If event = remove np
+        For all (i,j) from Context.affected_pairs
+            remove np from Policies[i,j]
+    Elseif event = remove pod
+        Remove row Policies[pod,:] and column Policies[:,pod]
+
+    If check != OK
+        call conflict resolution for reported conflicts
+
+============================================================
+
+verify(VMmatrix_old, VMmatrix_new, affectedVMconnections):
+
+    For all [k,l] such that affectedVMConnections[k,l] != {}
+        If VMmatrix_old[k,l] = 1 and VMmatrix_new[k,l] = 0
+            Report conflict: 
+            "SGs allows too much: VM connection between k and l redundant!
+             was needed for pod connections (i,j) from list affectedVMConnections[k,l] allowed by Policies[i,j]"
+        Elseif VMmatrix_old[k,l] = 0 and VMmatrix_new[k,l] = 1
+            Report conflict:
+            "SGs don't allow enough: VM connection (k,l) needed!
+             required by pod connections (i,j) from affectedVMConnections[k,l] due to nps in Policies[i,j]"
+        Else OK
