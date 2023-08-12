@@ -5,7 +5,13 @@ from bitarray import bitarray
 from abc import abstractmethod
 
 @dataclass
-class Container:
+class Event:
+    def __init__(self, name):
+        self.name = name
+        
+
+@dataclass
+class Container(Event):
     name: str
     labels: Dict[str, str]
     nodeName: str
@@ -26,6 +32,7 @@ class PolicySelect:
     labels: Dict[str, str]
     is_allow_all = False
     is_deny_all = False
+
 
 
 @dataclass
@@ -67,7 +74,7 @@ class DefaultEqualityLabelRelation(LabelRelation):
 
 
 @dataclass
-class Policy:
+class Policy(Event):
     name: str
     selector: PolicySelect
     allow: PolicyAllow
@@ -78,7 +85,6 @@ class Policy:
     matcher: LabelRelation[str] = DefaultEqualityLabelRelation()
     working_select_set: bitarray = None
     working_allow_set: bitarray = None
-
 
     @property
     def working_selector(self):
@@ -123,6 +129,30 @@ class Policy:
         self.working_allow_set = allow_set
 
 
+# Used to store set of policies responsible for pod connectivity: Store[pod,pod] = policy
+# and to store affectedVMConnection: Store(VM, VM) = (pod, pod)
+class Store:
+    def __init__(self):
+        self.items = {}
+
+    def add_item(self, id1, id2, item):
+        key = (id1, id2)
+        if key not in self.items:
+            self.items[key] = [item]
+        else:
+            self.items[key].append(item)
+
+    def get_items(self, id1, id2):
+        key = (id1, id2)
+        return self.items.get(key, [])
+
+    def remove_item(self, id1, id2, item):
+        key = (id1, id2)
+        if key in self.items and item in self.items[key]:
+            self.items[key].remove(item)
+            if not self.items[key]:  # Remove the entry if the list becomes empty
+                del self.items[key]
+
 class ReachabilityMatrix:
     @staticmethod
     def build_matrix(containers: List[Container], policies: List[Policy], 
@@ -137,21 +167,28 @@ class ReachabilityMatrix:
         out_matrix = [bitarray('0' * n_container) for _ in range(n_container)]
         have_seen = bitarray('0' * n_container)
 
-        # Map to know which indexes refer to which policies and pods.
+        # Maps to know which indexes refer to which policies and pods.
         # and map with all found labels.
-        index_map = [] 
+        index_map_pols = [] 
+        index_map_pods = [] 
+
         for i, policy in enumerate(policies):
-            index_map.append('{}:{}'.format(i,policy.name))
+            index_map_pols.append('{}:{}'.format(i,policy.name))
         for idx, cont_info in enumerate (containers):
-            index_map.append('{}:{}'.format(idx,cont_info.name))
+            index_map_pods.append('{}:{}'.format(idx,cont_info.name))
         for i, container in enumerate(containers):
             for key, value in container.labels.items():
                 labelMap[key][i] = True
-        print(f'index map: {index_map}\n' )
-        print(f'label map: {list(labelMap)}\n' )
+
+        # DEBUGGING PURPOSES
+        # print(f'index map pods: {index_map_pods}' )
+        # print(f'index map policies: {index_map_pols}' )
+        # print(f'label map: {list(labelMap)}\n' )
+
+        in_resp_policies = Store()
+        out_resp_policies = Store()
 
         for i, policy in enumerate(policies):
-            # print(f'------------------------POLICY {policy.name}--------------------')
             select_set = bitarray(n_container)
             select_set.setall(True)
             allow_set = bitarray(n_container)
@@ -203,7 +240,8 @@ class ReachabilityMatrix:
             # print(f"select set =  {select_set}")
             # print(f"allow set = {allow_set}\n")
 
-            # Now we put the in_matrix (Ingress) and out_matrix (Egress) together
+            # Now we create the in_matrix (Ingress) and out_matrix (Egress)
+            
             for idx in range(n_container):
                 if allow_set[idx]:
                     if policy.is_ingress() and not have_seen[idx]:
@@ -221,11 +259,27 @@ class ReachabilityMatrix:
                         have_seen[idx] = True
                         
                     if policy.is_ingress():   
+                        # print(f"in_matrix before adding: {in_matrix}\n")
+
                         in_matrix[idx] |= allow_set
+                        # print(f'ingress matrix adding idx: {in_matrix[idx]} \n idx: {idx} \n allow_set: {allow_set}')
+                        # print(f"in_matrix after adding: {in_matrix}\n")
+                        # print('*******************************************')
+                        for index, value in enumerate(allow_set):
+                            if value:
+                                in_resp_policies.add_item(idx, index, i)
+
                     else:
-                        for i in range(n_container):
-                            if allow_set[i]:
-                                out_matrix[i] |= select_set
+                        # print(f"out_matrix before adding: {out_matrix}\n")
+
+                        out_matrix[idx] |= allow_set
+                        # print(f'egress matrix adding idx: {in_matrix[idx]}  \n idx: {idx} \n allow_set: {allow_set}')
+                        # print(f"out_matrix after adding: {out_matrix}\n")
+                        # print('*******************************************') 
+                        for index, value in enumerate(allow_set):
+                            if value:
+                                out_resp_policies.add_item(idx, index, i)
+
                     containers[idx].select_policies.append(i)
 
             # DEBUG PURPOSES    
@@ -233,6 +287,19 @@ class ReachabilityMatrix:
             # print(f"out_matrix: {out_matrix}")
             # print(f"in_matrix: {in_matrix}\n")
 
+        # DEBUG PURPOSES    
+        # print("*******************************IN RESPONSIBLE POLICIES:*******************************")
+        # for i in range(n_container):
+        #     for j in range(n_container): 
+        #         if in_resp_policies.get_items(i, j) != []:
+        #             print(f'in_resp_policies for containers ({i}, {j}) = {in_resp_policies.get_items(i, j)}\n')
+
+        # DEBUG PURPOSES    
+        # print("*******************************OUT RESPONSIBLE POLICIES:*******************************")
+        # for i in range(n_container):
+        #     for j in range(n_container): 
+        #         if out_resp_policies.get_items(i, j) != []:
+        #             print(f'out_resp_policies for containers ({i}, {j}) = {out_resp_policies.get_items(i, j)}')   
 
         # DEBUGGING PURPOSES
         # print("-------------------MAKING THE FINAL MATRIX---------------------------\n")
@@ -241,20 +308,38 @@ class ReachabilityMatrix:
 
 
         # Time to create the final kano matrix.
+
         matrix = [bitarray('0' * n_container) for _ in range(n_container)]
+        final_resp_policies = Store()
 
         for i in range(n_container):
             for j in range(n_container): 
-                matrix[i] = in_matrix[i] & out_matrix[i]
+                if in_matrix[j][i] and out_matrix[i][j]:
+                    matrix[i][j] = True
+                    for k in range (len(in_resp_policies.get_items(j, i))):
+                        final_resp_policies.add_item(i, j, in_resp_policies.get_items(j, i)[k])
+                    for l in range (len(out_resp_policies.get_items(i, j))):
+                        final_resp_policies.add_item(i, j, out_resp_policies.get_items(i, j)[l])
+                
             #container accepting connections from itself
             if containers_talk_to_themselves:
                 matrix[i][i] = True
-            # These next 3 lines is for cleanly printing out the matrix.
-            matrix[i]=matrix[i].to01()
-            matrix[i]='[' + ' '.join(matrix[i]) + ']'
-            print(matrix[i])
 
-        return ReachabilityMatrix(n_container, n_policies, index_map,  matrix, build_transpose_matrix)
+
+            # These next 2 lines are for cleanly printing out the matrix BUT BREAKS DETECTION.PY DUE TO THE EXTRA SYMBOLS IN THE ARRAYS.
+            # matrix[i]=matrix[i].to01()
+            # matrix[i]='[' + ' '.join(matrix[i]) + ']'
+
+            # DEBUGGING PURPOSES
+            # print(matrix[i])
+                  
+        # DEBUGGING PURPOSES
+        # for i in range(n_container):
+        #     for j in range(n_container): 
+        #         if final_resp_policies.get_items(i, j) != []:
+        #             print(f'final responsible policies for containers ({i}, {j}) = {final_resp_policies.get_items(i, j)}')   
+
+        return ReachabilityMatrix(n_container, n_policies, index_map_pods, index_map_pols, final_resp_policies,  matrix, build_transpose_matrix)
 
     def build_tranpose(self):
         self.transpose_matrix = [bitarray('0' * self.container_size) for _ in range(self.container_size)]
@@ -262,10 +347,12 @@ class ReachabilityMatrix:
             for j in range(self.container_size):
                 self.transpose_matrix[i][j] = self.matrix[j][i]
 
-    def __init__(self, container_size: int, policy_size: int, index_map,  matrix: Any, build_transpose_matrix=False) -> None:
+    def __init__(self, container_size: int, policy_size: int, index_map_pods, index_map_pols, resp_policies,  matrix: Any, build_transpose_matrix=False) -> None:
         self.container_size = container_size
         self.policy_size = policy_size
-        self.index_map=index_map
+        self.index_map_pods=index_map_pods
+        self.index_map_pols=index_map_pols
+        self.resp_policies=resp_policies
         self.matrix = matrix       
         self.transpose_matrix = None
         if build_transpose_matrix:

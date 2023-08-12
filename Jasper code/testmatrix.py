@@ -1,12 +1,12 @@
 from model import ReachabilityMatrix
-from algorithm import *
+from kanoAlgorithm import *
 from parser import ConfigParser
 from pprint import pprint
 
 
 
 def test_reachability_matrix():
-    cp = ConfigParser('current-cluster-objects/')
+    cp = ConfigParser('/home/ubuntu/current-cluster-objects/')
     containers, policies = cp.parse() 
     matrix = ReachabilityMatrix.build_matrix(containers, policies)# ,containers_talk_to_themselves=False, build_transpose_matrix=True)
     print("=====================================================================================")
