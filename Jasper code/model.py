@@ -155,7 +155,7 @@ class Store:
 
 class ReachabilityMatrix:
     @staticmethod
-    def build_matrix(containers: List[Container], policies: List[Policy], 
+    def build_matrix(containers: List[Container], policies: List[Policy],
             containers_talk_to_themselves=False, 
             build_transpose_matrix=False):
         n_container = len(containers)
