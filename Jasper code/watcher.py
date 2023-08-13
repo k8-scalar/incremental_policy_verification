@@ -10,6 +10,7 @@ from analyzer import *
 import sys
 import time
 import queue
+import shutil
 
 # Configure the client to use in-cluster config or local kube config file
 try:
@@ -34,11 +35,7 @@ def prettyprint_event(event):
     kind = event['kind']
     name = event['metadata']['name']
 
-    if event['custom'] == "startup":
-            location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
-            print(colorize(f'{kind} {name} currently exists {location}', '36'))#cyan
-
-    elif event['custom'] == "create":
+    if event['custom'] == "create":
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
         print(colorize(f'\n{kind} {name} has been added {location}', '32'))#green
 
@@ -50,14 +47,69 @@ def prettyprint_event(event):
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
         print(colorize(f'\n{kind} {name} has been updated {location}', '33'))#orange
 
+                    
+def initial_loader():
+
+    # Delete the entire contents of the folder to have a blank slate
+    try:
+        shutil.rmtree("/home/ubuntu/current-cluster-objects/")
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(f"An error occurred while deleting contents: {e}")
+
+    # look at all the pods, write their file, and print their existence
+    print("# " + colorize("======PODS======", '36'))
+    for event in pod_api_instance.list_namespaced_pod("test").items:
+        podName = event.metadata.name
+        labels = event.metadata.labels
+        node_name=f"{event.spec.node_name}"
+
+        u_pod = {}
+        u_pod['apiVersion'] = 'v1'
+        u_pod['kind'] = 'Pod'
+        u_pod['metadata'] = {
+            'name': podName,
+            'namespace': 'test',
+            'labels': labels     
+        }
+        u_pod['spec']={
+            'nodeName':node_name
+        }
+        u_pod['custom']='create'
+
+        filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(podName)
+        
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w+') as f:
+            f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
+        
+        print("#  " + colorize(f'Pod {podName} currently exists on node {node_name}', '36'))
+
+    # look at all the policies, write their file, and print their existence
+    print("#")
+    print("# " + colorize("======POLICIES======", '36'))
+
+    for event in policy_api_instance.list_namespaced_network_policy("test").items:
+        PolName = event.metadata.name
+        filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(PolName)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        if not os.path.exists(filename):
+            with open(filename, 'w+') as f:
+                os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
+
+        print("#  " + colorize(f'NetworkPolicy {PolName} currently exists on the cluster', '36'))
+
 def pods():
     w = watch.Watch()
     try:
         for event in w.stream(pod_api_instance.list_namespaced_pod, namespace = "test", timeout_seconds=0):
+
             updatedPod = event["object"]
             podName = updatedPod.metadata.name
             labels = updatedPod.metadata.labels
-            filename="/home/ubuntu/temp/{}.yaml".format(podName)
+            node_name=f"{updatedPod.spec.node_name}"
+            filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(podName)
 
             u_pod = {}
             u_pod['apiVersion'] = 'v1'
@@ -67,19 +119,28 @@ def pods():
                 'namespace': 'test',
                 'labels': labels     
             }
+            u_pod['spec']={
+                'nodeName':node_name
+            }
+
+         
+            # Newly created pods
+            if event['type'] == "MODIFIED" and updatedPod.metadata.deletion_timestamp == None :  # Avoid the MODIFIED on delete
+                if updatedPod.status.pod_ip is not None:      
+                        if not os.path.exists(filename):
+                            u_pod['custom']='create'
+                            os.makedirs(os.path.dirname(filename), exist_ok=True)
+                            with open(filename, 'w+') as f:
+                                f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
+                            event_queue.put(u_pod)
             
-            if event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None:# Avoid the MODIFIED on delete
+            # Modified pods
+            elif event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None:  # Avoid the MODIFIED on delete
 
                 for cond in updatedPod.status.conditions:
                     if cond.type == "PodScheduled" and cond.status == "True":
-                        if not os.path.exists(filename): #to avoid duplicates since modified is repeated on \
-                            #updatedPod.status.conditions = ["Initialized","ContainersReady","Ready"] in addition to "PodScheduled"
-                            node_name=f"{updatedPod.spec.node_name}"
-                            u_pod['spec']={
-                                'nodeName':node_name
-                            }
+                        if not os.path.exists(filename):                            
                             u_pod['custom']='update'
-
                             os.makedirs(os.path.dirname(filename), exist_ok=True)
                             with open(filename, 'w+') as f:
                                 f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
@@ -88,39 +149,11 @@ def pods():
                         else:
                             continue
 
-            elif event['type'] =="ADDED" and not updatedPod.spec.node_name ==None:
-                filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(podName)
-                node_name=f"{updatedPod.spec.node_name}"
-
-                u_pod['spec']={
-                    'nodeName':node_name
-                }
-                u_pod['custom']='create'
-
-                # this ensure that on startup not every existing item is handled, but instead just printed that it exists
-                if not os.path.exists(filename):
-                    os.makedirs(os.path.dirname(filename), exist_ok=True)
-                    with open(filename, 'w+') as f:
-                        f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
-                    event_queue.put(u_pod)
-                else: 
-                    u_pod['custom']='startup'
-                    prettyprint_event(u_pod)
-               
-
-
-
-            elif event['type'] == "DELETED":
+            # Deleted pods
+            elif event['type'] =="DELETED" :
                 u_pod['custom']='delete'
                 os.system('rm -f /home/ubuntu/current-cluster-objects/{}.yaml'.format(podName))
-                if os.path.exists('/home/ubuntu/temp/{}.yaml'.format(podName)):
-                    os.system('rm /home/ubuntu/temp/{}.yaml'.format(podName))
                 event_queue.put(u_pod)
-
-
-
-
-
 
     except ProtocolError:
         print("watchPodEvents ProtocolError, continuing..")
@@ -144,9 +177,7 @@ def policies():
                     with open(filename, 'w+') as f:
                         os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
                     event_queue.put(NewPol)
-                else: 
-                    NewPol['custom']="startup"
-                    prettyprint_event(NewPol)
+           
 
             elif event['type'] =="DELETED":
                 NewPol['custom']='delete'
@@ -171,11 +202,14 @@ def consumer():
         while True:
             event = event_queue.get() # blocks if no event is present untill a new one arrives
             prettyprint_event(event)
-            analyzer.analyseEventAndGenerateDelta(event)
+            analyzer.analyseEvent(event)
+            print("\n-------------------Waiting for next event-------------------")
             event_queue.task_done()
     except ProtocolError:
         print("Consumer ProtocolError, continuing..")
+            
 
+   
 
 if __name__ == "__main__":
     print("\n##################################################################################")
@@ -185,14 +219,28 @@ if __name__ == "__main__":
     print(f"#   - {colorize('Green', '32')} = newly created resources")
     print(f"#   - {colorize('Red', '31')} = deleted resources")
     print(f"#   - {colorize('Orange', '33')} = modified resources")
-    print("##################################################################################\n")
 
-    event_queue = queue.Queue()
+
+    # First get all the already existing resources on the cluster and save them in their files
+    print("#")
+    print("# STEP 1/2: clearing old files and detecting existing resources")
+    print("#")
+
+    initial_loader()
+    print("#")
+    print("# STEP 2/2: Creating base kanoMatrix and VMmatrix")
+    print("#")
+
     analyzer = Analyzer()
     # Analyse one empty event to generate the baseline reachability and vm matrix 
-    analyzer.analyseEventAndGenerateDelta([])
+    analyzer.analyseEvent({})
+
+    print("# Startup phase complete, now watching for new events on the cluster:")
+    print("##################################################################################\n")
 
     # Run the watcher
+    event_queue = queue.Queue()
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
         p = executor.submit(pods)
         n = executor.submit(policies)
