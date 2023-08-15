@@ -75,7 +75,7 @@ class Analyzer:
         related_policies = []
 
         # DEBUGGING PURPOSES
-        # print(f'Event: {event}')
+        # print(f'Event: {event}\n\n')
 
         # An event happened so we can generate the new_reachabilitymatrix
         cp = ConfigParser('/home/ubuntu/current-cluster-objects/')
@@ -139,7 +139,7 @@ class Analyzer:
                             polsDir2 = new_reachabilitymatrix.resp_policies.get_items(i, podId)
                             related_policies.append(polsDir2)
                         
-            # OPTION 1: The matrix sizes are the same (So any event except add/delete pods) so we can create the delta and find issues like this.
+            # OPTION 2: The matrix sizes are the same (So any event except add/delete pods) so we can create the delta and find issues like this.
             else:
 
                 #  create deltakano
@@ -165,9 +165,8 @@ class Analyzer:
                                     conflict_allow_too_little.append((k, l))
 
             # Printing out the correct messages for too loose VMS
-            noconflicts = True
             for (k, l) in conflict_allow_too_much:
-                print(f"SGs might need attention: VM connection between nodes {getNameWithId(k, index_map_nodes)} and {getNameWithId(l, index_map_nodes)} might have become redundant! \nThe VM connection was needed for the following pod connections that are now removed due to the latest event:\n")
+                print(f"  VM connection between nodes {getNameWithId(k, index_map_nodes)} and {getNameWithId(l, index_map_nodes)} might have become redundant! \n  This VM connection was needed for the following pod connections:\n")
                 for (pod1, pod2) in affectedVMconnections.get_items(k, l):
                     pols = self.reachabilitymatrix.resp_policies.get_items(pod1, pod2)
                     if len(pols) > 1:
@@ -176,13 +175,12 @@ class Analyzer:
                         pols_str = getNameWithId(pols[0], self.reachabilitymatrix.index_map_pols)
                     else:
                         pols_str = ""
-                    print(f"   - {getNameWithId(pod1, self.reachabilitymatrix.index_map_pods)} connected to {getNameWithId(pod2, self.reachabilitymatrix.index_map_pods)} which was allowed by network policies {pols_str}")
-                noconflicts = False
+                    print(f"     - {getNameWithId(pod1, self.reachabilitymatrix.index_map_pods)} connected to {getNameWithId(pod2, self.reachabilitymatrix.index_map_pods)} which was allowed by network policies {pols_str}\n")
 
             # Printing out the correct messages for too restrictive VMS
             for (k, l) in conflict_allow_too_little:
                 if (affectedVMconnections.get_items(k, l) != []):
-                    print(f"SGs might need attention: VM connection between nodes {getNameWithId(k, index_map_nodes)} and {getNameWithId(l, index_map_nodes)} might be needed! \nThis VM connection is required by the following pod connections that are now possible due to the latest event:\n")
+                    print(f"  VM connection between nodes {getNameWithId(k, index_map_nodes)} and {getNameWithId(l, index_map_nodes)} might be needed! \n  This VM connection is required by the following pod connections:\n")
                     for (pod1, pod2) in affectedVMconnections.get_items(k, l):
                         pols = new_reachabilitymatrix.resp_policies.get_items(pod1, pod2)
                         if len(pols) > 1:
@@ -191,10 +189,9 @@ class Analyzer:
                             pols_str = getNameWithId(pols[0], new_reachabilitymatrix.index_map_pols)
                         else:
                             pols_str = ""
-                        print(f"   - {getNameWithId(pod1, new_reachabilitymatrix.index_map_pods)} connected to {getNameWithId(pod2, new_reachabilitymatrix.index_map_pods)} which is possible due to network policies {pols_str}")
+                        print(f"     - {getNameWithId(pod1, new_reachabilitymatrix.index_map_pods)} connected to {getNameWithId(pod2, new_reachabilitymatrix.index_map_pods)} which is possible due to network policies {pols_str}\n")
                 else:
-                    print(f"SGs might need attention: VM connection between nodes {getNameWithId(k, index_map_nodes)} and {getNameWithId(l, index_map_nodes)} might be needed due to the latest event\n ")
-                noconflicts = False
+                    print(f"  VM connection between nodes {getNameWithId(k, index_map_nodes)} and {getNameWithId(l, index_map_nodes)} might be needed due to the latest event\n ")
 
             # Dont forget to print the redundant policies (when a pod is removed)
             if redundant_policies != []:
@@ -203,26 +200,22 @@ class Analyzer:
                     unique_pols_set.update(nr)
 
                 nodename = event['spec']['nodeName']
-                print(f"\n Warning: VM connections with node {nodename} might have become redundant due to the latest event!\n")
+                print(f"\n  Warning: VM connections with node {nodename} might have become redundant due to the latest event!\n")
 
-                print(f"\n Because a pod was deleted the following existing NetworkPolicies are also redundant:\n")
+                print(f"\n  Because a pod was deleted the following existing NetworkPolicies are also redundant:\n")
                 for pol in unique_pols_set:
                     print(f"   -{getNameWithId(pol, self.reachabilitymatrix.index_map_pols)}")
-                print("\n  Deleting these is recommended")
+                print("\n   Deleting these is recommended")
 
             # And to print the related policies (when a pod is added)
             if related_policies != []:
                 unique_pols_set = set()
                 for nr in related_policies:
                     unique_pols_set.update(nr)
-                print(f"\nWarning: A pod was added: the following policies that already existed are applicable to the new pod: \n")
+                print(f"\n  Warning: A pod was added: the following policies that already existed are applicable to the new pod: \n")
                 for pol in unique_pols_set:
                     print(f"   - {getNameWithId(pol, new_reachabilitymatrix.index_map_pols)}")
                 print("\n  Make sure to review these for correctness\n")
-
-            if noconflicts:
-                print("This event had no direct impact on the current setup")
-                print("No conflicts found in the new configuration!")
 
 
         self.reachabilitymatrix = new_reachabilitymatrix

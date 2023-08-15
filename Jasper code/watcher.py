@@ -46,8 +46,55 @@ def prettyprint_event(event):
     elif event['custom'] == "update":
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
         print(colorize(f'\n{kind} {name} has been updated {location}', '33'))#orange
+        if len(event['changes']) > 0:
+            for change in event['changes']: 
+                print(colorize(f"  Change at {change['key']}: {change['old']} --> {change['new']} ", '33'))#orange
+        print("")
 
-                    
+def compare_values(old_value, new_value, changes, parent_key=""):
+        if old_value != new_value:
+            changes.append({
+                "key": parent_key,
+                "old": old_value,
+                "new": new_value
+            })
+
+def compare_dicts(old_dict, new_dict, changes, parent_key=""):
+    for key in old_dict.keys():
+        old_value = old_dict[key]
+        new_value = new_dict.get(key)
+        current_key = f"{parent_key}.{key}" if parent_key else key
+
+        if isinstance(old_value, dict) and isinstance(new_value, dict):
+            compare_dicts(old_value, new_value, changes, current_key )
+        elif isinstance(old_value, list) and isinstance(new_value, list):
+            compare_lists(old_value, new_value, changes, current_key)
+        else:
+            compare_values(old_value, new_value, changes, current_key)
+
+def compare_lists(old_list, new_list, parent_key, changes):
+    for index, (old_item, new_item) in enumerate(zip(old_list, new_list)):
+        if isinstance(old_item, dict) and isinstance(new_item, dict):
+            compare_dicts(old_item, new_item, changes, f"{parent_key}[{index}]")
+        elif isinstance(old_item, list) and isinstance(new_item, list):
+            compare_lists(old_item, new_item, changes, f"{parent_key}[{index}]")
+        else:
+            compare_values(old_item, new_item, changes, f"{parent_key}[{index}]")
+
+def find_spec_changes(old_data, new_data):
+    changes = []
+    old_spec = old_data['spec']
+    new_spec = new_data['spec']
+    compare_dicts(old_spec, new_spec, changes)
+    return changes
+
+def find_metadata_changes(old_data, new_data):
+    changes = []
+    old_spec = old_data['metadata']
+    new_spec = new_data['metadata']
+    compare_dicts(old_spec, new_spec, changes)
+    return changes
+
 def initial_loader():
 
     # Delete the entire contents of the folder to have a blank slate
@@ -104,13 +151,11 @@ def pods():
     w = watch.Watch()
     try:
         for event in w.stream(pod_api_instance.list_namespaced_pod, namespace = "test", timeout_seconds=0):
-
             updatedPod = event["object"]
             podName = updatedPod.metadata.name
             labels = updatedPod.metadata.labels
             node_name=f"{updatedPod.spec.node_name}"
             filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(podName)
-
             u_pod = {}
             u_pod['apiVersion'] = 'v1'
             u_pod['kind'] = 'Pod'
@@ -123,9 +168,27 @@ def pods():
                 'nodeName':node_name
             }
 
-         
+            # Modified pods
+            if event['type'] =="MODIFIED" and os.path.exists(filename) and updatedPod.metadata.deletion_timestamp == None: #File exists so it is a modify and avoid delete modify
+                for cond in updatedPod.status.conditions:
+                    if cond.type == "PodScheduled" and cond.status == "True":
+
+                            with open(filename, "r") as file:
+                                yaml_data = yaml.safe_load(file)
+
+                            diff = find_metadata_changes(yaml_data, u_pod)
+
+                            u_pod['changes'] = diff
+
+                            u_pod['custom']='update'
+
+                            os.makedirs(os.path.dirname(filename), exist_ok=True)
+                            with open(filename, 'w+') as f:
+                                f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
+                            event_queue.put(u_pod)
+
             # Newly created pods
-            if event['type'] == "MODIFIED" and updatedPod.metadata.deletion_timestamp == None :  # Avoid the MODIFIED on delete
+            elif event['type'] == "MODIFIED" and updatedPod.metadata.deletion_timestamp == None:  # Avoid the MODIFIED on delete
                 if updatedPod.status.pod_ip is not None:      
                         if not os.path.exists(filename):
                             u_pod['custom']='create'
@@ -134,21 +197,6 @@ def pods():
                                 f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
                             event_queue.put(u_pod)
             
-            # Modified pods
-            elif event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None:  # Avoid the MODIFIED on delete
-
-                for cond in updatedPod.status.conditions:
-                    if cond.type == "PodScheduled" and cond.status == "True":
-                        if not os.path.exists(filename):                            
-                            u_pod['custom']='update'
-                            os.makedirs(os.path.dirname(filename), exist_ok=True)
-                            with open(filename, 'w+') as f:
-                                f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
-                            os.system('cp -a {} /home/ubuntu/current-cluster-objects/'.format(filename))
-                            event_queue.put(u_pod)
-                        else:
-                            continue
-
             # Deleted pods
             elif event['type'] =="DELETED" :
                 u_pod['custom']='delete'
@@ -186,9 +234,17 @@ def policies():
 
             elif event['type'] =="MODIFIED":
                 NewPol['custom']='update'
+                filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(PolName)
+                with open(filename, "r") as file:
+                    yaml_data = yaml.safe_load(file)
+
+                new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(PolName)).read())
+        
+                diff = find_spec_changes(yaml_data, new_data)
+                NewPol['changes'] = diff
+
                 with open(filename, 'w+') as f:
                     os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
-                os.system('cp -a {} /home/ubuntu/current-cluster-objects/'.format(filename))
                 event_queue.put(NewPol)
 
     except ProtocolError:
