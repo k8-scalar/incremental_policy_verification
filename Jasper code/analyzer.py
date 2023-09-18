@@ -138,7 +138,30 @@ class Analyzer:
                         if new_reachabilitymatrix.matrix[i][podId]:
                             polsDir2 = new_reachabilitymatrix.resp_policies.get_items(i, podId)
                             related_policies.append(polsDir2)
-                        
+
+                # Dont forget to print the redundant policies (when a pod is removed)
+                if redundant_policies != []:
+                    unique_pols_set = set()
+                    for nr in redundant_policies:
+                        unique_pols_set.update(nr)
+
+                    nodename = event['spec']['nodeName']
+                    print(f"\n  Warning: VM connections with node {nodename} might have become redundant due to the latest event!\n")
+
+                    print(f"\n  Because a pod was deleted the following existing NetworkPolicies are also redundant:\n")
+                    for pol in unique_pols_set:
+                        print(f"   -{getNameWithId(pol, self.reachabilitymatrix.index_map_pols)}")
+                    print("\n   Deleting these is recommended")
+
+                # And to print the related policies (when a pod is added)
+                if related_policies != []:
+                    unique_pols_set = set()
+                    for nr in related_policies:
+                        unique_pols_set.update(nr)
+                    print(f"\n  Warning: A pod was added: the following policies that already existed are applicable to the new pod: \n")
+                    for pol in unique_pols_set:
+                        print(f"   - {getNameWithId(pol, new_reachabilitymatrix.index_map_pols)}")
+                    print("\n  Make sure to review these for correctness\n")
             # OPTION 2: The matrix sizes are the same (So any event except add/delete pods) so we can create the delta and find issues like this.
             else:
 
@@ -193,29 +216,7 @@ class Analyzer:
                 else:
                     print(f"  VM connection between nodes {getNameWithId(k, index_map_nodes)} and {getNameWithId(l, index_map_nodes)} might be needed due to the latest event\n ")
 
-            # Dont forget to print the redundant policies (when a pod is removed)
-            if redundant_policies != []:
-                unique_pols_set = set()
-                for nr in redundant_policies:
-                    unique_pols_set.update(nr)
-
-                nodename = event['spec']['nodeName']
-                print(f"\n  Warning: VM connections with node {nodename} might have become redundant due to the latest event!\n")
-
-                print(f"\n  Because a pod was deleted the following existing NetworkPolicies are also redundant:\n")
-                for pol in unique_pols_set:
-                    print(f"   -{getNameWithId(pol, self.reachabilitymatrix.index_map_pols)}")
-                print("\n   Deleting these is recommended")
-
-            # And to print the related policies (when a pod is added)
-            if related_policies != []:
-                unique_pols_set = set()
-                for nr in related_policies:
-                    unique_pols_set.update(nr)
-                print(f"\n  Warning: A pod was added: the following policies that already existed are applicable to the new pod: \n")
-                for pol in unique_pols_set:
-                    print(f"   - {getNameWithId(pol, new_reachabilitymatrix.index_map_pols)}")
-                print("\n  Make sure to review these for correctness\n")
+           
 
 
         self.reachabilitymatrix = new_reachabilitymatrix
