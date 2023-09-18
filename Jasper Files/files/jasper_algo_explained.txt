@@ -1,0 +1,23 @@
+STARTUP PHASE
+1. create an empty folder (or delete content from existing folder)
+2. Find all pods and containers currently on the cluster and store them as yamls in the folder. print their existence out
+4. Store a startup reachabilitymatrix and VM-matrix of the current situation. This is used to compare against in watch phase
+3. print startup message finishing and start watching threads.
+
+WATCHING PHASE
+1. capture new events, taking into account only latest events (e.g. only last message inidicating succesfull deletion triggers deletion) and put them in queue
+2. Consumer handles queue items by calling analyser:
+	ANALYZER:
+		first generate the current new reachabilitymatrix and VM matrix. then look at the options:
+
+		- Option 1: a pod is added or deleted thus reachabilitymatrix size is different then old-reachabilitymatrix
+			-> keep track of policies that are redundant (pod deletion) or related (podlabel in existing policy)
+			-> Print out the information about these redundant/related policies
+
+		- Option 2: No change in pod numbers, so delta reachabilitymatrix can be calculated
+			-> delta values of 1 indicate change in connection between pods, so store their corresponding affected Nodes' Ids.
+			-> for all affected nodes, check whether there is a change in old and newly generated VM Matrix and store this as conflicts allowing too 			   much/too little.
+			-> Print out these conflicts their information
+
+		
+		
