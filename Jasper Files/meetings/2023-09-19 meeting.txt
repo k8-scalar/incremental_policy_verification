@@ -1,0 +1,23 @@
+abstracter
+SG gebruikt om clusters te segmenteren, nodes afsplitsen van elkaar. Grasshopper houd geen rekening met stakeholders, zegt K8s admin en appl. manager zijn zelfde persoon. NP base truth.
+
+Mijn Situatie: aparte personen met eigen belangen. Tweevoudige basetruth, SGs door k8s admin en NP door appl. manager. 
+Als er applicaties op aparte segmenten gedployed dan zijn er issues. 
+Carefull! Pod deployed on seperate segments. VM matrix met 1 en 0 mag ik zelf verzinnen, als segmenten mogen communiceren is het een 1, anders een 0. 
+
+Then we need to get the background information about Security groups, and with high change of ports we cant just store ports in the matrix.
+
+standard setup of porting between worker nodes, no special ports. We DONT assume we only deploy low latency application so ports opened at lower container level are opened at SG groups. Keep it high level with connections.
+
+1. create own sg matrix
+2. look at how to retrieve information about this wrong deployment depending on segmentation
+3. Automated testing
+4. Scienctific evaluation questions
+5. optimise.
+
+Lenny verkoelen januari afstuderen
+
+Detect conflicts on first event, not last (revert back to gerald version?)
+Get performance of my algo, will in future be used to compare to grasshopper (no need to do myself)
+
+detection time should be less then deployment time of kubernetes pods.

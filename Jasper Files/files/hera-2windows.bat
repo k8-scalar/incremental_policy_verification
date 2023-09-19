@@ -1,2 +1,2 @@
-wt --title Master1 --tabColor "#0066ff" --suppressApplicationTitle ssh -o ProxyJump=r0703236@st.cs.kuleuven.be ubuntu@172.23.1.66 ; new-tab --title Hera --tabColor "#ff0000" --suppressApplicationTitle ssh r0703236@st.cs.kuleuven.be &
+wt --title Master1 --tabColor "#0066ff" --suppressApplicationTitle ssh -o ProxyJump=r0703236@st.cs.kuleuven.be ubuntu@172.23.1.66 ; new-tab --title Hera --tabColor "#ff0000" --suppressApplicationTitle ssh r0703236@st.cs.kuleuven.be -D 10000 &
 wt --title Master2 --tabColor "#00cc00" --suppressApplicationTitle ssh -o ProxyJump=r0703236@st.cs.kuleuven.be ubuntu@172.23.1.66
