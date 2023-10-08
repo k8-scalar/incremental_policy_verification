@@ -120,7 +120,7 @@ class Security_Groups_Information_Cluster:
         #STEP 2: Couple Nodes to Security groups and to their names
         for node in range(nr_of_nodes):
             self.link_nodeName_and_NodeId(nodes.items[node].metadata.name, node)
-            nr_of_sg_to_link = random.randint(1,3)
+            nr_of_sg_to_link = random.randint(5,8)
             while nr_of_sg_to_link > 0:
                 sg_to_link = random.randint(0, nr_of_sg - 1)
                 self.link_node_and_sg(node, sg_to_link)
@@ -195,12 +195,12 @@ class Security_Groups_Information_Cluster:
     def check_sg_connectivity(self, nodeName1, nodeName2, connection_wanted):
         sg1Set = self.node_to_sgs[self.nodeName_to_nodeId[nodeName1]]
         sg2Set = self.node_to_sgs[self.nodeName_to_nodeId[nodeName2]]
-        print (f"\n  Node {nodeName1} is part of the following security groups:")
+        print (f"\n    Node {nodeName1} is part of the following security groups:")
         for sg1 in sg1Set:
-            print(f"   -{self.security_groups[sg1].name}")
-        print (f"\n  Node {nodeName2} is part of the following security groups:")
+            print(f"     -{self.security_groups[sg1].name}")
+        print (f"\n    Node {nodeName2} is part of the following security groups:")
         for sg2 in sg2Set:
-            print(f"   -{self.security_groups[sg2].name}")
+            print(f"     -{self.security_groups[sg2].name}")
 
         connection = False
         for sg1 in sg1Set:
@@ -208,25 +208,26 @@ class Security_Groups_Information_Cluster:
                 if self.sg_Graph.has_edge(sg1, sg2):
                     connection = True
                     rule_ids = self.sg_Graph.get_edge_data(sg1, sg2).get('ruleIds', [])
-                    print("\n  There is already a connection between the nodes in the right direction due to the following Security group rules:")
+                    print("\n    There is already a connection between the nodes in the right direction due to the following Security group rules:\n")
                     for rule_id in rule_ids:
                         sec_group = self.security_groups[rule_id[0]]
-                        print(f"   -{sec_group.rules[rule_id[1]].description}")
-                        print(f"      This rule is a {sec_group.rules[rule_id[1]].protocol} {sec_group.rules[rule_id[1]].direction.value} rule wich focusses the following ip range: {sec_group.rules[rule_id[1]].remote_ip_prefix}\n")
+                        print(f"       -{sec_group.rules[rule_id[1]].description}")
+                        print(f"        This rule is a {sec_group.rules[rule_id[1]].protocol} {sec_group.rules[rule_id[1]].direction.value} rule wich focusses the following ip range: {sec_group.rules[rule_id[1]].remote_ip_prefix}\n")
         if connection:
             if connection_wanted:
-                print("  CONCLUSION: NO CONFLICTS\n")
+                print(f'\n  {colorize(f"=>", 32)} CONCLUSION: NO SG CONFLICTS\n')
             else:
                 print("\n  Thus there is no communication possible between these nodes according to the Network Policies but their Security Groups still allow communication between their nodes")
-                print("\n  CONCLUSTION: CONFLICT NEEDS REVIEWING\n")
+                print(f'\n  {colorize(f"=>", 31)} CONCLUSION: SG CONFLICT NEEDS REVIEWING\n')
         else:
             if connection_wanted:
                 print("\n  There is however no communication possible in the right direction between these nodes since their Security Groups do not allow it")
-                print("  CONCLUSTION: CONFLICT NEEDS REVIEWING\n")
+                print(f'\n  {colorize(f"=>", 31)} CONCLUSION: SG CONFLICT NEEDS REVIEWING\n')
             else:
                 print("\n  None of the Security Groups of the respective nodes are able to communicate to each other.")
                 print("  Thus there is no communication possible between these nodes on the NetworkPolicy level and their security groups also block their communication")
-                print("\n  CONCLUSION: NO CONFLICTS\n")
+                print(f'\n  {colorize(f"=>", 32)} CONCLUSION: NO SG CONFLICTS\n')
+
 
     def link_node_and_sg(self, node, sg):
         if node not in self.node_to_sgs:

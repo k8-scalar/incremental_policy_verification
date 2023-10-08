@@ -38,11 +38,11 @@ def prettyprint_event(event):
 
     if event['custom'] == "create":
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
-        print(colorize(f'\n{kind} {name} has been added {location}', '32'))#green
+        print(colorize(f'\n{kind} {name} has been added {location}\n', '32'))#green
 
     elif event['custom'] == "delete":
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
-        print(colorize(f'\n{kind} {name} has been removed {location}', '31'))#red
+        print(colorize(f'\n{kind} {name} has been removed {location}\n', '31'))#red
 
     elif event['custom'] == "update":
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
@@ -50,7 +50,7 @@ def prettyprint_event(event):
         if len(event['changes']) > 0:
             for change in event['changes']: 
                 print(colorize(f"  Change at {change['key']}: {change['old']} --> {change['new']} ", '33'))#orange
-        print("")
+        print("\n")
 
 def compare_values(old_value, new_value, changes, parent_key=""):
         if old_value != new_value:
@@ -107,7 +107,7 @@ def initial_loader():
         print(f"An error occurred while deleting contents: {e}")
 
     # look at all the pods, write their file, and print their existence
-    print("# " + colorize("======PODS======", '36'))
+    print("# ======PODS======")
     for event in pod_api_instance.list_namespaced_pod("test").items:
         podName = event.metadata.name
         labels = event.metadata.labels
@@ -132,11 +132,11 @@ def initial_loader():
         with open(filename, 'w+') as f:
             f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
         
-        print("#  " + colorize(f'Pod {podName} currently exists on node {node_name}', '36'))
+        print(f"# Pod {podName} currently exists on node {node_name}")
 
     # look at all the policies, write their file, and print their existence
     print("#")
-    print("# " + colorize("======POLICIES======", '36'))
+    print("# ======POLICIES======")
 
     for event in policy_api_instance.list_namespaced_network_policy("test").items:
         PolName = event.metadata.name
@@ -146,7 +146,7 @@ def initial_loader():
             with open(filename, 'w+') as f:
                 os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
 
-        print("#  " + colorize(f'NetworkPolicy {PolName} currently exists on the cluster', '36'))
+        print(f"# NetworkPolicy {PolName} currently exists on the cluster")
 
 
 def pods():
@@ -274,6 +274,8 @@ if __name__ == "__main__":
     
     # Add a flag for verbose output
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
+    parser.add_argument("-s", "--startup", action="store_true", help="Enable startup analysis")
+
 
     args = parser.parse_args()
     analyzer = EventAnalyzer(args.verbose)
@@ -281,7 +283,6 @@ if __name__ == "__main__":
     print("\n##################################################################################")
     print("# Watching resources in namespace test")
     print("# resources will de displayed in color codes:")
-    print(f"#   - {colorize('Cyan', '36')} = resources already existing on watcher startup. These don't trigger verification")
     print(f"#   - {colorize('Green', '32')} = newly created resources")
     print(f"#   - {colorize('Red', '31')} = deleted resources")
     print(f"#   - {colorize('Orange', '33')} = modified resources")
@@ -296,11 +297,17 @@ if __name__ == "__main__":
     print("#")
     print("# STEP 2/2: Creating base kanoMatrix and VMmatrix")
     print("#")
-
     analyzer.startup()
 
+    if args.startup:
+        print("#")
+        print("# STEP EXTRA: Checking startup for Security Group Conflicts")
+        print("#")
+        analyzer.analyseStartup()
+        
     print("# Startup phase complete, now watching for new events on the cluster:")
     print("##################################################################################\n")
+
 
     # Run the watcher
     event_queue = queue.Queue()
