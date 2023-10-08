@@ -426,3 +426,6 @@ class ReachabilityMatrix:
     
     def getPolicyById(self, id):
         return self.dic[id]
+    
+def colorize(text, color_code):
+   return f"\033[0;{color_code}m{text}\033[0m"
