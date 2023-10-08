@@ -1,12 +1,13 @@
 from kubernetes import client, config, watch
 from kubernetes.config import ConfigException
+import argparse
 from urllib3.exceptions import ProtocolError
 import concurrent.futures
 import os, sys
 import yaml
 from contextlib import contextmanager
 from time import process_time
-from analyzer import *
+from analyzer import EventAnalyzer
 import sys
 import time
 import queue
@@ -96,7 +97,7 @@ def find_metadata_changes(old_data, new_data):
     return changes
 
 def initial_loader():
-
+    
     # Delete the entire contents of the folder to have a blank slate
     try:
         shutil.rmtree("/home/ubuntu/current-cluster-objects/")
@@ -146,6 +147,7 @@ def initial_loader():
                 os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
 
         print("#  " + colorize(f'NetworkPolicy {PolName} currently exists on the cluster', '36'))
+
 
 def pods():
     w = watch.Watch()
@@ -268,6 +270,14 @@ def consumer():
    
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="My Python Script")
+    
+    # Add a flag for verbose output
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
+
+    args = parser.parse_args()
+    analyzer = EventAnalyzer(args.verbose)
+
     print("\n##################################################################################")
     print("# Watching resources in namespace test")
     print("# resources will de displayed in color codes:")
@@ -287,9 +297,7 @@ if __name__ == "__main__":
     print("# STEP 2/2: Creating base kanoMatrix and VMmatrix")
     print("#")
 
-    analyzer = Analyzer()
-    # Analyse one empty event to generate the baseline reachability and vm matrix 
-    analyzer.analyseEvent({})
+    analyzer.startup()
 
     print("# Startup phase complete, now watching for new events on the cluster:")
     print("##################################################################################\n")
