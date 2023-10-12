@@ -147,19 +147,3 @@ class IpTrie:
             if found_match_for_ip_part and current.is_ip :
                 return current.ruleIds
         return None
-      
-        
-if __name__ == '__main__':
-    trie = IpTrie()
-    trie.insert('192.168.0.1-192.168.0.10', "tcp", 0, 1)
-    trie.insert('192.168.0.20',  "tcp", 1, 1)
-    trie.insert('10.0.0.1/25',  "udp", 2, 1)
-   
-    print(trie.findruleIdByIpAndProtocol('192.168.0.20', "tcp")) #true, (1,1)
-    print(trie.findruleIdByIpAndProtocol('192.168.0.2', "tcp")) #True, (1,0)
-    print(trie.findruleIdByIpAndProtocol('192.168.0.2', "icmp")) #False (protocol)
-    print(trie.findruleIdByIpAndProtocol('192.168.0.2', "udp")) #False (protocol)
-    print(trie.findruleIdByIpAndProtocol('192.168.0.12', "tcp")) #False (out of range)
-    print(trie.findruleIdByIpAndProtocol('10.0.0.130', "udp")) #False (out of subnet range)
-    print(trie.findruleIdByIpAndProtocol('10.0.0.50', "udp")) #True, (1,2)
-    print(trie.findruleIdByIpAndProtocol('10.0.0.50', "tcp")) #False (protocol)

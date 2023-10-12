@@ -2,48 +2,93 @@ import random
 from model import *
 import networkx as nx
 from ipTrie import IpTrie
+from labelTrie import LabelTrie
 from kubernetes import client, config
 from kubernetes.config import ConfigException
+import ipaddress
 
-# We only generate single IPs within 192.168.0.1 till 192.168.0.10 to increase chance of overlap
+
+# We only generate single IPs within 172.23.1.1 till 172.23.1.10 to increase chance of overlap
 def generate_random_ip():
-    return f"192.168.0.{random.randint(1, 10)}"
+    return f"172.23.1.{random.randint(1, 10)}"
 
-# We only generate IP ranges wihin 192.168.0.1 till 192.168.0.100 to increase chance of overlap
-# Ranges can be a max of 10 ips difference
-def generate_random_ip_range():
-    random_nr =  random.randint(1, 100)
-    start_ip = "192.168.0." + str(random_nr)
-    end_ip = "192.168.0." + str(random.randint(random_nr + 1, random_nr + 9))
-    return f"{start_ip}-{end_ip}"
-
-# We only generate IP ranges within 192.168.0.0 with subnetmask /24 or higher to increase chance of overlap
-def generate_random_ip_range_by_subnet():
-    base_ip = "192.168.0.0"
-    subnet_mask = random.randint(24, 32)  # Random subnet mask length between 24 and 32
+# We only generate IP ranges within 172.23.1.0 to 172.23.1.255 with subnetmask /24 or higher to increase chance of overlap
+def generate_random_ip_network():
+    fourth = random.randint(0, 255)
+    base_ip = f"172.23.1.{fourth}" 
+    subnet_mask = random.randint(24, 32)
     ip_network = f"{base_ip}/{subnet_mask}"
     return ip_network
 
+
+def compare_overlap(original_ip1, original_ip2):
+    parts_slash1 = original_ip1.split("/")
+    parts_slash2 = original_ip2.split("/")
+
+    if len(parts_slash1) == 2:
+        ip1 =  ipaddress.IPv4Network(original_ip1, strict=False)
+
+        if len(parts_slash2) == 2:
+            ip2 = ipaddress.IPv4Network(original_ip2, strict=False)
+            # 2 subnetmasks 
+            return ip1.overlaps(ip2)
+        else:
+            ip2 = ipaddress.IPv4Address(original_ip2)
+            return ip2 in ip1
+    else:
+        ip1 =  ipaddress.IPv4Address(original_ip1)
+        if len(parts_slash2) == 2:
+            ip2 = ipaddress.IPv4Network(original_ip2, strict=False)
+            # 2 subnetmasks 
+            return ip1 in ip2
+        else:
+            ip2 = ipaddress.IPv4Address(original_ip2)
+            return ip1 == ip2
     
 class Security_Groups_Information_Cluster:
-    ingressTrie: IpTrie
-    egressTrie: IpTrie
-    sg_Graph: nx.DiGraph
-    sg_to_nodes: set  # Security Group ID -> Set of Nodes
-    node_to_sgs: set  # Node ID -> Set of Security Groups
+    ingressIpTrie: IpTrie
+    egressIpTrie: IpTrie
+    ingressSGTrie: LabelTrie
+    egressSGTrie: LabelTrie
+
+    ingress_node_Graph: nx.DiGraph
+    egress_node_Graph: nx.DiGraph
+
+    sg_to_nodes: set  # Security Group ids -> Set of Nodes
+    node_to_sgs: set  # Node ID -> Set of Security Groups ids
+
     nodeName_to_nodeId: set # Node Name -> Node Id
     nodeId_to_nodeName: set # Node Name -> Node Id
+
+    nodeId_to_nodeIP: set # Node Id -> Node Ip
+    nodeIp_to_nodeId: set # Node Ip -> Node Id
+
+    sgName_to_sgId: set # SG Name -> SG Id
+    sgId_to_sgName: set # SG Id -> SG Name
+
     vmMatrix: []
     security_groups: set # SG Id -> Sg information
 
     def __init__(self):
-        self.ingressTrie = IpTrie()
-        self.egressTrie = IpTrie()
-        self.sg_Graph = nx.DiGraph()
-        self.sg_to_nodes = {}  # Security Group ID -> Set of Nodes
-        self.node_to_sgs = {}  # Node ID -> Set of Security Groups
+        self.ingressIpTrie = IpTrie()
+        self.egressIpTrie = IpTrie()
+        self.ingressSGTrie = LabelTrie()
+        self.egressSGTrie = LabelTrie()
+
+        self.ingress_node_Graph = nx.DiGraph()
+        self.egress_node_Graph = nx.DiGraph()
+
+        self.sg_to_nodes = {}  # Security Group ids -> Set of Nodes
+        self.node_to_sgs = {}  # Node ID -> Set of Security ids
+
         self.nodeName_to_nodeId = {} # Node Name -> Node Id
         self.nodeId_to_nodeName = {} # Node Name -> Node Id
+
+        self.sgName_to_sgId = {} # SG Name -> SG Id
+        self.sgId_to_sgName = {} # SG Id -> SG Name
+
+        self.nodeId_to_nodeIP = {} # Node Id -> Node Ip
+        self.nodeIp_to_nodeId = {} # Node Ip -> Node Id
         self.vmMatrix = []
         self.security_groups = {}
 
@@ -58,8 +103,8 @@ class Security_Groups_Information_Cluster:
         nodes = api_instance.list_node()
         nr_of_nodes = len(nodes.items)
         #STEP 1: Generate Random Security Groups
-        if nr_of_nodes > 1:
-            low = random.randint(0, nr_of_nodes - 2)
+        if nr_of_nodes > 2:
+            low = random.randint(1, nr_of_nodes - 2)
         else: 
             low = 1
         nr_of_sg = random.randint(low, nr_of_nodes + 8)
@@ -72,7 +117,7 @@ class Security_Groups_Information_Cluster:
 
         for sg_id in range(nr_of_sg):
             security_group_name = f'SecurityGroup-{sg_id}'
-            num_rules = random.randint(1, 3)  # Random number of rules per group
+            num_rules = random.randint(3, 8)  # Random number of rules per group
             rules = []
             for ruleId in range(num_rules):
                 port_nr = random.randint(0, port_max)
@@ -82,72 +127,96 @@ class Security_Groups_Information_Cluster:
                 protocol = random.choice(['tcp', 'udp', 'icmp'])
                 ethertype = random.choice(list(Ethertype))
                 # Generate a random ip rule
-                random_nr = random.randint(1,3)
+                random_nr = random.randint(1,5)
                 if(random_nr == 1):
                     remote_ip = generate_random_ip()
+                    remote_sg = None
                 elif(random_nr == 2):
-                    remote_ip = generate_random_ip_range()
+                    remote_ip = generate_random_ip_network()
+                    remote_sg = None
                 else:
-                    remote_ip = generate_random_ip_range_by_subnet()
+                    if len(security_groups) > 0:
+                        temp_id = random.randint(0, len(security_groups) - 1)
+                        remote_sg = security_groups[temp_id].name
+                        remote_ip = None
+                    else:
+                        remote_ip = generate_random_ip()
+                        remote_sg = None
 
-                rule = SGRule(ruleId, sg_id, direction, remote_ip, protocol, ports, ethertype, project_id, f"Security rule {ruleId} for Security group {security_group_name}")
+                rule = SGRule(ruleId, sg_id, direction, remote_ip, remote_sg, protocol, ports, ethertype, project_id, f"Security rule {ruleId} for Security group {security_group_name}")
                 rules.append(rule)
 
                 # Add the ip to the correct Trie and look for a corresponding rule in the opposite trie to check connectivity:
                 if direction == SGDirection.EGRESS:
-                    self.egressTrie.insert(remote_ip, protocol, ruleId, sg_id)
-                    returned = self.ingressTrie.findruleIdByIpAndProtocol(remote_ip, protocol)
-                    if returned is not None:
-                        for i in range (len(returned)):
-                            (returned_sg_id, returned_ruleId) = returned[i]
-                            # A connection between SGs is possible, create the edge and store the ruleIds and protocol responsible within.
-                            self.sg_Graph.add_edge(sg_id, returned_sg_id, **{'ruleIds': ((sg_id, ruleId), (returned_sg_id, returned_ruleId)), 'protocol': protocol})
+                    if remote_ip == None:
+                         self.egressSGTrie.insert(remote_sg, rule)
+                    else:
+                        self.egressIpTrie.insert(remote_ip, protocol, ruleId, sg_id)
+                  
                 elif direction == SGDirection.INGRESS:
-                    self.ingressTrie.insert(remote_ip, protocol, ruleId, sg_id)
-                    returned = self.egressTrie.findruleIdByIpAndProtocol(remote_ip, protocol)
-                    if returned is not None:
-                        for i in range (len(returned)):
-                            (returned_sg_id, returned_ruleId) = returned[i]
-                            # A connection between SGs is possible, create the edge and store the ruleIds and protocol responsible within.
-                            self.sg_Graph.add_edge(returned_sg_id, sg_id, **{'ruleIds': ((returned_sg_id, returned_ruleId), (sg_id, ruleId)), 'protocol': protocol})
+                    if remote_ip == None:
+                         self.ingressSGTrie.insert(remote_sg, rule)
+                    else:
+                        self.ingressIpTrie.insert(remote_ip, protocol, ruleId, sg_id)
 
 
             sg = Security_Group(sg_id, security_group_name, f"Security group {sg_id} with name {security_group_name}", project_id, rules)
-            self.sg_Graph.add_node(sg_id)
+            # self.node_Graph.add_node(sg_id)
             security_groups[sg_id] = sg
+            self.link_sgName_to_sgId(sg.name, sg.id)
         self.security_groups = security_groups
 
-        #STEP 2: Couple Nodes to Security groups and to their names
+        #STEP 2: Couple Nodes to Security groups and to their names and add nodes to graph
         for node in range(nr_of_nodes):
             self.link_nodeName_and_NodeId(nodes.items[node].metadata.name, node)
+            node_address = nodes.items[node].status.addresses
+            for address in node_address:
+                    if address.type == 'InternalIP':
+                        self.link_nodeId_and_nodeIp(node, address.address)
+                    break
+            self.ingress_node_Graph.add_node(node)
+            self.egress_node_Graph.add_node(node)
+
             nr_of_sg_to_link = random.randint(5,8)
             while nr_of_sg_to_link > 0:
                 sg_to_link = random.randint(0, nr_of_sg - 1)
-                self.link_node_and_sg(node, sg_to_link)
+                security_groups[sg_to_link]
+                self.link_node_and_sg(node, security_groups[sg_to_link])
                 nr_of_sg_to_link -= 1
+
+        #STEP 3: Create the graph edges
+        for node in range(nr_of_nodes):
+            for sg in self.node_to_sgs[node]:
+                sgid = self.sgName_to_sgId[sg]
+                for rule in security_groups[sgid].rules:
+                    if isinstance(rule, SGRule):
+                        if rule.direction == SGDirection.EGRESS:
+                            if rule.remote_ip_prefix is not None:
+                                for ip in self.nodeIp_to_nodeId.keys():
+                                    if compare_overlap(rule.remote_ip_prefix, ip):
+                                        self.egress_node_Graph.add_edge(node, self.nodeIp_to_nodeId[ip], rule=(sgid, rule.id))
+                            if rule.remote_sg is not None:
+                                if self.sgName_to_sgId[rule.remote_sg] in self.sg_to_nodes:
+                                    for n in self.sg_to_nodes[self.sgName_to_sgId[rule.remote_sg]]:
+                                        self.egress_node_Graph.add_edge(node, n, rule=(sgid, rule.id))
+                        else:
+                            if rule.remote_ip_prefix is not None:
+                                for ip in self.nodeIp_to_nodeId.keys():
+                                    if compare_overlap(rule.remote_ip_prefix, ip):
+                                        self.ingress_node_Graph.add_edge(node, self.nodeIp_to_nodeId[ip], rule=(sgid, rule.id))
+                            if rule.remote_sg is not None:
+                                if self.sgName_to_sgId[rule.remote_sg] in self.sg_to_nodes:
+                                    for n in self.sg_to_nodes[self.sgName_to_sgId[rule.remote_sg]]:
+                                        self.ingress_node_Graph.add_edge(node, n, rule=(sgid, rule.id))
         self.create_VM_matrix(nr_of_nodes)
 
     def create_VM_matrix(self, nr_of_nodes):
         tempMatrix = [[0] * nr_of_nodes for _ in range(nr_of_nodes)]
 
-        # A node can communicate with itself
         for n in range(nr_of_nodes):
-            tempMatrix[n][n] = 1
-
-        # Check which SGs can communicate in the graph
-        for sg1 in self.sg_Graph.nodes():
-            for sg2 in self.sg_Graph.nodes():
-                if self.sg_Graph.has_edge(sg1, sg2):
-                    # Get the nodes associated with these security groups
-                    nodes1 = self.get_nodes_for_security_group(sg1)
-                    nodes2 = self.get_nodes_for_security_group(sg2)
-
-                    # If nodes associated with these security groups exist,
-                    # indicate communication in the vmMatrix
-                    if nodes1 and nodes2:
-                        for node1 in nodes1:
-                            for node2 in nodes2:
-                                tempMatrix[node1][node2] = 1
+            for m in range(nr_of_nodes):
+                if self.egress_node_Graph.has_edge(n, m) and self.ingress_node_Graph.has_edge(n, m):
+                    tempMatrix[n][m] = 1
 
         self.vmMatrix = tempMatrix
 
@@ -157,13 +226,21 @@ class Security_Groups_Information_Cluster:
             for i in self.security_groups:
                 print(f"# {self.security_groups[i]}\n#")
 
-            print("# Security Group nodes:")
-            for sg in self.sg_Graph.nodes():
-                print(f"# SG: {sg}, Out Edges: {list(self.sg_Graph.successors(sg))}, In Edges: {list(self.sg_Graph.predecessors(sg))}")
+            # Print remote ip information
+            print("#\n#remote ip:")
+            for sg in self.security_groups.values():
+                for rule in sg.rules:
+                    print(f"# remote_ip: {rule.remote_ip_prefix}")
 
-            # Print edge information
-            print("#\n# Edges:")
-            for edge in self.sg_Graph.edges():
+
+            # Print egress edge information
+            print("#\n#egress Edges:")
+            for edge in self.egress_node_Graph.edges():
+                print(f"# Edge: {edge}")
+
+             # Print ingress edge information
+            print("#\n#ingress Edges:")
+            for edge in self.ingress_node_Graph.edges():
                 print(f"# Edge: {edge}")
 
             # Print out information about sg->nodes links
@@ -193,26 +270,40 @@ class Security_Groups_Information_Cluster:
         print("#")
             
     def check_sg_connectivity(self, nodeName1, nodeName2, connection_wanted):
-        sg1Set = self.node_to_sgs[self.nodeName_to_nodeId[nodeName1]]
-        sg2Set = self.node_to_sgs[self.nodeName_to_nodeId[nodeName2]]
+        node1 = self.nodeName_to_nodeId[nodeName1]
+        node2 = self.nodeName_to_nodeId[nodeName2]
+        sg1Set = self.node_to_sgs[node1]
+        sg2Set = self.node_to_sgs[node2]
         print (f"\n    Node {nodeName1} is part of the following security groups:")
         for sg1 in sg1Set:
-            print(f"     -{self.security_groups[sg1].name}")
+            print(f"     -{sg1}")
         print (f"\n    Node {nodeName2} is part of the following security groups:")
         for sg2 in sg2Set:
-            print(f"     -{self.security_groups[sg2].name}")
+            print(f"     -{sg2}")
 
         connection = False
-        for sg1 in sg1Set:
-            for sg2 in sg2Set:
-                if self.sg_Graph.has_edge(sg1, sg2):
-                    connection = True
-                    rule_ids = self.sg_Graph.get_edge_data(sg1, sg2).get('ruleIds', [])
-                    print("\n    There is already a connection between the nodes in the right direction due to the following Security group rules:\n")
-                    for rule_id in rule_ids:
-                        sec_group = self.security_groups[rule_id[0]]
-                        print(f"       -{sec_group.rules[rule_id[1]].description}")
-                        print(f"        This rule is a {sec_group.rules[rule_id[1]].protocol} {sec_group.rules[rule_id[1]].direction.value} rule wich focusses the following ip range: {sec_group.rules[rule_id[1]].remote_ip_prefix}\n")
+        if self.vmMatrix[node1][node2] == 1:
+            connection = True
+            print("\n    There is already a connection between the nodes in the right direction due to the following Security group rules:\n")
+       
+            print(f"       -{self.ingress_node_Graph.get_edge_data(node1, node2)}")
+            print(f"       -{self.egress_node_Graph.get_edge_data(node1, node2)}")
+            (sgid1, ruleid1) = self.ingress_node_Graph.get_edge_data(node1, node2)['rule']
+            (sgid2, ruleid2) = self.egress_node_Graph.get_edge_data(node1, node2)['rule']
+            rule1 = self.security_groups[sgid1].rules[ruleid1]
+            rule2 = self.security_groups[sgid2].rules[ruleid2]
+
+            print(f"        {rule1.description}")
+            if rule1.remote_ip_prefix is not None:
+                print(f"        This rule is a {rule1.protocol} {rule1.direction.value} rule wich focusses the following ip range: {rule1.remote_ip_prefix}\n")
+            else:
+                print(f"        This rule is a {rule1.protocol} {rule1.direction.value} rule wich focusses the following Security Groups: {rule1.remote_sg}\n")
+
+            print(f"        {rule2.description}")
+            if rule2.remote_ip_prefix is not None:
+                print(f"        This rule is a {rule2.protocol} {rule2.direction.value} rule wich focusses the following ip range: {rule2.remote_ip_prefix}\n")
+            else:
+                print(f"        This rule is a {rule2.protocol} {rule2.direction.value} rule wich focusses the following Security Groups: {rule2.remote_sg}\n")
         if connection:
             if connection_wanted:
                 print(f'\n  {colorize(f"=>", 32)} CONCLUSION: NO SG CONFLICTS\n')
@@ -233,12 +324,20 @@ class Security_Groups_Information_Cluster:
         if node not in self.node_to_sgs:
             self.node_to_sgs[node] = set()
 
-        self.node_to_sgs[node].add(sg)
+        self.node_to_sgs[node].add(sg.name)
 
-        if sg not in self.sg_to_nodes:
-            self.sg_to_nodes[sg] = set()
+        if sg.name not in self.sg_to_nodes:
+            self.sg_to_nodes[sg.name] = set()
 
-        self.sg_to_nodes[sg].add(node)
+        self.sg_to_nodes[sg.name].add(node)
+
+    def link_nodeId_and_nodeIp(self, id, ip):
+        self.nodeId_to_nodeIP[id] = ip
+        self.nodeIp_to_nodeId[ip] = id
+
+    def link_sgName_to_sgId(self, name, id):
+        self.sgId_to_sgName[id] = name
+        self.sgName_to_sgId[name] = id
 
     def link_nodeName_and_NodeId(self, name, id):
         self.nodeName_to_nodeId[name] = id
@@ -252,8 +351,4 @@ class Security_Groups_Information_Cluster:
     # Given a node, get all its security groups
     def get_security_groups_for_node(self, node):
         return self.node_to_sgs.get(node, set())
-    
-    
-if __name__ == '__main__':
-    sgic = Security_Groups_Information_Cluster()
-    sgic.generate_sg_information()
+
