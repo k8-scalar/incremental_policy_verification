@@ -1,0 +1,51 @@
+SGIC WRONG
+
+	Node1 (ipA)			Node2 (ipB)
+	|					|
+	SG1				SG2
+	  Egressrule ipB		Ingressrule ipA
+
+They can now communicate.
+Remote_sg instead of remote_ip to target SG not IPs
+Use Directed Graph, (no need for IPTries?)
+
+
+TODO:
+	Rework SGIC to work correctly
+	Rework labelTrie to not use character per character but label + value
+	
+	
+
+___________________________________________________________________
+
+
+My questions are about my solution, but not a comparison.
+
+We want to know if conflict detection is faster then Kano (but mine without SG verification)
+We want to know if conflict detection is faster than time between pod sheduling and readiness
+
+Compare:
+	when an event happens:
+		- My updating of the kano matrix 
+		- Full generation of a new kano matrix (as on startup)
+Look at implementation strategy of new Kano paper with incremental verification and compare it to my algo, pros and cons
+
+We need a current state of the art: then we need to compare my algo to the current state of the art.
+This is also how the paper should be: intro = state of the art, then this is my algo improving thing x of the state of the art, then how does it compare.
+
+
+kubectl api with -L label cant be faster.
+
+______________________________________________________________________
+
+Alternatively, If there is no state of the art that is comparable I could try to write thesis as "filling the hole".
+However I do partially what Kano does, partially what Grasshopper does:
+Kano does not check with SGs, Grasshopper assumes NPs are correct, so only enforces SGs . If you run my tool after grashopper it would not find conflicts.
+
+Since we dont have a SG layer we cant compare to Grasshopper
+paper 1 of Kano was state of the art, then the 2nd came out, so we can talk from paper 1, then compare to paper 2
+
+3 main talking points: 
+	1. updating the matrix
+	2. detection of impact on current container level (e.g pods connecting)
+	3. SG conflict detection

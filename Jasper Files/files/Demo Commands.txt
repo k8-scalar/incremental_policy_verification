@@ -1,0 +1,8 @@
+kubectl apply -f pol-BtoG-Egress.yml
+kubectl delete NetworkPolicy blue-to-green -n test
+
+kubectl delete pod purple-pod -n test
+kubectl delete pod blue-pod -n test
+
+kubectl apply -f pod-B.yml
+kubectl apply -f pod-P.yml
