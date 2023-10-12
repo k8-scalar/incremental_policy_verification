@@ -117,7 +117,7 @@ class Security_Groups_Information_Cluster:
 
         for sg_id in range(nr_of_sg):
             security_group_name = f'SecurityGroup-{sg_id}'
-            num_rules = random.randint(3, 8)  # Random number of rules per group
+            num_rules = random.randint(3, 5)  # Random number of rules per group
             rules = []
             for ruleId in range(num_rules):
                 port_nr = random.randint(0, port_max)
@@ -177,7 +177,7 @@ class Security_Groups_Information_Cluster:
             self.ingress_node_Graph.add_node(node)
             self.egress_node_Graph.add_node(node)
 
-            nr_of_sg_to_link = random.randint(5,8)
+            nr_of_sg_to_link = random.randint(3,5)
             while nr_of_sg_to_link > 0:
                 sg_to_link = random.randint(0, nr_of_sg - 1)
                 security_groups[sg_to_link]
@@ -196,8 +196,8 @@ class Security_Groups_Information_Cluster:
                                     if compare_overlap(rule.remote_ip_prefix, ip):
                                         self.egress_node_Graph.add_edge(node, self.nodeIp_to_nodeId[ip], rule=(sgid, rule.id))
                             if rule.remote_sg is not None:
-                                if self.sgName_to_sgId[rule.remote_sg] in self.sg_to_nodes:
-                                    for n in self.sg_to_nodes[self.sgName_to_sgId[rule.remote_sg]]:
+                                if rule.remote_sg in self.sg_to_nodes:
+                                    for n in self.sg_to_nodes[rule.remote_sg]:
                                         self.egress_node_Graph.add_edge(node, n, rule=(sgid, rule.id))
                         else:
                             if rule.remote_ip_prefix is not None:
@@ -205,8 +205,8 @@ class Security_Groups_Information_Cluster:
                                     if compare_overlap(rule.remote_ip_prefix, ip):
                                         self.ingress_node_Graph.add_edge(node, self.nodeIp_to_nodeId[ip], rule=(sgid, rule.id))
                             if rule.remote_sg is not None:
-                                if self.sgName_to_sgId[rule.remote_sg] in self.sg_to_nodes:
-                                    for n in self.sg_to_nodes[self.sgName_to_sgId[rule.remote_sg]]:
+                                if rule.remote_sg in self.sg_to_nodes:
+                                    for n in self.sg_to_nodes[rule.remote_sg]:
                                         self.ingress_node_Graph.add_edge(node, n, rule=(sgid, rule.id))
         self.create_VM_matrix(nr_of_nodes)
 
@@ -285,9 +285,6 @@ class Security_Groups_Information_Cluster:
         if self.vmMatrix[node1][node2] == 1:
             connection = True
             print("\n    There is already a connection between the nodes in the right direction due to the following Security group rules:\n")
-       
-            print(f"       -{self.ingress_node_Graph.get_edge_data(node1, node2)}")
-            print(f"       -{self.egress_node_Graph.get_edge_data(node1, node2)}")
             (sgid1, ruleid1) = self.ingress_node_Graph.get_edge_data(node1, node2)['rule']
             (sgid2, ruleid2) = self.egress_node_Graph.get_edge_data(node1, node2)['rule']
             rule1 = self.security_groups[sgid1].rules[ruleid1]
@@ -352,3 +349,6 @@ class Security_Groups_Information_Cluster:
     def get_security_groups_for_node(self, node):
         return self.node_to_sgs.get(node, set())
 
+if __name__ == "__main__":
+    sgic = Security_Groups_Information_Cluster()
+    sgic.generate_sg_information()
