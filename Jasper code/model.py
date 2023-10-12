@@ -177,6 +177,7 @@ class SGRule:
     sg_id: str
     direction: SGDirection
     remote_ip_prefix: str
+    remote_sg: str
     protocol: PolicyProtocol
     ports: (int, int)
     ethertype: Ethertype
