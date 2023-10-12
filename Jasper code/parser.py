@@ -214,11 +214,3 @@ class ConfigParser:
             print(c)
         for p in self.policies:
             print(p)
-
-# def main():
-#    cp = ConfigParser()
-#    cp.parse('current-cluster-objects')
-   
-# if __name__ == '__main__':
-#     main()
-

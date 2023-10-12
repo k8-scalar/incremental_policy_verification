@@ -13,24 +13,25 @@ class LabelTrie:
   
     def insert(self, label, obj):
         current = self.root
-        for i, char in enumerate(label):
-            if char not in current.children:
-                prefix = label[0:i+1]
-                current.children[char] = TrieNode(prefix)
-            current = current.children[char]
-        current.is_label = True
-        if isinstance(obj, Container):
-            current.objects.append(obj)
-        elif isinstance(obj, Policy):
-            current.objects.append(obj)
+        split = label.split(":")
+        for i in range(len(split)):
+            part = split[i]
+            if part not in current.children:
+                current.children[part] = TrieNode(part)
+            current = current.children[part]
+            if i == len(split) - 1:  # If this is the last part of the label
+                current.is_label = True
+        if current.is_label:
+            if isinstance(obj, Container) or isinstance(obj, Policy):
+                current.objects.append(obj)
 
     def find(self, label):
- 
+    
         current = self.root
-        for char in label:
-            if char not in current.children:
+        for part in label.split(":"):
+            if part not in current.children:
                 return None
-            current = current.children[char]
+            current = current.children[part]
 
         if current.is_label:
             return current.objects
@@ -56,7 +57,7 @@ class LabelTrie:
         current = self.root
         nodes_to_delete = []
 
-        for char in label:
+        for char in label.split(":"):
             if char not in current.children:
                 return
             nodes_to_delete.append(current)
@@ -67,46 +68,10 @@ class LabelTrie:
                 current.objects.remove(objec)
         if not current.objects:
             current.is_label = False
-        # Check if the label node has no objects and no other labels as children
-        while nodes_to_delete:
-            node = nodes_to_delete.pop()
-            if not node.is_label and not node.objects and not node.children:
+        if not current.objects and not current.children:
+        # Prune the node if no objects and children are left
+            while nodes_to_delete:
+                node = nodes_to_delete.pop()
                 parent = nodes_to_delete[-1] if nodes_to_delete else self.root
-                del parent.children[node.label[-1]]
-    
-if __name__ == "__main__":
-    # Create an instance of the LabelTrie
-    trie = LabelTrie()
-
-    # Insert labels and objects into the trie
-    container1 = Container(1, "Apple Container", {}, [], "Node1", [])
-    container2 = Container(2, "Banana Container", {}, [], "Node2", [1])
-    policy1 = Policy("Banana Policy 1", {}, [], False, [], None)
-    policy2 = Policy("Banana Policy 2", {}, [], True, [], None)
-    
-    trie.insert("apple", container1)
-    trie.insert("banana", container2)
-    trie.insert("banana", policy1)
-    trie.insert("banana", policy2)
-    
-    container3 = Container(3, "Cherry Container", {}, [], "Node3", [2])
-    policy3 = Policy("Cherry Policy", {}, [], True, [], None)
-    
-    trie.insert("cherry", container3)
-    trie.insert("cherry", policy3)
-
-    # Print the state of the trie
-    print("State of the Trie:")
-    print(trie)
-
-    # Test the find function
-    label_to_find = "banana"
-    objects_found = trie.find(label_to_find)
-    if objects_found:
-        print(f"Objects with label '{label_to_find}':")
-        for obj in objects_found:
-            print(obj)
-    else:
-        print(f"No objects found with label '{label_to_find}'")
-
-    print(trie)
+                if node.label:
+                    del parent.children[node.label]
