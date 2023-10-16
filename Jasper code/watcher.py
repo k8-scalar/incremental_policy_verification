@@ -252,9 +252,6 @@ def policies():
     except ProtocolError:
       print("watchPolicyEvents ProtocolError, continuing..")
 
-
-
-
 def consumer():
     try:
         while True:
@@ -266,8 +263,6 @@ def consumer():
     except ProtocolError:
         print("Consumer ProtocolError, continuing..")
             
-
-   
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="My Python Script")
