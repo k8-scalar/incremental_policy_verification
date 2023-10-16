@@ -194,8 +194,6 @@ class Security_Group:
     
 
 class ReachabilityMatrix:
-    n_container: int
-    n_policies: int
     dict_pods: {}
     dict_pols: {}
     matrix: []
@@ -203,8 +201,6 @@ class ReachabilityMatrix:
     resp_policies: Store
 
     def __init__(self):
-        self.n_container = 0
-        self.n_policies = 0
         self.dict_pods = {}
         self.dict_pols = {}
         self.matrix = None
@@ -391,13 +387,10 @@ class ReachabilityMatrix:
             self.build_tranpose()
 
         self.matrix = matrix
-        self.n_container = n_container
-        self.n_policies = n_policies
         self.dict_pods = dict_pods
         self.dict_pols = dict_pols
         self.resp_policies = final_resp_policies
-
-
+        
     def build_tranpose(self):
         self.transpose_matrix = [bitarray('0' * self.container_size) for _ in range(self.container_size)]
         for i in range(self.container_size):

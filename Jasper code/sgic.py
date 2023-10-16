@@ -1,8 +1,6 @@
 import random
 from model import *
 import networkx as nx
-from ipTrie import IpTrie
-from labelTrie import LabelTrie
 from kubernetes import client, config
 from kubernetes.config import ConfigException
 import ipaddress
@@ -46,11 +44,6 @@ def compare_overlap(original_ip1, original_ip2):
             return ip1 == ip2
     
 class Security_Groups_Information_Cluster:
-    ingressIpTrie: IpTrie
-    egressIpTrie: IpTrie
-    ingressSGTrie: LabelTrie
-    egressSGTrie: LabelTrie
-
     ingress_node_Graph: nx.DiGraph
     egress_node_Graph: nx.DiGraph
 
@@ -70,11 +63,6 @@ class Security_Groups_Information_Cluster:
     security_groups: set # SG Id -> Sg information
 
     def __init__(self):
-        self.ingressIpTrie = IpTrie()
-        self.egressIpTrie = IpTrie()
-        self.ingressSGTrie = LabelTrie()
-        self.egressSGTrie = LabelTrie()
-
         self.ingress_node_Graph = nx.DiGraph()
         self.egress_node_Graph = nx.DiGraph()
 
@@ -145,20 +133,6 @@ class Security_Groups_Information_Cluster:
 
                 rule = SGRule(ruleId, sg_id, direction, remote_ip, remote_sg, protocol, ports, ethertype, project_id, f"Security rule {ruleId} for Security group {security_group_name}")
                 rules.append(rule)
-
-                # Add the ip to the correct Trie and look for a corresponding rule in the opposite trie to check connectivity:
-                if direction == SGDirection.EGRESS:
-                    if remote_ip == None:
-                         self.egressSGTrie.insert(remote_sg, rule)
-                    else:
-                        self.egressIpTrie.insert(remote_ip, protocol, ruleId, sg_id)
-                  
-                elif direction == SGDirection.INGRESS:
-                    if remote_ip == None:
-                         self.ingressSGTrie.insert(remote_sg, rule)
-                    else:
-                        self.ingressIpTrie.insert(remote_ip, protocol, ruleId, sg_id)
-
 
             sg = Security_Group(sg_id, security_group_name, f"Security group {sg_id} with name {security_group_name}", project_id, rules)
             # self.node_Graph.add_node(sg_id)
