@@ -110,7 +110,6 @@ class Kubernetes_Information_Cluster:
                                                             new_reachability.matrix[select_cont.matrix_id][allow_cont.matrix_id] = 1
                                                             new_reachability.resp_policies.add_item(select_cont.id, allow_cont.id, (item.id, len(new_reachability.dict_pols)))
         new_reachability.dict_pols[obj.id] = obj
-        new_reachability.n_policies += 1
         return new_reachability
 
     def reachabilityDeleteNP(self, obj: Policy):
@@ -145,15 +144,13 @@ class Kubernetes_Information_Cluster:
                                         new_reachability.matrix[select_cont.matrix_id][allow_cont.matrix_id] = 0
 
         del new_reachability.dict_pols[obj.id]                        
-        new_reachability.n_policies -= 1
         return new_reachability
     
     def reachabilityAddContainer(self, obj: Container):
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
         # First add the container to the list and extend the matrix with a row and colum
-        obj.matrix_id = copy.deepcopy(new_reachability.n_container)
+        obj.matrix_id = copy.deepcopy(len(new_reachability.dict_pods))
         new_reachability.dict_pods[obj.id] = obj
-        new_reachability.n_container += 1
         # We need this temporary container Trie to check for connections to itself as well. 
         cont_trie = copy.deepcopy(self.containerTrie)
         for label in obj.concat_labels:
@@ -161,7 +158,7 @@ class Kubernetes_Information_Cluster:
 
         for row in new_reachability.matrix:
             row.append(0)
-        new_reachability.matrix.append(bitarray('0' * new_reachability.n_container))
+        new_reachability.matrix.append(bitarray('0' * len(new_reachability.dict_pods)))
         # Now lets find rules that are applied on this new container's labels and add them to matrix and other data structures
         for label in obj.concat_labels:
             egressrules = self.eggressTrie.find(label)
@@ -211,8 +208,7 @@ class Kubernetes_Information_Cluster:
     def reachabilityDeleteContainer(self, obj: Container):
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
         # Create a new all 0 matrix
-        new_reachability.n_container -= 1
-        new_reachability.matrix = [bitarray('0' * new_reachability.n_container) for _ in range(new_reachability.n_container)]
+        new_reachability.matrix = [bitarray('0' * len(new_reachability.dict_pods)) for _ in range(len(new_reachability.dict_pods))]
         del new_reachability.dict_pods[obj.id]
 
         for i, container in new_reachability.dict_pods.items():
@@ -246,7 +242,7 @@ class Kubernetes_Information_Cluster:
             print("#")
         print("#")    
         print("# Kano Matrix:")
-        for row in range(self.reachabilitymatrix.n_container):
+        for row in range(len(self.reachabilitymatrix.dict_pods)):
             print(f"# {self.reachabilitymatrix.matrix[row]}")
         print("#")
 
