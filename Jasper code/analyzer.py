@@ -13,6 +13,35 @@ def is_matrix_all_zero(matrix):
             return False  
     return True 
 
+def find_obj_differences(obj1, obj2, parent_key=''):
+    differences = {}
+    for key, value1 in obj1.__dict__.items():
+        value2 = obj2.__dict__[key]
+        if isinstance(value1, dict) and isinstance(value2, dict):
+            sub_differences = find_dict_differences(value1, value2, f"{parent_key}.{key}" if parent_key else key)
+            differences.update(sub_differences)
+        elif value1 != value2:
+            differences[parent_key + '.' + key if parent_key else key] = (value1, value2)
+    return differences
+
+def find_dict_differences(dict1, dict2, parent_key=''):
+    differences = {}
+    
+    for key in dict1:
+        if key in dict2:
+            value1 = dict1[key]
+            value2 = dict2[key]
+            if value1 != value2:
+                differences[parent_key + '.' + key if parent_key else key] = (value1, value2)
+        else:
+            differences[parent_key + '.' + key if parent_key else key] = (dict1[key], None)
+    
+    for key in dict2:
+        if key not in dict1:
+            differences[parent_key + '.' + key if parent_key else key] = (None, dict2[key])
+    
+    return differences
+
 class EventAnalyzer:
     verbose: bool
     sgic: Security_Groups_Information_Cluster
@@ -25,18 +54,16 @@ class EventAnalyzer:
         self.verbose = verbose
 
 
-    def startup(self):
-        # Retrieve the current containers and policies
-        new_containers, new_policies = self.cp.parse() 
-
+    def startup(self, init_pods, init_pols):
         # Generate and store the reachabilitymatrix
-        self.kic.generateKanoMatrix(new_containers, new_policies)
+   
+        self.kic.generateAndStoreReachability(init_pods, init_pols)
 
         # store the containers and policies 
-        for cont in new_containers:
+        for cont in init_pods:
            self.kic.insert_container(cont)
 
-        for pol in new_policies:
+        for pol in init_pols:
            pol.working_select_set = None
            pol.working_allow_set = None
            self.kic.insert_policy(pol)
@@ -61,7 +88,6 @@ class EventAnalyzer:
 
     def analyseEvent(self, event):
         obj = self.cp.create_object_from_event(event)
-
         if isinstance(obj, Policy):
             if event['custom'] == "create":
                 obj.id = max(self.kic.reachabilitymatrix.dict_pols.keys()) + 1
@@ -136,7 +162,50 @@ class EventAnalyzer:
               
                 # Lets update all that needs updating before finishing up
                 self.kic.delete_policy(obj)
+            
+            elif event['custom'] == "update":
+                for key, value in self.kic.reachabilitymatrix.dict_pols.items():
+                    if value.name == obj.name:
+                        old_obj = value
+                        break
+                differences = find_obj_differences(old_obj, obj)
+                print("  The following changes have been found between the old NetworkPolicy and the updated Networkpolicy")
 
+                for key, (value1, value2) in differences.items():
+                    #some keys should be ignored.
+                    if key != "id" and key != "working_select_set" and key != "working_allow_set":
+                        print(f"\n    -{key}:")
+                        print(f"       old:     {value1}")
+                        print(f"       updated: {value2}")
+                
+                self.kic.delete_policy(old_obj)
+                self.kic.insert_policy(obj)
+                new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
+             
+                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+                if is_matrix_all_zero(deltakano):
+                    print("\n  The updated network policy does not trigger any change in connections and thus does not introduce any new conflicts")
+                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
+                else:
+                    for i, row in enumerate(deltakano):
+                         for j, value in enumerate(row):
+                            
+                            if deltakano[i][j] == 1:
+                                # First we get the nodes they are deployed on.
+                                nodeName1 = self.kic.matrixId_to_Container[i].nodeName
+                                nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+                                # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
+                                print("\n  The NetworkPolicy update has effect on the connectivity between following pods:")
+                                if self.kic.reachabilitymatrix.matrix[i][j] == 1:
+                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
+                                    # Now we look at SGs
+                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+                                else:
+                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
+                                    # Now we look at SGs
+                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+                self.kic.reachabilitymatrix = new_reach
+                
 
         elif isinstance(obj, Container):
             if event['custom'] == "create":
@@ -246,6 +315,47 @@ class EventAnalyzer:
 
                 # Lets update all that needs updating before finishing up
                 self.kic.delete_container(obj)
+
+            elif event['custom'] == "update":
+                for key, value in self.kic.reachabilitymatrix.dict_pods.items():
+                    if value.name == obj.name:
+                        old_obj = value
+                        break
+                self.kic.update_container(old_obj, obj)
+                differences = find_obj_differences(old_obj, obj)
+                print("  The following changes have been found between the old Pod and the updated Pod")
+
+                for key, (value1, value2) in differences.items():
+                    # id is not assigned yet so should be ignored.
+                    if key != "id":
+                        print(f"\n    -{key}:")
+                        print(f"       old:     {value1}")
+                        print(f"       updated: {value2}")
+                
+                new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
+                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+                if is_matrix_all_zero(deltakano):
+                    print("\n  The updated container does not trigger any change in connections and thus does not introduce any new conflicts")
+                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
+                else:
+                    for i, row in enumerate(deltakano):
+                         for j, value in enumerate(row):
+                            
+                            if deltakano[i][j] == 1:
+                                # First we get the nodes they are deployed on.
+                                nodeName1 = self.kic.matrixId_to_Container[i].nodeName
+                                nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+                                # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
+                                print("\n  The container update has effect on the connectivity between following pods:")
+                                if self.kic.reachabilitymatrix.matrix[i][j] == 1:
+                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
+                                    # Now we look at SGs
+                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+                                else:
+                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
+                                    # Now we look at SGs
+                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+                self.kic.reachabilitymatrix = new_reach
         else:           
             raise ValueError("\ERROR: This is not a correct event and can not be handled correctly\n")
         

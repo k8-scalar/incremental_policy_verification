@@ -238,7 +238,6 @@ class Security_Groups_Information_Cluster:
                 print(f"# node {name}'s id: {self.nodeName_to_nodeId[name]}")
 
         print("#\n# VM matrix:")
-        
         for i in range(len(self.vmMatrix)):
             print(f"# {self.vmMatrix[i]}")
         print("#")
@@ -258,7 +257,7 @@ class Security_Groups_Information_Cluster:
         connection = False
         if self.vmMatrix[node1][node2] == 1:
             connection = True
-            print("\n    There is already a connection between the nodes in the right direction due to the following Security group rules:\n")
+            print("\n    There is a connection between the nodes in the correct direction due to the following Security group rules:\n")
             (sgid1, ruleid1) = self.ingress_node_Graph.get_edge_data(node1, node2)['rule']
             (sgid2, ruleid2) = self.egress_node_Graph.get_edge_data(node1, node2)['rule']
             rule1 = self.security_groups[sgid1].rules[ruleid1]

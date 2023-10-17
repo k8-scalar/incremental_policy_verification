@@ -10,6 +10,8 @@ class Kubernetes_Information_Cluster:
     ingressTrie: LabelTrie
     containerTrie: LabelTrie
     reachabilitymatrix: ReachabilityMatrix
+    pods: list
+    pols: list
     
 
     def __init__(self):
@@ -18,12 +20,15 @@ class Kubernetes_Information_Cluster:
         self.containerTrie = LabelTrie()
         self.reachabilitymatrix = ReachabilityMatrix()
         self.matrixId_to_Container = {}
+        self.pods = []
+        self.pols = []
 
     def insert_container(self, obj):
         if isinstance(obj, Container):
             for lab in obj.concat_labels:
                 self.containerTrie.insert(lab, obj)
                 self.matrixId_to_Container[obj.id] = obj
+                self.pods.append(obj)
         else:
             raise ValueError("data is not a Container object")
         
@@ -32,12 +37,29 @@ class Kubernetes_Information_Cluster:
             for lab in obj.concat_labels:
                 self.containerTrie.delete(lab, obj)
             del self.matrixId_to_Container[obj.id]
+            self.pods.remove(obj)
+        else:
+            raise ValueError("Data is not a Container object")
+        
+    def update_container(self, old_obj, obj):
+        if isinstance(obj, Container):
+            for lab in old_obj.concat_labels:
+                self.containerTrie.delete(lab, old_obj)
+            for lab in obj.concat_labels:
+                self.containerTrie.insert(lab, obj)
+            obj.matrix_id = old_obj.matrix_id
+            obj.id = old_obj.id
+            self.matrixId_to_Container[old_obj.id] = obj
+            index = self.pods.index(old_obj)
+            self.pods.remove(old_obj)
+            self.pods.insert(index, obj)
         else:
             raise ValueError("Data is not a Container object")
 
     # We store the selector labels, so we can e.g. search all ingress rules applied to a label
     def insert_policy(self, obj):
         if isinstance(obj, Policy):
+            self.pols.append(obj)
             if obj.direction.direction:
                 # Ingress
                 for lab in obj.selector.concat_labels:
@@ -52,6 +74,7 @@ class Kubernetes_Information_Cluster:
         
     def delete_policy(self, obj):
         if isinstance(obj, Policy):
+            self.pols.remove(obj)
             if obj.direction.direction:
                 # Ingress
                 for lab in obj.selector.concat_labels:
@@ -63,10 +86,14 @@ class Kubernetes_Information_Cluster:
         else:
             raise ValueError("Data is not a Policy object")
         
-    
-    def generateKanoMatrix(self, containers, policies):
+    def generateAndStoreReachability(self, containers, policies):
         self.reachabilitymatrix.build_matrix(containers, policies)
-
+    
+    def generateReachability(self, containers, policies):
+        reach = ReachabilityMatrix()
+        reach.build_matrix(containers, policies)
+        return reach
+    
     def reachabilityAddNP(self, obj: Policy):
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
         #we collect all the oposite policies that have use the new policy's allow as a select.
@@ -232,14 +259,16 @@ class Kubernetes_Information_Cluster:
             print(f"# {self.eggressTrie}\n")
             print("# Ingress Trie:")
             print(f"# {self.ingressTrie}\n")
-            print("# Container Ids:")
-            for i, pod in self.reachabilitymatrix.dict_pods.items():
-                    print(f"# {i}: {pod}\n#")
+         
             print("# Policy Ids:")
             for i, pol in self.reachabilitymatrix.dict_pols.items():
                 print(f"# {i}: {pol}\n#")
 
             print("#")
+      
+        print("# Container Ids:")
+        for i, pod in self.reachabilitymatrix.dict_pods.items():
+                print(f"# {i}: {pod.name}")
         print("#")    
         print("# Kano Matrix:")
         for row in range(len(self.reachabilitymatrix.dict_pods)):
