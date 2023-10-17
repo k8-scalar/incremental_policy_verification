@@ -213,7 +213,6 @@ class ReachabilityMatrix:
             build_transpose_matrix=False):
         
         n_container = len(containers)
-        n_policies = len(policies)
 
         labelMap: Dict[str, bitarray] = DefaultDict(lambda: bitarray('0' * n_container))
 
@@ -236,7 +235,7 @@ class ReachabilityMatrix:
         # DEBUGGING PURPOSES
         # print(f'index map pods: {dict_pods}\n' )
         # print(f'index map policies: {dict_pols}\n' )
-        # print(f'label map: {list(labelMap)}\n' )
+        # print(f'label map: {list(labelMap["color"])}\n' )
 
         in_resp_policies = Store()
         out_resp_policies = Store()
@@ -261,7 +260,6 @@ class ReachabilityMatrix:
                 for k, v in items.labels.items():
                     if k in labelMap.keys():
                         allow_set &= labelMap[k]
-
             # dealing with non-matched values (needs a customized predicate)
             for idx, cont_info in enumerate (containers):
                 if select_set[idx] and not policy.select_policy(containers[idx]):
@@ -269,7 +267,6 @@ class ReachabilityMatrix:
 
                 if allow_set[idx] and not policy.allow_policy(containers[idx]):
                     allow_set[idx] = False
-
             # store the select and allow set in their working_set
             policy.store_bcp(select_set, allow_set)
 
@@ -286,6 +283,7 @@ class ReachabilityMatrix:
                 select_set.setall(False)    
 
             # DEBUGGING PURPOSES
+            # print(f"policy: {policy.name}")
             # if(policy.direction.direction == False):
             #     print("Policy type = Egress")
             # else:

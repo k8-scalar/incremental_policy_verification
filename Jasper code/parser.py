@@ -18,40 +18,6 @@ class ConfigParser:
         self.policies = []
         self.watched=[]
 
-    def parse(self, filepath=None):
-        if filepath == None:
-            filepath = self.filepath
-
-        if filepath == None:
-            print('no filepath specified')
-            return
-
-        if os.path.isfile(filepath):
-            try:
-                with open(filepath) as f:
-                    data = load(f, Loader=Loader)
-                    self.create_object(data)
-
-            except:
-                print("Error opening or reading file " + filepath)
-
-        else:
-
-            try:
-                time.sleep(0.001)#Time to write yaml to data evaluated to be 0.0008
-                for subdir, dirs, files in os.walk(filepath):
-                    for file in files:
-                        filename = os.path.join(subdir, file)
-
-                        with open(filename) as f:
-                            data = load(f, Loader=Loader)
-                            self.create_object(data)
-            except:
-                print("Error opening or reading directory")
-                raise
-
-        return self.containers, self.policies
-
     def create_object(self, data):
         if data['kind'] == 'NetworkPolicy':
             try:
