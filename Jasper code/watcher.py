@@ -12,6 +12,7 @@ import sys
 import time
 import queue
 import shutil
+from parser import ConfigParser
 
 # Configure the client to use in-cluster config or local kube config file
 try:
@@ -46,65 +47,13 @@ def prettyprint_event(event):
 
     elif event['custom'] == "update":
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
-        print(colorize(f'\n{kind} {name} has been updated {location}', '33'))#orange
-        if len(event['changes']) > 0:
-            for change in event['changes']: 
-                print(colorize(f"  Change at {change['key']}: {change['old']} --> {change['new']} ", '33'))#orange
-        print("\n")
-
-def compare_values(old_value, new_value, changes, parent_key=""):
-        if old_value != new_value:
-            changes.append({
-                "key": parent_key,
-                "old": old_value,
-                "new": new_value
-            })
-
-def compare_dicts(old_dict, new_dict, changes, parent_key=""):
-    for key in old_dict.keys():
-        old_value = old_dict[key]
-        new_value = new_dict.get(key)
-        current_key = f"{parent_key}.{key}" if parent_key else key
-
-        if isinstance(old_value, dict) and isinstance(new_value, dict):
-            compare_dicts(old_value, new_value, changes, current_key )
-        elif isinstance(old_value, list) and isinstance(new_value, list):
-            compare_lists(old_value, new_value, changes, current_key)
-        else:
-            compare_values(old_value, new_value, changes, current_key)
-
-def compare_lists(old_list, new_list, parent_key, changes):
-    for index, (old_item, new_item) in enumerate(zip(old_list, new_list)):
-        if isinstance(old_item, dict) and isinstance(new_item, dict):
-            compare_dicts(old_item, new_item, changes, f"{parent_key}[{index}]")
-        elif isinstance(old_item, list) and isinstance(new_item, list):
-            compare_lists(old_item, new_item, changes, f"{parent_key}[{index}]")
-        else:
-            compare_values(old_item, new_item, changes, f"{parent_key}[{index}]")
-
-def find_spec_changes(old_data, new_data):
-    changes = []
-    old_spec = old_data['spec']
-    new_spec = new_data['spec']
-    compare_dicts(old_spec, new_spec, changes)
-    return changes
-
-def find_metadata_changes(old_data, new_data):
-    changes = []
-    old_spec = old_data['metadata']
-    new_spec = new_data['metadata']
-    compare_dicts(old_spec, new_spec, changes)
-    return changes
+        print(colorize(f'\n{kind} {name} has been updated {location}\n', '33'))#orange
+        
 
 def initial_loader():
+    init_pods = []
+    init_pols = []
     
-    # Delete the entire contents of the folder to have a blank slate
-    try:
-        shutil.rmtree("/home/ubuntu/current-cluster-objects/")
-    except FileNotFoundError:
-        pass
-    except Exception as e:
-        print(f"An error occurred while deleting contents: {e}")
 
     # look at all the pods, write their file, and print their existence
     print("# ======PODS======")
@@ -125,14 +74,10 @@ def initial_loader():
             'nodeName':node_name
         }
         u_pod['custom']='create'
-
-        filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(podName)
-        
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        with open(filename, 'w+') as f:
-            f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
-        
         print(f"# Pod {podName} currently exists on node {node_name}")
+        formatted_pod = analyzer.cp.create_object(u_pod)
+        init_pods.append(formatted_pod)
+        existing_pods.append(formatted_pod.name)
 
     # look at all the policies, write their file, and print their existence
     print("#")
@@ -140,14 +85,12 @@ def initial_loader():
 
     for event in policy_api_instance.list_namespaced_network_policy("test").items:
         PolName = event.metadata.name
-        filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(PolName)
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        if not os.path.exists(filename):
-            with open(filename, 'w+') as f:
-                os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
-
         print(f"# NetworkPolicy {PolName} currently exists on the cluster")
-
+        new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(PolName)).read())
+        formatted_pol = analyzer.cp.create_object(new_data)
+        init_pols.append(formatted_pol)
+        existing_pols.append(formatted_pol.name)
+    return(init_pods, init_pols)
 
 def pods():
     w = watch.Watch()
@@ -157,7 +100,6 @@ def pods():
             podName = updatedPod.metadata.name
             labels = updatedPod.metadata.labels
             node_name=f"{updatedPod.spec.node_name}"
-            filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(podName)
             u_pod = {}
             u_pod['apiVersion'] = 'v1'
             u_pod['kind'] = 'Pod'
@@ -171,38 +113,22 @@ def pods():
             }
 
             # Modified pods
-            if event['type'] =="MODIFIED" and os.path.exists(filename) and updatedPod.metadata.deletion_timestamp == None: #File exists so it is a modify and avoid delete modify
+            if event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None: #File exists so it is a modify and avoid delete modify
                 for cond in updatedPod.status.conditions:
                     if cond.type == "PodScheduled" and cond.status == "True":
-
-                            with open(filename, "r") as file:
-                                yaml_data = yaml.safe_load(file)
-
-                            diff = find_metadata_changes(yaml_data, u_pod)
-
-                            u_pod['changes'] = diff
-
-                            u_pod['custom']='update'
-
-                            os.makedirs(os.path.dirname(filename), exist_ok=True)
-                            with open(filename, 'w+') as f:
-                                f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
-                            event_queue.put(u_pod)
+                        u_pod['custom']='update'
+                        event_queue.put(u_pod)
 
             # Newly created pods
             elif event['type'] == "MODIFIED" and updatedPod.metadata.deletion_timestamp == None:  # Avoid the MODIFIED on delete
-                if updatedPod.status.pod_ip is not None:      
-                        if not os.path.exists(filename):
-                            u_pod['custom']='create'
-                            os.makedirs(os.path.dirname(filename), exist_ok=True)
-                            with open(filename, 'w+') as f:
-                                f.write(yaml.dump(u_pod, default_flow_style=False, sort_keys=False))
-                            event_queue.put(u_pod)
-            
+                print(updatedPod)
+                if updatedPod.status.pod_ip is not None:
+                    u_pod['custom']='create'
+                    event_queue.put(u_pod)
+        
             # Deleted pods
             elif event['type'] =="DELETED" :
                 u_pod['custom']='delete'
-                os.system('rm -f /home/ubuntu/current-cluster-objects/{}.yaml'.format(podName))
                 event_queue.put(u_pod)
 
     except ProtocolError:
@@ -212,41 +138,26 @@ def policies():
     w = watch.Watch()
     try:
         for event in w.stream(policy_api_instance.list_namespaced_network_policy, namespace = "test", timeout_seconds=0):
+            # print(event)
             temp_NewPol = event["object"]
             NewPol = temp_NewPol.to_dict()
             PolName = NewPol['metadata']['name']
             if PolName == "default-deny":
                 continue
-            #with timing_processtime("Time taken: "):
-
-            if event['type'] =="ADDED":
-                NewPol['custom']='create'
-                filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(PolName)
-                os.makedirs(os.path.dirname(filename), exist_ok=True)
-                if not os.path.exists(filename):
-                    with open(filename, 'w+') as f:
-                        os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
-                    event_queue.put(NewPol)
            
+            if event['type'] =="ADDED":
+                if PolName not in existing_pols:
+                    NewPol['custom']='create'
+                    event_queue.put(NewPol)
+                    existing_pols.append(PolName)
 
             elif event['type'] =="DELETED":
+                existing_pols.remove(PolName)
                 NewPol['custom']='delete'
-                os.system('rm -f /home/ubuntu/current-cluster-objects/{}.yaml'.format(PolName))
                 event_queue.put(NewPol)
 
             elif event['type'] =="MODIFIED":
                 NewPol['custom']='update'
-                filename="/home/ubuntu/current-cluster-objects/{}.yaml".format(PolName)
-                with open(filename, "r") as file:
-                    yaml_data = yaml.safe_load(file)
-
-                new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(PolName)).read())
-        
-                diff = find_spec_changes(yaml_data, new_data)
-                NewPol['changes'] = diff
-
-                with open(filename, 'w+') as f:
-                    os.system("kubectl get networkpolicy {} -n test -o yaml > {}".format(PolName, filename))
                 event_queue.put(NewPol)
 
     except ProtocolError:
@@ -265,7 +176,7 @@ def consumer():
             
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="My Python Script")
+    parser = argparse.ArgumentParser(description="Jasper's Kubernetes event watcher")
     
     # Add a flag for verbose output
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
@@ -285,14 +196,15 @@ if __name__ == "__main__":
 
     # First get all the already existing resources on the cluster and save them in their files
     print("#")
-    print("# STEP 1/2: clearing old files and detecting existing resources")
+    print("# STEP 1/2: Detecting existing resources")
     print("#")
-
-    initial_loader()
+    existing_pods = []
+    existing_pols = []
+    (init_pods, init_pols) = initial_loader()
     print("#")
     print("# STEP 2/2: Creating base kanoMatrix and VMmatrix")
     print("#")
-    analyzer.startup()
+    analyzer.startup(init_pods, init_pols)
 
     if args.startup:
         print("#")
