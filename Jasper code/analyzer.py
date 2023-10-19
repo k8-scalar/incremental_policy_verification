@@ -44,14 +44,16 @@ def find_dict_differences(dict1, dict2, parent_key=''):
 
 class EventAnalyzer:
     verbose: bool
+    debug: bool
     sgic: Security_Groups_Information_Cluster
     kic: Kubernetes_Information_Cluster
     cp = ConfigParser
-    def __init__(self, verbose = False):
+    def __init__(self, verbose = False, debug = False):
         self.sgic = Security_Groups_Information_Cluster()
         self.kic = Kubernetes_Information_Cluster()
         self.cp = ConfigParser('/home/ubuntu/current-cluster-objects/')
         self.verbose = verbose
+        self.debug = debug
 
 
     def startup(self, init_pods, init_pols):
@@ -72,8 +74,8 @@ class EventAnalyzer:
         self.sgic.generate_sg_information()
 
         # Set to true if you want all generated security groups and rules to be printed as well
-        self.sgic.print_info(self.verbose)
-        self.kic.print_info(self.verbose)
+        self.sgic.print_info(self.debug)
+        self.kic.print_info(self.debug)
 
 
     def analyseStartup(self):    
@@ -118,14 +120,18 @@ class EventAnalyzer:
                 self.kic.insert_policy(obj)
 
             elif event['custom'] == "delete":
+                print("A")
                 for i, pol in self.kic.reachabilitymatrix.dict_pols.items():
                     if pol.name == obj.name:
-                        obj =  self.kic.reachabilitymatrix.dict_pols[pol.id]
+                        obj = self.kic.reachabilitymatrix.dict_pols[i]
                         break
-            
+                print("B")
+                print(obj)
                 new_reach = self.kic.reachabilityDeleteNP(obj)
+                print("C")
                 deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
                 if is_matrix_all_zero(deltakano):
+                    print("D")
                     # So even though a NP was removed there is still a connection between the containers according to the labels.
                     print("\n  This NetworkPolicy deletion does not remove any existing container connections")
                     for select_label in obj.selector.concat_labels:
@@ -147,6 +153,7 @@ class EventAnalyzer:
                     print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
 
                 else:
+                    print("E")
                     for i, row in enumerate(deltakano):
                          for j, value in enumerate(row):
                             # First we get the nodes they are deployed on.
@@ -178,6 +185,7 @@ class EventAnalyzer:
                         print(f"       old:     {value1}")
                         print(f"       updated: {value2}")
                 
+                obj.id = old_obj.id
                 self.kic.delete_policy(old_obj)
                 self.kic.insert_policy(obj)
                 new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
@@ -204,14 +212,13 @@ class EventAnalyzer:
                                     print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
                                     # Now we look at SGs
                                     self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
-                self.kic.reachabilitymatrix = new_reach
                 
 
         elif isinstance(obj, Container):
             if event['custom'] == "create":
                 obj.id = max(self.kic.reachabilitymatrix.dict_pods.keys()) + 1
                 new_reach = self.kic.reachabilityAddContainer(obj)
-
+                obj.matrix_id = new_reach.dict_pods[obj.id].matrix_id
                 any_connection = False
                 for j, i in new_reach.dict_pods.items():
                     if new_reach.matrix[obj.matrix_id][i.matrix_id] == 1:
@@ -261,8 +268,12 @@ class EventAnalyzer:
                 self.kic.insert_container(obj)
 
             elif event['custom'] == "delete":
+                for key, value in self.kic.reachabilitymatrix.dict_pods.items():
+                    if value.name == obj.name:
+                        obj.id = value.id
+                        break
                 obj =  self.kic.reachabilitymatrix.dict_pods[obj.id]
-                new_reach = self.kic.reachabilityDeleteContainer(obj)
+                (new_reach, new_matrixId_to_Container) = self.kic.reachabilityDeleteContainer(obj)
                 affected_policies = set()
                 any_connections = False
                 for j, i in self.kic.reachabilitymatrix.dict_pods.items():
@@ -315,6 +326,7 @@ class EventAnalyzer:
 
                 # Lets update all that needs updating before finishing up
                 self.kic.delete_container(obj)
+                self.kic.matrixId_to_Container = new_matrixId_to_Container
 
             elif event['custom'] == "update":
                 for key, value in self.kic.reachabilitymatrix.dict_pods.items():
@@ -355,7 +367,6 @@ class EventAnalyzer:
                                     print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
                                     # Now we look at SGs
                                     self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
-                self.kic.reachabilitymatrix = new_reach
         else:           
             raise ValueError("\ERROR: This is not a correct event and can not be handled correctly\n")
         

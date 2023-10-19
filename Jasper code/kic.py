@@ -27,8 +27,9 @@ class Kubernetes_Information_Cluster:
         if isinstance(obj, Container):
             for lab in obj.concat_labels:
                 self.containerTrie.insert(lab, obj)
-                self.matrixId_to_Container[obj.id] = obj
-                self.pods.append(obj)
+            self.matrixId_to_Container[obj.matrix_id]= obj
+            self.pods.append(obj)
+
         else:
             raise ValueError("data is not a Container object")
         
@@ -36,7 +37,7 @@ class Kubernetes_Information_Cluster:
         if isinstance(obj, Container):
             for lab in obj.concat_labels:
                 self.containerTrie.delete(lab, obj)
-            del self.matrixId_to_Container[obj.id]
+            del self.matrixId_to_Container[obj.matrix_id]
             self.pods.remove(obj)
         else:
             raise ValueError("Data is not a Container object")
@@ -49,7 +50,7 @@ class Kubernetes_Information_Cluster:
                 self.containerTrie.insert(lab, obj)
             obj.matrix_id = old_obj.matrix_id
             obj.id = old_obj.id
-            self.matrixId_to_Container[old_obj.id] = obj
+            self.matrixId_to_Container[old_obj.matrix_id] = obj
             index = self.pods.index(old_obj)
             self.pods.remove(old_obj)
             self.pods.insert(index, obj)
@@ -234,9 +235,12 @@ class Kubernetes_Information_Cluster:
     
     def reachabilityDeleteContainer(self, obj: Container):
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
+        new_matrixId_to_Container = {}
         # Create a new all 0 matrix
-        new_reachability.matrix = [bitarray('0' * len(new_reachability.dict_pods)) for _ in range(len(new_reachability.dict_pods))]
         del new_reachability.dict_pods[obj.id]
+
+        new_reachability.matrix = [bitarray('0' * len(new_reachability.dict_pods)) for _ in range(len(new_reachability.dict_pods))]
+        
 
         for i, container in new_reachability.dict_pods.items():
             row = copy.deepcopy(self.reachabilitymatrix.matrix[container.matrix_id])
@@ -244,12 +248,13 @@ class Kubernetes_Information_Cluster:
 
             if container.matrix_id > obj.matrix_id:
                 container.matrix_id -= 1
+            new_matrixId_to_Container[container.matrix_id] = container
             new_reachability.matrix[container.matrix_id] = row
 
             new_reachability.resp_policies.remove_all_for_ids(obj.id, container.id)
             new_reachability.resp_policies.remove_all_for_ids(container.id, obj.id)
 
-        return new_reachability
+        return (new_reachability, new_matrixId_to_Container)
     
     def print_info(self, verbose):
         if verbose:
@@ -259,6 +264,10 @@ class Kubernetes_Information_Cluster:
             print(f"# {self.eggressTrie}\n")
             print("# Ingress Trie:")
             print(f"# {self.ingressTrie}\n")
+
+            print("# matrixIdtoContainer:")
+            print(f"# {self.matrixId_to_Container}\n")
+         
          
             print("# Policy Ids:")
             for i, pol in self.reachabilitymatrix.dict_pols.items():
