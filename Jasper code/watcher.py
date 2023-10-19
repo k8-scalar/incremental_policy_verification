@@ -49,7 +49,19 @@ def prettyprint_event(event):
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
         print(colorize(f'\n{kind} {name} has been updated {location}\n', '33'))#orange
         
+def prettyprint_end_event(event):
+    kind = event['kind']
+    name = event['metadata']['name']
 
+    if event['custom'] == "create":
+        print(colorize(f'\nFinished handling event for adding {kind} {name}', '32'))#green
+
+    elif event['custom'] == "delete":
+        print(colorize(f'\nFinished handling event for removing {kind} {name}', '31'))#red
+
+    elif event['custom'] == "update":
+        print(colorize(f'\nFinished handling event for updating {kind} {name}', '33'))#orange
+        
 def initial_loader():
     init_pods = []
     init_pols = []
@@ -112,24 +124,29 @@ def pods():
                 'nodeName':node_name
             }
 
-            # Modified pods
+            # Modified and create pods
             if event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None: #File exists so it is a modify and avoid delete modify
                 for cond in updatedPod.status.conditions:
                     if cond.type == "PodScheduled" and cond.status == "True":
-                        u_pod['custom']='update'
-                        event_queue.put(u_pod)
+                        # CREATED
+                        if podName not in existing_pods:
+                            if updatedPod.status.pod_ip is not None:
+                                u_pod['custom']='create'
+                                existing_pods.append(podName)
+                                event_queue.put(u_pod)
+                        # MODIFY
+                        elif podName in existing_pods:
+                            u_pod['custom']='update'
+                            event_queue.put(u_pod)
+                       
 
-            # Newly created pods
-            elif event['type'] == "MODIFIED" and updatedPod.metadata.deletion_timestamp == None:  # Avoid the MODIFIED on delete
-                print(updatedPod)
-                if updatedPod.status.pod_ip is not None:
-                    u_pod['custom']='create'
-                    event_queue.put(u_pod)
-        
             # Deleted pods
             elif event['type'] =="DELETED" :
-                u_pod['custom']='delete'
-                event_queue.put(u_pod)
+                if podName in existing_pods:
+                    u_pod['custom']='delete'
+                    existing_pods.remove(podName)
+                    event_queue.put(u_pod)
+
 
     except ProtocolError:
         print("watchPodEvents ProtocolError, continuing..")
@@ -169,6 +186,7 @@ def consumer():
             event = event_queue.get() # blocks if no event is present untill a new one arrives
             prettyprint_event(event)
             analyzer.analyseEvent(event)
+            prettyprint_end_event(event)
             print("\n-------------------Waiting for next event-------------------")
             event_queue.task_done()
     except ProtocolError:
@@ -181,10 +199,10 @@ if __name__ == "__main__":
     # Add a flag for verbose output
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument("-s", "--startup", action="store_true", help="Enable startup analysis")
-
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug outputs")
 
     args = parser.parse_args()
-    analyzer = EventAnalyzer(args.verbose)
+    analyzer = EventAnalyzer(args.verbose, args.debug)
 
     print("\n##################################################################################")
     print("# Watching resources in namespace test")
