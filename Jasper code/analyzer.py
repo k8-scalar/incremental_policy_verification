@@ -120,15 +120,11 @@ class EventAnalyzer:
                 self.kic.insert_policy(obj)
 
             elif event['custom'] == "delete":
-                print("A")
                 for i, pol in self.kic.reachabilitymatrix.dict_pols.items():
                     if pol.name == obj.name:
                         obj = self.kic.reachabilitymatrix.dict_pols[i]
                         break
-                print("B")
-                print(obj)
                 new_reach = self.kic.reachabilityDeleteNP(obj)
-                print("C")
                 deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
                 if is_matrix_all_zero(deltakano):
                     print("D")
