@@ -131,6 +131,18 @@ class Policy(Event):
         self.working_select_set = select_set
         self.working_allow_set = allow_set
 
+    def __eq__(self, other):
+        # due to the matcher field it does not handle deletion in a list correctly.
+        # we thus change the equality method to ignore the matcher.
+        return (isinstance(other, Policy) and
+                self.name == other.name and
+                self.selector == other.selector and
+                self.allow == other.allow and
+                self.direction == other.direction and
+                self.port == other.port and
+                self.cidr == other.cidr and
+                self.id == other.id)
+
 
 # Used to store set of policies responsible for pod connectivity: Store[pod,pod] = policy
 # and to store affectedVMConnection: Store(VM, VM) = (pod, pod)
@@ -153,7 +165,7 @@ class Store:
 
     def remove_item(self, id1, id2, item):
         key = (id1, id2)
-        if key in self.items and item in self.items[key]:
+        if key in self.items.keys() and item in self.items[key]:
             self.items[key].remove(item)
             if not self.items[key]:  # Remove the entry if the list becomes empty
                 del self.items[key]

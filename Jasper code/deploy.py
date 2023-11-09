@@ -11,23 +11,79 @@ parser.add_argument("nr_of_pods")
 parser.add_argument("nr_of_policies")
 args = parser.parse_args()
 
-distinct_colors_100 = [
-    "red", "green", "blue", "yellow", "orange", "purple", "pink", "brown", "cyan", "teal",
-    "magenta", "gray", "lime", "olive", "maroon", "navy", "indigo", "violet", "turquoise", "beige",
-    "lavender", "salmon", "plum", "gold", "peach", "tan", "ivory", "rose", "aqua", "mint",
-    "black", "white", "silver", "cream", "darkred", "darkgreen", "darkblue", "darkyellow", "darkorange", "darkpurple",
-    "darkpink", "darkbrown", "darkcyan", "darkteal", "darkmagenta", "darkgray", "darklime", "darkolive", "darkmaroon", "darknavy", "darkindigo",
-    "darkviolet", "darkturquoise", "darkbeige", "darklavender", "darksalmon", "darkplum", "darkgold", "darkpeach", "darktan", "darkivory",
-    "darkrose", "darkaqua", "darkmint", "lightred", "lightgreen", "lightblue", "lightyellow", "lightorange", "lightpurple", "lightpink", "lightbrown",
-    "lightcyan", "lightteal", "lightmagenta", "lightgray", "lightlime", "lightolive", "lightmaroon", "lightnavy", "lightindigo", "lightviolet", "lightturquoise",
-    "lightbeige", "lightlavender", "lightsalmon", "lightplum", "lightgold", "lightpeach", "lighttan", "lightivory", "lightrose", "lightaqua", "lightmint",
-    "darkbluegray", "lightcoral", "darkkhaki", "lightslategray", "darkorchid", "lightsteelblue"
+values = [
+    "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta",
+    "Iota", "Kappa", "Lambda", "Mu", "Nu", "Xi", "Omicron", "Pi",
+    "Rho", "Sigma", "Tau", "Upsilon", "Phi", "Chi", "Psi", "Omega"
 ]
 
-distinct_key_values_100 = ["key" + str(i) for i in range(1, 101)]
+keys = ["color", "env", "tier", "release", "name", "version", "component","zone","project","team","role",
+        "service","region","customer","stack","cluster","owner","app_type"
+    ]
+
+policytypes = [("Ingress", "from"), ("Egress", "to")]
+
+
+
+print("\n------------POLICIES-------------")
+for j in range(int(args.nr_of_policies)):
+
+    nr_select = random.randint(1,3)
+    for _ in range(nr_select):
+        num_select_labels = random.randint(1, 4)
+        match_labels = {random.choice(keys): random.choice(values) for _ in range(num_select_labels)}
+
+        selector = {
+            "matchLabels": match_labels
+        }
+
+    nr_allow = random.randint(1,5)
+    for _ in range(nr_allow):
+        num_allow_labels = random.randint(1, 4)
+        match_labels = {random.choice(keys): random.choice(values) for _ in range(num_allow_labels)}
+
+        allow = []
+        for _ in range(nr_allow):
+            allow.append({"podSelector": {"matchLabels": {random.choice(keys): random.choice(values) for _ in range(num_allow_labels)}}})
+        
+
+
+    (type, tf) =  random.choice(policytypes)
+    network_policy_manifest = {
+        "apiVersion": "networking.k8s.io/v1",
+        "kind": "NetworkPolicy",
+        "metadata": {
+            "name": f"policy-{j}",
+            "namespace": "test",
+        },
+        "spec": {
+            "podSelector" : selector,
+            "policyTypes": [type],
+            type.lower(): [
+                {
+                    tf: allow,
+                    "ports": [{"port": 80}]
+                }
+            ]
+        }
+    }
+
+    try:
+        api_response = np_api_instance.create_namespaced_network_policy(body=network_policy_manifest, namespace="test")
+        print(f"policy-{j} created successfully.")
+    except client.exceptions.ApiException as e:
+        print(f"Error creating policy-{j}: {e}")
 
 print("\n------------PODS-------------")
 for i in range(int(args.nr_of_pods)):
+
+    labels = {}
+    amount = random.randint(1,5)
+    for p in range(amount):
+        key = random.choice(keys)
+        value = random.choice(values)
+        labels[key] = value
+
 
     pod_manifest = {
     "apiVersion": "v1",
@@ -36,9 +92,7 @@ for i in range(int(args.nr_of_pods)):
         "name": f"pod-{i}", 
         "namespace": "test",
         "labels": 
-            {
-                random.choice(distinct_key_values_100): random.choice(distinct_colors_100)
-            }
+            labels
         },
     "spec": {
         "containers": [
@@ -56,42 +110,6 @@ for i in range(int(args.nr_of_pods)):
     except client.exceptions.ApiException as e:
         print(f"Error creating pod-{i}: {e}")
 
-policytypes = [{"Ingress", "from"}, {"Egress", "to"}]
-print("\n------------POLICIES-------------")
-for j in range(int(args.nr_of_policies)):
-    type, tf =  random.choice(policytypes)
-    network_policy_manifest = {
-        "apiVersion": "networking.k8s.io/v1",
-        "kind": "NetworkPolicy",
-        "metadata": {
-            "name": f"policy-{j}",
-            "namespace": "test",
-        },
-        "spec": {
-            "podSelector": {
-                "matchLabels": {
-                    random.choice(distinct_key_values_100): random.choice(distinct_colors_100),
-                }
-            },
-            "policyTypes": [type],
-            type.lower(): [
-                {
-                    tf: [
-                        {
-                            "podSelector": {
-                                "matchLabels": {
-                                    random.choice(distinct_key_values_100): random.choice(distinct_colors_100)
-                                }
-                            }
-                        }
-                    ],
-                    "ports": [{"port": 80}]
-                }
-            ]
-        }
-    }
-    try:
-        api_response = np_api_instance.create_namespaced_network_policy(body=network_policy_manifest, namespace="test")
-        print(f"policy-{j} created successfully.")
-    except client.exceptions.ApiException as e:
-        print(f"Error creating policy-{j}: {e}")
+
+
+
