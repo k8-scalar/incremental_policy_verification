@@ -1,3 +1,4 @@
+from time import pthread_getcpuclockid
 from labelTrie import LabelTrie
 from model import *
 import copy
@@ -69,7 +70,6 @@ class Kubernetes_Information_Cluster:
                 # Egress
                 for lab in obj.selector.concat_labels:
                     self.eggressTrie.insert(lab, obj)
-        
         else:
             raise ValueError("data is not a Policy object")
         
@@ -102,60 +102,62 @@ class Kubernetes_Information_Cluster:
         for select_label in obj.selector.concat_labels:
             matrix_ids = set()
             conts = self.containerTrie.find(select_label)
-            if conts is None:
-                select_containers = None
-                break
-            matrix_ids.update(cont.matrix_id for cont in conts)
-            if not select_containers and conts:
+            if conts:
+                matrix_ids.update(cont.matrix_id for cont in conts)
+
+            if not select_containers and matrix_ids:
                 select_containers = matrix_ids
-            else:
+            elif matrix_ids:
                 select_containers = select_containers.intersection(matrix_ids)
 
         # we get the containers that have all the labels in the allow set
-        allow_containers = set()
+        allow_containers_final = set()
         for allow in obj.allow:
+            allow_containers = set()
             for allow_label in allow.concat_labels:
                 matrix_ids = set()
                 conts = self.containerTrie.find(allow_label)
-                if conts is None:
-                    select_containers = None
-                    break
-                matrix_ids.update(cont.matrix_id for cont in conts)
-                if not allow_containers and conts:
+                if conts:
+                    matrix_ids.update(cont.matrix_id for cont in conts)
+                if not allow_containers and matrix_ids:
                     allow_containers = matrix_ids
-                else:
-                    allow_containers = allow_containers.intersection(matrix_ids)
+                elif matrix_ids:
+                    allow_containers = allow_containers.intersection(matrix_ids)   
+            allow_containers_final.update(allow_containers)
 
         # Now for each of the labels in these allow containers we find the existing NPs in the opposite direction
-        if select_containers is not None and allow_containers is not None:
-            for container in allow_containers:
+        if select_containers and allow_containers_final:
+            opposite_policies = set()
+            for container in allow_containers_final:
                 for cont_label in self.matrixId_to_Container[container].concat_labels:
                     if obj.direction.direction:
                         # INGRESS -> we look at existing egress rules
                         trienode = self.eggressTrie.find(cont_label)
+                        
                     else:
                         # EGRESS -> we look at existing ingress rules
                         trienode = self.ingressTrie.find(cont_label)
-                    # Now we get the allow of these opposite direction NPs and see if they match any of our select containers.
-                    if trienode is not None and len(trienode) != 0:
+                    # we add all opposite policies to a set if there select labels match our containers labels
+                    if trienode is not None:
                         for item in trienode:
-                            if isinstance(item, Policy):
-                                for allow in item.allow:
-                                    for allowlabel in allow.concat_labels:
-                                        cont_trie_allow = self.containerTrie.find(allowlabel)
-                                        if cont_trie_allow is not None:
-                                            for allow_cont in cont_trie_allow:
-                                                if allow_cont.matrix_id in select_containers:
-                                                    # We have containers that can connect. Lets change the new matrix to reflect this. 
-                                                    # This is dependant on the type of the new policy as well
-                                                    if obj.direction.direction:
-                                                        # INGRESS
-                                                        new_reachability.matrix[allow_cont.matrix_id][container] = 1
-                                                        new_reachability.resp_policies.add_item(allow_cont.id, self.matrixId_to_Container[container].id, (len(new_reachability.dict_pols), item.id))
-                                                    else:
-                                                        # EGRESS
-                                                        new_reachability.matrix[container][allow_cont.matrix_id] = 1
-                                                        new_reachability.resp_policies.add_item(self.matrixId_to_Container[container].id, allow_cont.id, (item.id, len(new_reachability.dict_pols)))
+                            if all(item_label in self.matrixId_to_Container[container].concat_labels for item_label in item.selector.concat_labels):
+                                opposite_policies.add((item.id, container))
+            # Now we check if the opposite policy allows the select containers from the original policy
+            for (pol_id, allowed_cont) in opposite_policies:
+                pol = self.reachabilitymatrix.dict_pols[pol_id]
+                for container in select_containers:
+                    for pol_allow in pol.allow:
+                        if all(pol_label in self.matrixId_to_Container[container].concat_labels for pol_label in pol_allow.concat_labels):
+                            # We have containers that can connect. Lets change the new matrix to reflect this. 
+                            # This is dependant on the type of the new policy as well
+                            if obj.direction.direction:
+                                # INGRESS
+                                new_reachability.matrix[allowed_cont][container] = 1
+                                new_reachability.resp_policies.add_item(self.matrixId_to_Container[allowed_cont].id, self.matrixId_to_Container[container].id, (obj.id, pol.id))
+                            else:
+                                # EGRESS
+                                new_reachability.matrix[container][allowed_cont] = 1
+                                new_reachability.resp_policies.add_item(self.matrixId_to_Container[container].id, self.matrixId_to_Container[allowed_cont].id, (pol.id, obj.id))
         new_reachability.dict_pols[obj.id] = obj
         return new_reachability
 
@@ -166,54 +168,72 @@ class Kubernetes_Information_Cluster:
         for select_label in obj.selector.concat_labels:
             matrix_ids = set()
             conts = self.containerTrie.find(select_label)
-            if conts is None:
-                select_containers = None
-                break
-            matrix_ids.update(cont.matrix_id for cont in conts)
-            if not select_containers and conts:
+            if conts:
+                matrix_ids.update(cont.matrix_id for cont in conts)
+
+            if not select_containers and matrix_ids:
                 select_containers = matrix_ids
-            else:
+            elif matrix_ids:
                 select_containers = select_containers.intersection(matrix_ids)
 
         # we get the containers that have all the labels in the allow set
-        allow_containers = set()
+        allow_containers_final = set()
         for allow in obj.allow:
+            allow_containers = set()
             for allow_label in allow.concat_labels:
                 matrix_ids = set()
                 conts = self.containerTrie.find(allow_label)
-                if conts is None:
-                    select_containers = None
-                    break
-                matrix_ids.update(cont.matrix_id for cont in conts)
-                if not allow_containers and conts:
+                if conts:
+                    matrix_ids.update(cont.matrix_id for cont in conts)
+                if not allow_containers and matrix_ids:
                     allow_containers = matrix_ids
-                else:
-                    allow_containers = allow_containers.intersection(matrix_ids)    
+                elif matrix_ids:
+                    allow_containers = allow_containers.intersection(matrix_ids)   
+            allow_containers_final.update(allow_containers)
 
-        if select_containers is not None and allow_containers is not None:
+        
+        # Now for each of the labels in these allow containers we find the existing NPs in the opposite direction
+        if select_containers and allow_containers_final:
+            opposite_policies = set()
+            for container in allow_containers_final:
+                for cont_label in self.matrixId_to_Container[container].concat_labels:
+                    if obj.direction.direction:
+                        # INGRESS -> we look at existing egress rules
+                        trienode = self.eggressTrie.find(cont_label)
+                        
+                    else:
+                        # EGRESS -> we look at existing ingress rules
+                        trienode = self.ingressTrie.find(cont_label)
+                    # we add all opposite policies to a set if there select labels match our containers labels
+                    if trienode is not None:
+                        for item in trienode:
+                            if all(item_label in self.matrixId_to_Container[container].concat_labels for item_label in item.selector.concat_labels):
+                                opposite_policies.add((item.id, container))
 
-            for allow_matrix_id in allow_containers:
-                for select_matrix_id in select_containers:
-                # So for each container that is indicated by the policy's labels we look if the policy is within the responsible policies and delete it.
-                    resp = self.reachabilitymatrix.resp_policies.get_items(self.matrixId_to_Container[allow_matrix_id].id, self.matrixId_to_Container[select_matrix_id].id)
-                    for (index, index2) in resp:
-                        if index == obj.id or index2 == obj.id:
-                            new_reachability.resp_policies.remove_item(self.matrixId_to_Container[allow_matrix_id].id, self.matrixId_to_Container[select_matrix_id].id, (index, index2))
-                    resp2 = self.reachabilitymatrix.resp_policies.get_items(self.matrixId_to_Container[select_matrix_id].id, self.matrixId_to_Container[allow_matrix_id].id)
-                    for (index, index2) in resp2:
-                        if index == obj.id or index2 == obj.id:
-                            new_reachability.resp_policies.remove_item(self.matrixId_to_Container[select_matrix_id].id, self.matrixId_to_Container[allow_matrix_id].id, (index, index2))
+            # Now we check if the opposite policy allows the select containers from the original policy
+            for (pol_id, allowed_cont) in opposite_policies:
+                pol = self.reachabilitymatrix.dict_pols[pol_id]
+                for container in select_containers:
+                    for pol_allow in pol.allow:
+                        if all(pol_label in self.matrixId_to_Container[container].concat_labels for pol_label in pol_allow.concat_labels):
+                            # We have containers that can connect due to this policy. Lets remove the policy from their responsibe policies. 
+                            # This is dependant on the type of the new policy as well
+                            if obj.direction.direction:
+                                # INGRESS
+                                new_reachability.resp_policies.remove_item(self.matrixId_to_Container[allowed_cont].id, self.matrixId_to_Container[container].id, (obj.id, pol.id))
+                                # Now we check the responsible policies again. If there still exist some the connection is maintained by other policies and thus nothing really changed.
+                                # Otherwise the matrix needs updating.
+                                if not new_reachability.resp_policies.get_items(self.matrixId_to_Container[allowed_cont].id, self.matrixId_to_Container[container].id):
+                                    new_reachability.matrix[allowed_cont][container] = 0
+                            else:
+                                # EGRESS
+                                new_reachability.resp_policies.remove_item(self.matrixId_to_Container[container].id, self.matrixId_to_Container[allowed_cont].id, (pol.id, obj.id))
+                                # Now we check the responsible policies again. If there still exist some the connection is maintained by other policies and thus nothing really changed.
+                                # Otherwise the matrix needs updating.      
+                                if not new_reachability.resp_policies.get_items(self.matrixId_to_Container[container].id, self.matrixId_to_Container[allowed_cont].id):
+                                    new_reachability.matrix[container][allowed_cont] = 0
 
-
-                    # Now we check the responsible policies again. If there still exist some the connection is maintained by other policies and thus nothing really changed.
-                    # Otherwise the matrix needs updating.
-                    if not new_reachability.resp_policies.get_items(self.matrixId_to_Container[allow_matrix_id].id, self.matrixId_to_Container[select_matrix_id].id):
-                        new_reachability.matrix[allow_matrix_id][select_matrix_id] = 0
-
-                    if not new_reachability.resp_policies.get_items(self.matrixId_to_Container[select_matrix_id].id, self.matrixId_to_Container[allow_matrix_id].id):
-                        new_reachability.matrix[select_matrix_id][allow_matrix_id] = 0
-
-        del new_reachability.dict_pols[obj.id]                        
+        del new_reachability.dict_pols[obj.id]
         return new_reachability
     
     def reachabilityAddContainer(self, obj: Container):
@@ -221,6 +241,7 @@ class Kubernetes_Information_Cluster:
         # First add the container to the list and extend the matrix with a row and colum
         obj.matrix_id = copy.deepcopy(len(new_reachability.dict_pods))
         new_reachability.dict_pods[obj.id] = obj
+        self.matrixId_to_Container[obj.matrix_id] = obj
 
         # We need this temporary container Trie to check for connections to itself as well. 
         cont_trie = copy.deepcopy(self.containerTrie)
@@ -236,56 +257,70 @@ class Kubernetes_Information_Cluster:
         for label in obj.concat_labels:
             egresses = self.eggressTrie.find(label)
             if egresses is not None:
-                rules.update(pol.id for pol in egresses)
+                for pol in egresses:
+                    # Remove the policies to which the container does not match the entire select labels
+                    if not all(label in obj.concat_labels for label in pol.selector.concat_labels):
+                        rules.update(pol.id for pol in egresses)
             ingresses = self.ingressTrie.find(label)
             if ingresses is not None:
-                rules.update(pol.id for pol in ingresses)
+                for pol in ingresses:
+                    # Remove the policies to which the container does not match the entire select labels
+                    if not all(label in obj.concat_labels for label in pol.selector.concat_labels):
+                        rules.update(pol.id for pol in ingresses)
 
-        # Remove the policies to which the container does not match the entire select labels
         for id in rules:
             rule = new_reachability.dict_pols[id]
-            if not all(label in obj.concat_labels for label in rule.selector.concat_labels):
-                rules.remove(id)
-                break
-
-        for id in rules:
-            rule = self.reachabilitymatrix.dict_pols[id]
+            # we get the containers that have all the labels in the rules allow sets
+            allow_containers_final = set()
             for allow in rule.allow:
-                opposites = set()
-                for allowlabel in allow.concat_labels:
-                    if rule.direction.direction:
-                        # INGRESS
-                        opegress = self.eggressTrie.find(allowlabel)
-                        if opegress is not None:
-                            opposites.update(op.id for op in opegress)
-                    else:
-                        # EGRESS
-                        opingress = self.ingressTrie.find(allowlabel)
-                        if opingress is not None:
-                            opposites.update(op.id for op in opingress)
-                for oppositeId in opposites:
-                    opposite = self.reachabilitymatrix.dict_pols[oppositeId]
-                    opposite_containers = set()
-                    for opposite_selector_label in opposite.selector.concat_labels:
-                        opposite_containers = cont_trie.find(opposite_selector_label)
-                        if not opposite_containers is None:
-                            for cont in opposite_containers:
-                                if all(label in cont.concat_labels for label in  opposite.selector.concat_labels):
+                allow_containers = set()
+                for allow_label in allow.concat_labels:
+                    matrix_ids = set()
+                    conts = cont_trie.find(allow_label)
+                    if conts:
+                        matrix_ids.update(cont.matrix_id for cont in conts)
+                    if not allow_containers and matrix_ids:
+                        allow_containers = matrix_ids
+                    elif matrix_ids:
+                        allow_containers = allow_containers.intersection(matrix_ids)   
+                allow_containers_final.update(allow_containers)
+
+                # For these allowed containers we find policies in the opposite direction from this new container to our original
+                for sec_cont_id in allow_containers_final:
+                    second_container = self.matrixId_to_Container[sec_cont_id]
+                    secondrules = set()
+                    for sec_label in second_container.concat_labels:
+                        if rule.direction.direction:
+                            # INGRESS
+                            egresses2 = self.eggressTrie.find(sec_label)
+                        else:
+                            egresses2 = self.ingressTrie.find(sec_label)
+                        if egresses2 is not None:
+                            secondrules.update(pol2.id for pol2 in egresses2)
+                   
+                    for second_id in secondrules:
+                        secondrule = new_reachability.dict_pols[second_id]
+                        if all(label2 in second_container.concat_labels for label2 in secondrule.selector.concat_labels):
+                            for a in secondrule.allow:
+                                if all(label3 in obj.concat_labels for label3 in a.concat_labels):
+                                    # WE GOT A MATCH!
                                     if rule.direction.direction:
                                         # INGRESS
-                                        new_reachability.matrix[cont.matrix_id][obj.matrix_id] = 1
-                                        new_reachability.resp_policies.add_item(cont.id, obj.id, (id, oppositeId))  
+                                        new_reachability.matrix[second_container.matrix_id][obj.matrix_id] = 1
+                                        new_reachability.resp_policies.add_item(second_container.id, obj.id, (rule.id, secondrule.id))
                                     else:
-                                        new_reachability.matrix[obj.matrix_id][cont.matrix_id] = 1
-                                        new_reachability.resp_policies.add_item(obj.id, cont.id, (oppositeId, id)) 
+                                        # EGRESS
+                                        new_reachability.matrix[obj.matrix_id][second_container.matrix_id] = 1
+                                        new_reachability.resp_policies.add_item(obj.id, second_container.id, (secondrule.id, rule.id))
+
         return new_reachability
     
     def reachabilityDeleteContainer(self, obj: Container):
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
         new_matrixId_to_Container = {}
-        # Create a new all 0 matrix
         del new_reachability.dict_pods[obj.id]
 
+        # Create a new all 0 matrix
         new_reachability.matrix = [bitarray('0' * len(new_reachability.dict_pods)) for _ in range(len(new_reachability.dict_pods))]
         
 
@@ -300,6 +335,11 @@ class Kubernetes_Information_Cluster:
 
             new_reachability.resp_policies.remove_all_for_ids(obj.id, container.id)
             new_reachability.resp_policies.remove_all_for_ids(container.id, obj.id)
+
+        self.pods.remove
+        for pod in self.pods:
+            if pod.matrix_id > obj.matrix_id:
+                pod.matrix_id -= 1
 
         return (new_reachability, new_matrixId_to_Container)
     
