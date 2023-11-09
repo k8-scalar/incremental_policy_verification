@@ -13,6 +13,8 @@ import time
 import queue
 import shutil
 from parser import ConfigParser
+import traceback
+
 
 # Configure the client to use in-cluster config or local kube config file
 try:
@@ -53,14 +55,17 @@ def prettyprint_end_event(event):
     kind = event['kind']
     name = event['metadata']['name']
 
+    text = colorize(f'\nFinished handling event for ', '36')#cyan
     if event['custom'] == "create":
-        print(colorize(f'\nFinished handling event for adding {kind} {name}', '32'))#green
+        text += colorize('adding', '32')#green
 
     elif event['custom'] == "delete":
-        print(colorize(f'\nFinished handling event for removing {kind} {name}', '31'))#red
+        text += colorize('removing', '31')#red
 
     elif event['custom'] == "update":
-        print(colorize(f'\nFinished handling event for updating {kind} {name}', '33'))#orange
+        text += colorize('updating', '33')#orange
+    text += colorize(f' {kind} {name}', '36')#cyan
+    print(text)
         
 def initial_loader():
     init_pods = []
@@ -187,6 +192,14 @@ def consumer():
             prettyprint_event(event)
             analyzer.analyseEvent(event)
             prettyprint_end_event(event)
+            # print("\n\n\npols")
+            # print(analyzer.kic.pols)
+            # print("\n\n\npods")
+            # print(analyzer.kic.pods)
+            # print("\n\n\ndict pods")
+            # print(analyzer.kic.reachabilitymatrix.dict_pods)
+            # print("\n\n\ndict pols")
+            # print(analyzer.kic.reachabilitymatrix.dict_pols)
             print("\n-------------------Waiting for next event-------------------")
             event_queue.task_done()
     except ProtocolError:
@@ -241,6 +254,12 @@ if __name__ == "__main__":
         p = executor.submit(pods)
         n = executor.submit(policies)
         c = executor.submit(consumer)
-        
+        exception = c.exception()
+        # handle exceptional case
+        if exception:
+                print(exception)
+                traceback.print_exception(type(exception), exception, exception.__traceback__)
+      
+            
 
 
