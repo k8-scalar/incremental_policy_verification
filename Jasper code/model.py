@@ -1,4 +1,5 @@
 from re import L
+from traceback import print_tb
 from typing import *
 from dataclasses import dataclass, field
 from bitarray import bitarray
@@ -105,22 +106,26 @@ class Policy(Event):
     def select_policy(self, container: Container) -> bool:
         cl = container.labels
         sl = self.working_selector.labels
-        for k, v in cl.items():
-            if k in sl.keys() and \
-                not self.matcher.match(sl[k], v):
+
+        # Check if all labels in the selector are present in the container
+        for k, v in sl.items():
+            if k not in cl or not self.matcher.match(sl[k], cl[k]):
                 return False
-        return True
+        if all((sll_k, sll_v) in cl.items() for (sll_k, sll_v) in sl.items()):
+            return True
+
+        return False
 
     def allow_policy(self, container: Container) -> bool:
         cl = container.labels
-        for items in self.working_allow:
-            al = items.labels
-        for k, v in cl.items():
-            if k in al.keys() and \
-                not self.matcher.match(al[k], v):
-                return False
-        return True
-
+     
+        for allow_clause in self.working_allow:
+            allow_clause_labels = allow_clause.labels
+            if all((acl_k, acl_v) in cl.items() for (acl_k, acl_v) in allow_clause_labels.items()):
+                return True
+        
+        return False
+    
     def is_ingress(self):
         return self.direction.is_ingress()
 
@@ -241,13 +246,14 @@ class ReachabilityMatrix:
         for idx, cont_info in enumerate (containers):
             dict_pods[idx] = cont_info
         for i, container in enumerate(containers):
-            for key, value in container.labels.items():
-                labelMap[key][i] = True
+            for value in container.concat_labels:
+                labelMap[value][i] = True
 
         # DEBUGGING PURPOSES
         # print(f'index map pods: {dict_pods}\n' )
         # print(f'index map policies: {dict_pols}\n' )
-        # print(f'label map: {list(labelMap["color"])}\n' )
+        # for key in labelMap.keys():
+        #     print(f'label map {key}: {list(labelMap[key])}\n' )
 
         in_resp_policies = Store()
         out_resp_policies = Store()
@@ -256,26 +262,38 @@ class ReachabilityMatrix:
             select_set = bitarray(n_container)
             select_set.setall(True)
             allow_set = bitarray(n_container)
-            allow_set.setall(True)
+            allow_set.setall(False)
 
 
             # read the labels and set the select and allow sets
-            for k, v in policy.working_selector.labels.items():
-                if k in labelMap.keys(): #all keys in containers
-                    select_set &= labelMap[k]
+            for l in policy.working_selector.concat_labels:
+                if l in labelMap.keys(): #all key-values in containers
+                     select_set &= labelMap[l]
                 else:
-                    if not policy.working_selector.labels:
+                    if not policy.working_selector.concat_labels:
                         continue
                     select_set.setall(False)
+                    break
 
-            for items in  policy.working_allow:
-                for k, v in items.labels.items():
+            for allow_clause in policy.working_allow:
+                selector_set = bitarray(n_container)
+                selector_set.setall(True)
+
+                for k in allow_clause.concat_labels:
                     if k in labelMap.keys():
-                        allow_set &= labelMap[k]
+                        selector_set &= labelMap[k]
+                    else:
+                        if not allow_clause.concat_labels:
+                            continue
+                        selector_set.setall(False)
+                        break
+                
+                allow_set |= selector_set
             # dealing with non-matched values (needs a customized predicate)
             for idx, cont_info in enumerate (containers):
                 if select_set[idx] and not policy.select_policy(containers[idx]):
                     select_set[idx] = False
+                        
 
                 if allow_set[idx] and not policy.allow_policy(containers[idx]):
                     allow_set[idx] = False
@@ -350,15 +368,17 @@ class ReachabilityMatrix:
         #         if out_resp_policies.get_items(i, j) != []:
         #             print(f'out_resp_policies for containers ({i}, {j}) = {out_resp_policies.get_items(i, j)}')   
 
-        # DEBUGGING PURPOSES
-        # print("-------------------MAKING THE FINAL MATRIX---------------------------\n")
-        # print(f"total out_matrix: {out_matrix}")
-        # print(f"total in_matrix: {in_matrix}\n")
+      
 
 
         # Time to create the final kano matrix.
         matrix = [bitarray('0' * n_container) for _ in range(n_container)]
         final_resp_policies = Store()
+        
+        # DEBUGGING PURPOSES
+        # print("-------------------MAKING THE FINAL MATRIX---------------------------\n")
+        # print(f"total out_matrix: {out_matrix}")
+        # print(f"total nin_matrix: {in_matrix}\n")
 
         for i in range(n_container):
             for j in range(n_container): 

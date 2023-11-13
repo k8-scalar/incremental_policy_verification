@@ -1,0 +1,1 @@
+scp -o ProxyJump=r0703236@st.cs.kuleuven.be  ubuntu@172.23.1.66:/home/ubuntu/experiments/results.xlsx C:\Users\jaspe\Desktop\results.xlsx
