@@ -74,8 +74,8 @@ class EventAnalyzer:
         self.sgic.generate_sg_information()
 
         # Set to true if you want all generated security groups and rules to be printed as well
-        self.sgic.print_info(self.debug)
-        self.kic.print_info(self.debug)
+        self.sgic.print_info(self.debug, self.verbose)
+        self.kic.print_info(self.debug, self.verbose)
 
 
     def analyseStartup(self):    
@@ -94,26 +94,26 @@ class EventAnalyzer:
             if event['custom'] == "create":
                 obj.id = max(self.kic.reachabilitymatrix.dict_pols.keys()) + 1
                 new_reach = self.kic.reachabilityAddNP(obj)
-                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+                # deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
                    
-                if is_matrix_all_zero(deltakano):
-                    print("\n  The new network policy does not trigger any new container connections")
-                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
-                else:
-                    for i, row in enumerate(deltakano):
-                         for j, value in enumerate(row):
-                            if deltakano[i][j] == 1:
+                # if is_matrix_all_zero(deltakano):
+                #     print("\n  The new network policy does not trigger any new container connections")
+                #     print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
+                # else:
+                #     for i, row in enumerate(deltakano):
+                #          for j, value in enumerate(row):
+                #             if deltakano[i][j] == 1:
                               
-                                # So connectivity between these 2 containers has been created, let us see if the Security groups allow this.
-                                # First we get the nodes they are deployed on.
-                                nodeName1 = self.kic.matrixId_to_Container[i].nodeName
-                                nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+                #                 # So connectivity between these 2 containers has been created, let us see if the Security groups allow this.
+                #                 # First we get the nodes they are deployed on.
+                #                 nodeName1 = self.kic.matrixId_to_Container[i].nodeName
+                #                 nodeName2 = self.kic.matrixId_to_Container[j].nodeName
 
-                                print("  The new NetworkPolicy has effect on the connectivity between following pods:")
-                                print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now communicate towards {self.kic.matrixId_to_Container[j].name} on node {nodeName2} according to the NetworkPolicies")
+                #                 print("  The new NetworkPolicy has effect on the connectivity between following pods:")
+                #                 print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now communicate towards {self.kic.matrixId_to_Container[j].name} on node {nodeName2} according to the NetworkPolicies")
                                                                 
-                                # Now we look at SGs
-                                self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+                #                 # Now we look at SGs
+                #                 self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
 
                                 
                 # Lets update all that needs updating before finishing up
@@ -125,110 +125,111 @@ class EventAnalyzer:
                         obj = self.kic.reachabilitymatrix.dict_pols[i]
                         break
                 new_reach = self.kic.reachabilityDeleteNP(obj)
-                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
-                if is_matrix_all_zero(deltakano):
-                    # So even though a NP was removed there is still a connection between the containers according to the labels.
-                    print("\n  This NetworkPolicy deletion does not remove any existing container connections")
-                    # we get the containers that have all the labels in the select set
-                    select_containers = set()
-                    for select_label in obj.selector.concat_labels:
-                        matrix_ids = set()
-                        conts = self.kic.containerTrie.find(select_label)
-                        if conts:
-                            matrix_ids.update(cont.matrix_id for cont in conts)
+                # deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+                # if is_matrix_all_zero(deltakano):
+                #     # So even though a NP was removed there is still a connection between the containers according to the labels.
+                #     print("\n  This NetworkPolicy deletion does not remove any existing container connections")
+                #     # we get the containers that have all the labels in the select set
+                #     select_containers = set()
+                #     for select_label in obj.selector.concat_labels:
+                #         matrix_ids = set()
+                #         conts = self.kic.containerTrie.find(select_label)
+                #         if conts:
+                #             matrix_ids.update(cont.matrix_id for cont in conts)
 
-                        if not select_containers and matrix_ids:
-                            select_containers = matrix_ids
-                        elif matrix_ids:
-                            select_containers = select_containers.intersection(matrix_ids)
+                #         if not select_containers and matrix_ids:
+                #             select_containers = matrix_ids
+                #         elif matrix_ids:
+                #             select_containers = select_containers.intersection(matrix_ids)
 
-                    # we get the containers that have all the labels in the allow set
-                    allow_containers_final = set()
-                    for allow in obj.allow:
-                        allow_containers = set()
-                        for allow_label in allow.concat_labels:
-                            matrix_ids = set()
-                            conts = self.kic.containerTrie.find(allow_label)
-                            if conts:
-                                matrix_ids.update(cont.matrix_id for cont in conts)
-                            if not allow_containers and matrix_ids:
-                                allow_containers = matrix_ids
-                            elif matrix_ids:
-                                allow_containers = allow_containers.intersection(matrix_ids)   
-                        allow_containers_final.update(allow_containers)
+                #     # we get the containers that have all the labels in the allow set
+                #     allow_containers_final = set()
+                #     for allow in obj.allow:
+                #         allow_containers = set()
+                #         for allow_label in allow.concat_labels:
+                #             matrix_ids = set()
+                #             conts = self.kic.containerTrie.find(allow_label)
+                #             if conts:
+                #                 matrix_ids.update(cont.matrix_id for cont in conts)
+                #             if not allow_containers and matrix_ids:
+                #                 allow_containers = matrix_ids
+                #             elif matrix_ids:
+                #                 allow_containers = allow_containers.intersection(matrix_ids)   
+                #         allow_containers_final.update(allow_containers)
 
-                    if select_containers and allow_containers_final:
-                        for select_cont in select_containers:
-                            for allow_cont in allow_containers_final:
-                                print(f"\n   container {self.kic.matrixId_to_Container[select_cont].name} connected to {self.kic.matrixId_to_Container[allow_cont].name} used this networkPolicy. This connection is however maintained by the following:")
-                                for (index1, index2) in new_reach.resp_policies.get_items(self.kic.matrixId_to_Container[select_cont].id, self.kic.matrixId_to_Container[allow_cont].id):
-                                    if obj.direction.direction:
-                                        print(f"\n   - Networkpolicy {new_reach.dict_pols[index1].name}")
-                                    else:
-                                        print(f"\n   - Networkpolicy {new_reach.dict_pols[index2].name}")
+                #     if select_containers and allow_containers_final:
+                #         for select_cont in select_containers:
+                #             for allow_cont in allow_containers_final:
+                #                 print(f"\n   container {self.kic.matrixId_to_Container[select_cont].name} connected to {self.kic.matrixId_to_Container[allow_cont].name} used this networkPolicy. This connection is however maintained by the following:")
+                #                 for (index1, index2) in new_reach.resp_policies.get_items(self.kic.matrixId_to_Container[select_cont].id, self.kic.matrixId_to_Container[allow_cont].id):
+                #                     if obj.direction.direction:
+                #                         print(f"\n   - Networkpolicy {new_reach.dict_pols[index1].name}")
+                #                     else:
+                #                         print(f"\n   - Networkpolicy {new_reach.dict_pols[index2].name}")
                             
-                                print("   Any conflicts with the corresponding Security Groups would have been detected previously, hence should not be a concern now")                                              
-                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
+                #                 print("   Any conflicts with the corresponding Security Groups would have been detected previously, hence should not be a concern now")                                              
+                #     print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
 
-                else:
-                    for i, row in enumerate(deltakano):
-                         for j, value in enumerate(row):
-                            # First we get the nodes they are deployed on.
-                            nodeName1 = self.kic.matrixId_to_Container[i].nodeName
-                            nodeName2 = self.kic.matrixId_to_Container[j].nodeName
-                            if deltakano[i][j] == 1:
-                                # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
-                                print("  The NetworkPolicy deletion has effect on the connectivity between following pods:")
-                                print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
+                # else:
+                #     for i, row in enumerate(deltakano):
+                #          for j, value in enumerate(row):
+                #             # First we get the nodes they are deployed on.
+                #             nodeName1 = self.kic.matrixId_to_Container[i].nodeName
+                #             nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+                #             if deltakano[i][j] == 1:
+                #                 # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
+                #                 print("  The NetworkPolicy deletion has effect on the connectivity between following pods:")
+                #                 print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
                                 
-                                # Now we look at SGs
-                                self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+                #                 # Now we look at SGs
+                #                 self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
               
                 # Lets update all that needs updating before finishing up
                 self.kic.delete_policy(obj)
             
-            elif event['custom'] == "update":
-                for key, value in self.kic.reachabilitymatrix.dict_pols.items():
-                    if value.name == obj.name:
-                        old_obj = value
-                        break
-                differences = find_obj_differences(old_obj, obj)
-                print("  The following changes have been found between the old NetworkPolicy and the updated Networkpolicy")
+            # elif event['custom'] == "update":
+            #     for key, value in self.kic.reachabilitymatrix.dict_pols.items():
+            #         if value.name == obj.name:
+            #             old_obj = value
+            #             break
+            #     differences = find_obj_differences(old_obj, obj)
+            #     if differences:
+            #         print("  The following changes have been found between the old NetworkPolicy and the updated Networkpolicy")
 
-                for key, (value1, value2) in differences.items():
-                    #some keys should be ignored.
-                    if key != "id" and key != "working_select_set" and key != "working_allow_set":
-                        print(f"\n    -{key}:")
-                        print(f"       old:     {value1}")
-                        print(f"       updated: {value2}")
-                
-                obj.id = old_obj.id
-                self.kic.delete_policy(old_obj)
-                self.kic.insert_policy(obj)
-                new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
+            #         for key, (value1, value2) in differences.items():
+            #             #some keys should be ignored.
+            #             if key != "id" and key != "working_select_set" and key != "working_allow_set":
+            #                 print(f"\n    -{key}:")
+            #                 print(f"       old:     {value1}")
+            #                 print(f"       updated: {value2}")
+                    
+            #     obj.id = old_obj.id
+            #     self.kic.delete_policy(old_obj)
+            #     self.kic.insert_policy(obj)
+            #     new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
              
-                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
-                if is_matrix_all_zero(deltakano):
-                    print("\n  The updated network policy does not trigger any change in connections and thus does not introduce any new conflicts")
-                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
-                else:
-                    for i, row in enumerate(deltakano):
-                         for j, value in enumerate(row):
+            #     deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+            #     if is_matrix_all_zero(deltakano):
+            #         print("\n  The updated network policy does not trigger any change in connections and thus does not introduce any new conflicts")
+            #         print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
+            #     else:
+            #         for i, row in enumerate(deltakano):
+            #              for j, value in enumerate(row):
                             
-                            if deltakano[i][j] == 1:
-                                # First we get the nodes they are deployed on.
-                                nodeName1 = self.kic.matrixId_to_Container[i].nodeName
-                                nodeName2 = self.kic.matrixId_to_Container[j].nodeName
-                                # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
-                                print("\n  The NetworkPolicy update has effect on the connectivity between following pods:")
-                                if self.kic.reachabilitymatrix.matrix[i][j] == 1:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
-                                    # Now we look at SGs
-                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
-                                else:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
-                                    # Now we look at SGs
-                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+            #                 if deltakano[i][j] == 1:
+            #                     # First we get the nodes they are deployed on.
+            #                     nodeName1 = self.kic.matrixId_to_Container[i].nodeName
+            #                     nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+            #                     # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
+            #                     print("\n  The NetworkPolicy update has effect on the connectivity between following pods:")
+            #                     if self.kic.reachabilitymatrix.matrix[i][j] == 1:
+            #                         print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
+            #                         # Now we look at SGs
+            #                         self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+            #                     else:
+            #                         print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
+            #                         # Now we look at SGs
+            #                         self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
                 
 
         elif isinstance(obj, Container):
@@ -236,51 +237,51 @@ class EventAnalyzer:
                 obj.id = max(self.kic.reachabilitymatrix.dict_pods.keys()) + 1
                 new_reach = self.kic.reachabilityAddContainer(obj)
                 obj.matrix_id = new_reach.dict_pods[obj.id].matrix_id
-                any_connection = False
-                for j, i in new_reach.dict_pods.items():
-                    if new_reach.matrix[obj.matrix_id][i.matrix_id] == 1:
-                        any_connection = True
-                        nodeName1 = obj.nodeName
-                        nodeName2 = i.nodeName
-                        print(f'{colorize(f"  *", 36)} The new pod {obj.name} is deployed on node {nodeName1} and can communicate to pod {i.name} on node {nodeName2} according to the following NetworkPolicies\n')
-                        for (index1, index2) in new_reach.resp_policies.get_items(obj.id, i.id):
-                            policy1 = new_reach.dict_pols[index1]
-                            print(f"    - NetworkPolicy {policy1.name}")
-                            policy2 = new_reach.dict_pols[index2]
-                            print(f"    - NetworkPolicy {policy2.name}")
-                        # stops reprinting the same policies for a self-connecting container
-                        if obj.id != i.id:
-                            for (index1, index2) in new_reach.resp_policies.get_items(i.id, obj.id):
-                                policy1 = new_reach.dict_pols[index1]
-                                print(f"    - NetworkPolicy {policy1.name}")
-                                policy2 = new_reach.dict_pols[index2]
-                                print(f"    - NetworkPolicy {policy2.name}")
-                        # Now we look at SGs
-                        self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+                # any_connection = False
+                # for j, i in new_reach.dict_pods.items():
+                #     if new_reach.matrix[obj.matrix_id][i.matrix_id] == 1:
+                #         any_connection = True
+                #         nodeName1 = obj.nodeName
+                #         nodeName2 = i.nodeName
+                #         print(f'{colorize(f"  *", 36)} The new pod {obj.name} is deployed on node {nodeName1} and can communicate to pod {i.name} on node {nodeName2} according to the following NetworkPolicies\n')
+                #         for (index1, index2) in new_reach.resp_policies.get_items(obj.id, i.id):
+                #             policy1 = new_reach.dict_pols[index1]
+                #             print(f"    - NetworkPolicy {policy1.name}")
+                #             policy2 = new_reach.dict_pols[index2]
+                #             print(f"    - NetworkPolicy {policy2.name}")
+                #         # stops reprinting the same policies for a self-connecting container
+                #         if obj.id != i.id:
+                #             for (index1, index2) in new_reach.resp_policies.get_items(i.id, obj.id):
+                #                 policy1 = new_reach.dict_pols[index1]
+                #                 print(f"    - NetworkPolicy {policy1.name}")
+                #                 policy2 = new_reach.dict_pols[index2]
+                #                 print(f"    - NetworkPolicy {policy2.name}")
+                #         # Now we look at SGs
+                #         self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
 
-                    # The first part of the if stops reprinting the same policies for a self-connecting container
-                    if i.id != obj.id and new_reach.matrix[i.matrix_id][obj.matrix_id] == 1:
-                        any_connection = True
-                        nodeName1 = i.nodeName
-                        nodeName2 = obj.nodeName
-                        print(f'{colorize(f"  *", 36)} pod {i.name} on node {nodeName2} can communicate to the new pod {obj.name} which is deployed on node {nodeName1} according to the following NetworkPolicies\n')
-                        for (index1, index2) in new_reach.resp_policies.get_items(i.id, obj.id):
-                            policy1 = new_reach.dict_pols[index1]
-                            print(f"    - NetworkPolicy {policy1.name}")
-                            policy2 = new_reach.dict_pols[index2]
-                            print(f"    - NetworkPolicy {policy2.name}")
-                        for (index1, index2) in new_reach.resp_policies.get_items(obj.id, i.id):
-                            policy1 = new_reach.dict_pols[index1]
-                            print(f"    - NetworkPolicy {policy1.name}")
-                            policy2 = new_reach.dict_pols[index2]
-                            print(f"    - NetworkPolicy {policy2.name}")
+                #     # The first part of the if stops reprinting the same policies for a self-connecting container
+                #     if i.id != obj.id and new_reach.matrix[i.matrix_id][obj.matrix_id] == 1:
+                #         any_connection = True
+                #         nodeName1 = i.nodeName
+                #         nodeName2 = obj.nodeName
+                #         print(f'{colorize(f"  *", 36)} pod {i.name} on node {nodeName2} can communicate to the new pod {obj.name} which is deployed on node {nodeName1} according to the following NetworkPolicies\n')
+                #         for (index1, index2) in new_reach.resp_policies.get_items(i.id, obj.id):
+                #             policy1 = new_reach.dict_pols[index1]
+                #             print(f"    - NetworkPolicy {policy1.name}")
+                #             policy2 = new_reach.dict_pols[index2]
+                #             print(f"    - NetworkPolicy {policy2.name}")
+                #         for (index1, index2) in new_reach.resp_policies.get_items(obj.id, i.id):
+                #             policy1 = new_reach.dict_pols[index1]
+                #             print(f"    - NetworkPolicy {policy1.name}")
+                #             policy2 = new_reach.dict_pols[index2]
+                #             print(f"    - NetworkPolicy {policy2.name}")
                         
-                        # Now we look at SGs
-                        self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
-                if not any_connection:
-                    print(f"  pod {obj.name} is deployed on node {obj.nodeName} but is not able to communicate to any other pods according to the current Network Policies")
-                    print("  Checking the Security Groups is therefore also not necessary")                    
-                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
+                #         # Now we look at SGs
+                #         self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+                # if not any_connection:
+                #     print(f"  pod {obj.name} is deployed on node {obj.nodeName} but is not able to communicate to any other pods according to the current Network Policies")
+                #     print("  Checking the Security Groups is therefore also not necessary")                    
+                #     print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
                 # Lets update all that needs updating before finishing up
                 self.kic.insert_container(obj)
 
@@ -292,102 +293,103 @@ class EventAnalyzer:
                 obj =  self.kic.reachabilitymatrix.dict_pods[obj.id]  
                 (new_reach, new_matrixId_to_Container) = self.kic.reachabilityDeleteContainer(obj)
 
-                any_connections = False
-                affected_policies = set()
-                for j, i in self.kic.reachabilitymatrix.dict_pods.items():
-                    if self.kic.reachabilitymatrix.matrix[obj.matrix_id][i.matrix_id] == 1:
-                        any_connections = True
-                        nodeName1 = obj.nodeName
-                        nodeName2 = i.nodeName
-                        # This connection was possible, so lets report the deletion of this connection
-                        print(f'\n{colorize(f"  *", 36)} The deleted pod {obj.name} was deployed on node {nodeName1} and could communicate to pod {i.name} on node {nodeName2} thanks to the now deleted NetworkPolicy.\nThis connection has now been broken\n')
-                        for (index1, index2) in self.kic.reachabilitymatrix.resp_policies.get_items(obj.id, i.id):   
-                            if index1 in self.kic.reachabilitymatrix.dict_pols.keys():
-                                affected_policies.add(index1)
-                            if index2 in self.kic.reachabilitymatrix.dict_pols.keys():
-                                affected_policies.add(index2)
-                        self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+                # any_connections = False
+                # affected_policies = set()
+                # for j, i in self.kic.reachabilitymatrix.dict_pods.items():
+                #     if self.kic.reachabilitymatrix.matrix[obj.matrix_id][i.matrix_id] == 1:
+                #         any_connections = True
+                #         nodeName1 = obj.nodeName
+                #         nodeName2 = i.nodeName
+                #         # This connection was possible, so lets report the deletion of this connection
+                #         print(f'\n{colorize(f"  *", 36)} The deleted pod {obj.name} was deployed on node {nodeName1} and could communicate to pod {i.name} on node {nodeName2} thanks to the now deleted NetworkPolicy.\nThis connection has now been broken\n')
+                #         for (index1, index2) in self.kic.reachabilitymatrix.resp_policies.get_items(obj.id, i.id):   
+                #             if index1 in self.kic.reachabilitymatrix.dict_pols.keys():
+                #                 affected_policies.add(index1)
+                #             if index2 in self.kic.reachabilitymatrix.dict_pols.keys():
+                #                 affected_policies.add(index2)
+                #         self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
 
-                    # The first part of the if stops reprinting the same policies for a self-connecting container
-                    if i.id != obj.id and self.kic.reachabilitymatrix.matrix[i.matrix_id][obj.matrix_id] == 1:
-                        any_connections = True
-                        nodeName1 = i.nodeName
-                        nodeName2 = obj.nodeName
-                        for (index1, index2) in self.kic.reachabilitymatrix.resp_policies.get_items(i.id, obj.id):
-                            # This connection with itself will be printed in the previous loop and thus this prevents double printing.
-                            if i.id != obj.id:
-                                print(f'\n{colorize(f"  *", 36)} pod {i.name} on node {nodeName1} could communicate to the deleted pod {obj.name} which was deployed on node {nodeName2} thanks to the now deleted NetworkPolicy\nThis connection has now been broken\n')
-                                if index1 in self.kic.reachabilitymatrix.dict_pols.keys():
-                                    affected_policies.add(index1)
-                                if index2 in self.kic.reachabilitymatrix.dict_pols.keys():
-                                    affected_policies.add(index2)
-                        self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
-                if affected_policies:
-                    print("\n    Let us look at the NetworkPolicies that were used in combination with the now deleted NetworkPolicy, to check them for redundancy:")
-                any_redundant = False
-                for index in affected_policies:
-                    policy = self.kic.reachabilitymatrix.dict_pols[index]
-                    redundant = self.is_policy_redundant(policy, obj)
-                    if redundant:
-                        any_redundant = True  
-                        if policy.direction.direction:
-                            dir = "ingress"
-                        else:
-                            dir = "egress"
-                        print(f"\n      -NetworkPolicy {policy.name} is an {dir} policy that has become redundant as no connection between pods is established with the help of it")
-                        print("       Consider deleting this NetworkPolicy")
-                if not any_redundant:
-                    print("\n    No aforementioned NetworkPolicies have become redundant since either their select or one of their allow labels is still used by another pod")
+                #     # The first part of the if stops reprinting the same policies for a self-connecting container
+                #     if i.id != obj.id and self.kic.reachabilitymatrix.matrix[i.matrix_id][obj.matrix_id] == 1:
+                #         any_connections = True
+                #         nodeName1 = i.nodeName
+                #         nodeName2 = obj.nodeName
+                #         for (index1, index2) in self.kic.reachabilitymatrix.resp_policies.get_items(i.id, obj.id):
+                #             # This connection with itself will be printed in the previous loop and thus this prevents double printing.
+                #             if i.id != obj.id:
+                #                 print(f'\n{colorize(f"  *", 36)} pod {i.name} on node {nodeName1} could communicate to the deleted pod {obj.name} which was deployed on node {nodeName2} thanks to the now deleted NetworkPolicy\nThis connection has now been broken\n')
+                #                 if index1 in self.kic.reachabilitymatrix.dict_pols.keys():
+                #                     affected_policies.add(index1)
+                #                 if index2 in self.kic.reachabilitymatrix.dict_pols.keys():
+                #                     affected_policies.add(index2)
+                #         self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+                # if affected_policies:
+                #     print("\n    Let us look at the NetworkPolicies that were used in combination with the now deleted NetworkPolicy, to check them for redundancy:")
+                # any_redundant = False
+                # for index in affected_policies:
+                #     policy = self.kic.reachabilitymatrix.dict_pols[index]
+                #     redundant = self.is_policy_redundant(policy, obj)
+                #     if redundant:
+                #         any_redundant = True  
+                #         if policy.direction.direction:
+                #             dir = "ingress"
+                #         else:
+                #             dir = "egress"
+                #         print(f"\n      -NetworkPolicy {policy.name} is an {dir} policy that has become redundant as no connection between pods is established with the help of it")
+                #         print("       Consider deleting this NetworkPolicy")
+                # if not any_redundant:
+                #     print("\n    No aforementioned NetworkPolicies have become redundant since either their select or one of their allow labels is still used by another pod")
 
                 
-                if not any_connections:
-                    print(f"\n  The deleted pod {obj.name} was deployed on node {obj.nodeName} but had no connections to other pods according to the current NetworkPolicies")
-                    print("  Checking the Security Groups is therefore also not necessary")
-                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
+                # if not any_connections:
+                #     print(f"\n  The deleted pod {obj.name} was deployed on node {obj.nodeName} but had no connections to other pods according to the current NetworkPolicies")
+                #     print("  Checking the Security Groups is therefore also not necessary")
+                #     print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
 
-                # Lets update all that needs updating before finishing up
+                # # Lets update all that needs updating before finishing up
                 self.kic.delete_container(obj)
                 self.kic.matrixId_to_Container = new_matrixId_to_Container
 
-            elif event['custom'] == "update":
-                for key, value in self.kic.reachabilitymatrix.dict_pods.items():
-                    if value.name == obj.name:
-                        old_obj = value
-                        break
-                self.kic.update_container(old_obj, obj)
-                differences = find_obj_differences(old_obj, obj)
-                print("  The following changes have been found between the old Pod and the updated Pod")
+            # elif event['custom'] == "update":
+            #     for key, value in self.kic.reachabilitymatrix.dict_pods.items():
+            #         if value.name == obj.name:
+            #             old_obj = value
+            #             break
+            #     self.kic.update_container(old_obj, obj)
+            #     differences = find_obj_differences(old_obj, obj)
+            #     if differences:
+            #         print("  The following changes have been found between the old Pod and the updated Pod")
 
-                for key, (value1, value2) in differences.items():
-                    # id is not assigned yet so should be ignored.
-                    if key != "id":
-                        print(f"\n    -{key}:")
-                        print(f"       old:     {value1}")
-                        print(f"       updated: {value2}")
-                
-                new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
-                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
-                if is_matrix_all_zero(deltakano):
-                    print("\n  The updated container does not trigger any change in connections and thus does not introduce any new conflicts")
-                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
-                else:
-                    for i, row in enumerate(deltakano):
-                         for j, value in enumerate(row):
+            #         for key, (value1, value2) in differences.items():
+            #             # id is not assigned yet so should be ignored.
+            #             if key != "id":
+            #                 print(f"\n    -{key}:")
+            #                 print(f"       old:     {value1}")
+            #                 print(f"       updated: {value2}")
+                    
+            #     new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
+            #     deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+            #     if is_matrix_all_zero(deltakano):
+            #         print("\n  The updated container does not trigger any change in connections and thus does not introduce any new conflicts")
+            #         print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
+            #     else:
+            #         for i, row in enumerate(deltakano):
+            #              for j, value in enumerate(row):
                             
-                            if deltakano[i][j] == 1:
-                                # First we get the nodes they are deployed on.
-                                nodeName1 = self.kic.matrixId_to_Container[i].nodeName
-                                nodeName2 = self.kic.matrixId_to_Container[j].nodeName
-                                # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
-                                print("\n  The container update has effect on the connectivity between following pods:")
-                                if self.kic.reachabilitymatrix.matrix[i][j] == 1:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
-                                    # Now we look at SGs
-                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
-                                else:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
-                                    # Now we look at SGs
-                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+            #                 if deltakano[i][j] == 1:
+            #                     # First we get the nodes they are deployed on.
+            #                     nodeName1 = self.kic.matrixId_to_Container[i].nodeName
+            #                     nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+            #                     # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
+            #                     print("\n  The container update has effect on the connectivity between following pods:")
+            #                     if self.kic.reachabilitymatrix.matrix[i][j] == 1:
+            #                         print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
+            #                         # Now we look at SGs
+            #                         self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+            #                     else:
+            #                         print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
+            #                         # Now we look at SGs
+            #                         self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
         else:           
             raise ValueError("\ERROR: This is not a correct event and can not be handled correctly\n")
         
@@ -411,8 +413,7 @@ class EventAnalyzer:
             #         a = new_reach.resp_policies.get_items(cont1.id, cont2.id)
             #         if a:
             #             print(f"{cont1.name} to {cont2.name}: {a}")
-            print("  ***********************************************************************")
-
+            # print("  ***********************************************************************")
         self.kic.reachabilitymatrix = new_reach
         
 

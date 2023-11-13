@@ -104,10 +104,11 @@ class Kubernetes_Information_Cluster:
             conts = self.containerTrie.find(select_label)
             if conts:
                 matrix_ids.update(cont.matrix_id for cont in conts)
+                
 
-            if not select_containers and matrix_ids:
+            if matrix_ids and not select_containers:
                 select_containers = matrix_ids
-            elif matrix_ids:
+            else:
                 select_containers = select_containers.intersection(matrix_ids)
 
         # we get the containers that have all the labels in the allow set
@@ -137,7 +138,7 @@ class Kubernetes_Information_Cluster:
                     else:
                         # EGRESS -> we look at existing ingress rules
                         trienode = self.ingressTrie.find(cont_label)
-                    # we add all opposite policies to a set if there select labels match our containers labels
+                    # we add all opposite policies to a set if their select labels match our containers labels
                     if trienode is not None:
                         for item in trienode:
                             if all(item_label in self.matrixId_to_Container[container].concat_labels for item_label in item.selector.concat_labels):
@@ -145,19 +146,19 @@ class Kubernetes_Information_Cluster:
             # Now we check if the opposite policy allows the select containers from the original policy
             for (pol_id, allowed_cont) in opposite_policies:
                 pol = self.reachabilitymatrix.dict_pols[pol_id]
-                for container in select_containers:
+                for container2 in select_containers:
                     for pol_allow in pol.allow:
-                        if all(pol_label in self.matrixId_to_Container[container].concat_labels for pol_label in pol_allow.concat_labels):
+                        if all(pol_label in self.matrixId_to_Container[container2].concat_labels for pol_label in pol_allow.concat_labels):
                             # We have containers that can connect. Lets change the new matrix to reflect this. 
                             # This is dependant on the type of the new policy as well
                             if obj.direction.direction:
                                 # INGRESS
-                                new_reachability.matrix[allowed_cont][container] = 1
-                                new_reachability.resp_policies.add_item(self.matrixId_to_Container[allowed_cont].id, self.matrixId_to_Container[container].id, (obj.id, pol.id))
+                                new_reachability.matrix[allowed_cont][container2] = 1
+                                new_reachability.resp_policies.add_item(self.matrixId_to_Container[allowed_cont].id, self.matrixId_to_Container[container2].id, (obj.id, pol.id))
                             else:
                                 # EGRESS
-                                new_reachability.matrix[container][allowed_cont] = 1
-                                new_reachability.resp_policies.add_item(self.matrixId_to_Container[container].id, self.matrixId_to_Container[allowed_cont].id, (pol.id, obj.id))
+                                new_reachability.matrix[container2][allowed_cont] = 1
+                                new_reachability.resp_policies.add_item(self.matrixId_to_Container[container2].id, self.matrixId_to_Container[allowed_cont].id, (pol.id, obj.id))
         new_reachability.dict_pols[obj.id] = obj
         return new_reachability
 
@@ -173,7 +174,7 @@ class Kubernetes_Information_Cluster:
 
             if not select_containers and matrix_ids:
                 select_containers = matrix_ids
-            elif matrix_ids:
+            else:
                 select_containers = select_containers.intersection(matrix_ids)
 
         # we get the containers that have all the labels in the allow set
@@ -343,8 +344,8 @@ class Kubernetes_Information_Cluster:
 
         return (new_reachability, new_matrixId_to_Container)
     
-    def print_info(self, verbose):
-        if verbose:
+    def print_info(self, debug, verbose):
+        if debug:
             print("# Container Trie:")
             print(f"# {self.containerTrie}\n")
             print("# Egress Trie:")
@@ -361,13 +362,13 @@ class Kubernetes_Information_Cluster:
                 print(f"# {i}: {pol}\n#")
 
             print("#")
-      
-        print("# Container Ids:")
-        for i, pod in self.reachabilitymatrix.dict_pods.items():
-                print(f"# {i}: {pod.name}")
-        print("#")    
-        print("# Kano Matrix:")
-        for row in range(len(self.reachabilitymatrix.dict_pods)):
-            print(f"# {self.reachabilitymatrix.matrix[row]}")
-        print("#")
+        if verbose:
+            print("# Container Ids:")
+            for i, pod in self.reachabilitymatrix.dict_pods.items():
+                    print(f"# {i}: {pod.name}")
+            print("#")    
+            print("# Kano Matrix:")
+            for row in range(len(self.reachabilitymatrix.dict_pods)):
+                print(f"# {self.reachabilitymatrix.matrix[row]}")
+            print("#")
 

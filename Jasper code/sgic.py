@@ -194,8 +194,8 @@ class Security_Groups_Information_Cluster:
 
         self.vmMatrix = tempMatrix
 
-    def print_info(self, verbose):
-        if verbose:
+    def print_info(self, debug, verbose):
+        if debug:
             print("# Security Groups and rules:\n#")
             for i in self.security_groups:
                 print(f"# {self.security_groups[i]}\n#")
@@ -236,11 +236,11 @@ class Security_Groups_Information_Cluster:
             print("#\n# NodeIds to Node names:")
             for name in self.nodeName_to_nodeId:
                 print(f"# node {name}'s id: {self.nodeName_to_nodeId[name]}")
-
-        print("#\n# VM matrix:")
-        for i in range(len(self.vmMatrix)):
-            print(f"# {self.vmMatrix[i]}")
-        print("#")
+        if verbose:
+            print("#\n# VM matrix:")
+            for i in range(len(self.vmMatrix)):
+                print(f"# {self.vmMatrix[i]}")
+            print("#")
             
     def check_sg_connectivity(self, nodeName1, nodeName2, connection_wanted):
         node1 = self.nodeName_to_nodeId[nodeName1]
