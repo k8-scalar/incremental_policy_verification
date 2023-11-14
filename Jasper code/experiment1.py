@@ -47,7 +47,6 @@ if __name__ == "__main__":
         print(colorize("\nSTEP 1: Removing all pods and policies from cluster", 36))
         resetCluster(args.namespace)
 
-
         # STEP 2: Deploy the specified pods and policies given by the variables
         print(colorize("\nSTEP 2: Deploy the specified pods and policies given by the variables", 36))
         deploy(args.nr_of_pods, args.nr_of_policies, args.namespace, args.key_limit)
@@ -56,9 +55,13 @@ if __name__ == "__main__":
         print(colorize("\nSTEP 3: Start the watcher", 36))
         # Create and start the EventWatcher in a separate thread
         ew = EventWatcher(False, False, False)
-        ew_thread = threading.Thread(target=ew.run)  # Assuming you have a `run` method in EventWatcher
+        # make sure the watcher is ready
+        while len(ew.existing_pods) != args.nr_of_pods or len(ew.existing_pols) != args.nr_of_policies:
+            time.sleep(1)
+        ew_thread = threading.Thread(target=ew.run) 
         ew_thread.start()
-
+        
+        
         # STEP 4: execute event
         print(colorize(f"\nSTEP 4: execute event: {args.event_type}", 36))
         event = args.event_type

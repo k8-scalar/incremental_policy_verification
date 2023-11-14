@@ -1,5 +1,6 @@
 import array
 from sqlite3 import Time
+from turtle import pen
 from xmlrpc.client import Boolean, boolean
 from kubernetes import client, config, watch
 from kubernetes.config import ConfigException
@@ -86,7 +87,6 @@ class EventWatcher:
         self.stop = False
         self.existing_pods = []
         self.existing_pols = []
-        self.event_detected = threading.Event()  # Create an event object
         self.elapesed_time = 0
         self.memory_usage = None
         self.analyzer = EventAnalyzer(verbose, debug) # to signal when an event has been detected, for experiment purposes
@@ -121,7 +121,7 @@ class EventWatcher:
     def run(self, main_thread=False):
         print("Starting to watch for new events on the cluster..\n\n")
         # Run the watcher
-        
+        self.event_detected = threading.Event()  # Create an event object
         self.event_queue = queue.Queue()
 
         if main_thread:
@@ -195,7 +195,6 @@ class EventWatcher:
         try:
             while not self.stop:
                 for event in w.stream(pod_api_instance.list_namespaced_pod, namespace = "test", timeout_seconds=1):
-                    # stop the loop gracefully
                     if self.stop:
                         break
                     updatedPod = event["object"]
@@ -224,10 +223,17 @@ class EventWatcher:
                                         u_pod['custom']='create'
                                         self.existing_pods.append(podName)
                                         self.event_queue.put(u_pod)
-                                # MODIFY
-                                elif updatedPod.metadata != pod_api_instance.read_namespaced_pod(name=podName, namespace="test")['metadata']:
-                                    u_pod['custom']='update'
-                                    self.event_queue.put(u_pod)
+                                
+                                else:
+                                    # MODIFY
+                                    try:
+                                        namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace="test")
+                                        if updatedPod.metadata != namespaced_pod.metadata:
+                                            u_pod['custom']='update'
+                                            self.event_queue.put(u_pod)
+                                    except client.exceptions.ApiException as e:
+                                        print(e)
+                                    
                             
 
                     # Deleted pods
