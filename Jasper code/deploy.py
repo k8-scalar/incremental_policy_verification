@@ -48,6 +48,8 @@ def deploy(podsnr, policiesnr, ns, key_limit):
     if policiesnr != 0:
         print("\n------------CREATING POLICIES-------------")
         nrofexistingpolicies = len(np_api_instance.list_namespaced_network_policy(ns).items)
+        num_digits = len(str(nrofexistingpolicies + policiesnr))
+
         for j in range(nrofexistingpolicies, (nrofexistingpolicies + policiesnr)):
 
             # CONSTANT: selects limit 1
@@ -61,7 +63,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                     "matchLabels": match_labels
                 }
             # CONSTANT: allows limit 3
-            nr_allow = random.randint(3,3)
+            nr_allow = random.randint(1,3)
             for _ in range(nr_allow):
                 # CONSTANT: allow label limit 3
                 num_allow_labels = random.randint(1, 3)
@@ -70,15 +72,18 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                 allow = []
                 for _ in range(nr_allow):
                     allow.append({"podSelector": {"matchLabels": {random.choice(shortened_keys): random.choice(shortened_values) for _ in range(num_allow_labels)}}})
-                
-
+            
+            # This makes sure the pods and policies are sorted on nr when returned by k8s
+            len_j = len(str(j))
+            zeroes = (num_digits-len_j)*"0"
+            nr = f"{zeroes}{j}"
 
             (type, tf) =  random.choice(policytypes)
             network_policy_manifest = {
                 "apiVersion": "networking.k8s.io/v1",
                 "kind": "NetworkPolicy",
                 "metadata": {
-                    "name": f"policy-{j}",
+                    "name": f"policy-{nr}",
                     "namespace": ns,
                 },
                 "spec": {
@@ -93,21 +98,23 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                 }
             }
             retries = 0
-            while retries < 8:
+            while retries < 30:
                 try:
                     np_api_instance.create_namespaced_network_policy(body=network_policy_manifest, namespace=ns)
-                    retries = 10
+                    retries = 40
                 except client.exceptions.ApiException as e:
                     if "object is being deleted" in str(e):
                         time.sleep(2)    
                         retries += 1
                     else:
                         print(f"Error creating policy-{j}: {e}")
-                        retries = 10
+                        retries = 40
+
         print(f"{policiesnr} policies created")
     if podsnr != 0:
         print("\n------------CREATING PODS-------------")
         nrofexistingpods = len(pod_api_instance.list_namespaced_pod(ns).items)
+        num_digits = len(str(nrofexistingpods + policiesnr))
         for i in range(nrofexistingpods, (nrofexistingpods + podsnr)):
 
             labels = {}
@@ -118,12 +125,18 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                 value = random.choice(shortened_values)
                 labels[key] = value
 
+             # This makes sure the pods and policies are sorted on nr when returned by k8s
+            # This makes sure the pods and policies are sorted on nr when returned by k8s
+            len_i = len(str(i))
+            zeroes = (num_digits-len_i)*"0"
+            nr = f"{zeroes}{i}"
+
 
             pod_manifest = {
             "apiVersion": "v1",
             "kind": "Pod",
             "metadata": {
-                "name": f"pod-{i}", 
+                "name": f"pod-{nr}", 
                 "namespace": ns,
                 "labels": 
                     labels
@@ -139,17 +152,18 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                 }
             }
             retries = 0
-            while retries < 8:
+            while retries < 30:
                 try:
                     pod_api_instance.create_namespaced_pod(body=pod_manifest, namespace=ns)
-                    retries = 10
+                    retries = 40
                 except client.exceptions.ApiException as e:
                     if "object is being deleted" in str(e):
                         time.sleep(2)    
                         retries += 1
                     else:
-                        print(f"Error creating pod-{j}: {e}")
-                        retries = 10
+                        print(f"Error creating pod-{i}: {e}")
+                        retries = 40
+            
         print(f"{podsnr} pods created")
 
 if __name__ == "__main__":

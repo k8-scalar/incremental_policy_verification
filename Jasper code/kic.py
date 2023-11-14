@@ -99,14 +99,15 @@ class Kubernetes_Information_Cluster:
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
         # we get the containers that have all the labels in the select set
         select_containers = set()
+        first = True
         for select_label in obj.selector.concat_labels:
             matrix_ids = set()
             conts = self.containerTrie.find(select_label)
             if conts:
                 matrix_ids.update(cont.matrix_id for cont in conts)
-                
-
-            if matrix_ids and not select_containers:
+        
+            if first and matrix_ids:
+                first = False
                 select_containers = matrix_ids
             else:
                 select_containers = select_containers.intersection(matrix_ids)
@@ -115,14 +116,17 @@ class Kubernetes_Information_Cluster:
         allow_containers_final = set()
         for allow in obj.allow:
             allow_containers = set()
+            first = True
             for allow_label in allow.concat_labels:
                 matrix_ids = set()
                 conts = self.containerTrie.find(allow_label)
                 if conts:
+                    
                     matrix_ids.update(cont.matrix_id for cont in conts)
-                if not allow_containers and matrix_ids:
+                if first and matrix_ids:
+                    first = False
                     allow_containers = matrix_ids
-                elif matrix_ids:
+                else:
                     allow_containers = allow_containers.intersection(matrix_ids)   
             allow_containers_final.update(allow_containers)
 
@@ -165,14 +169,17 @@ class Kubernetes_Information_Cluster:
     def reachabilityDeleteNP(self, obj: Policy):
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
         # we get the containers that have all the labels in the select set
+        # we get the containers that have all the labels in the select set
         select_containers = set()
+        first = True
         for select_label in obj.selector.concat_labels:
             matrix_ids = set()
             conts = self.containerTrie.find(select_label)
             if conts:
                 matrix_ids.update(cont.matrix_id for cont in conts)
-
-            if not select_containers and matrix_ids:
+        
+            if first and matrix_ids:
+                first = False
                 select_containers = matrix_ids
             else:
                 select_containers = select_containers.intersection(matrix_ids)
@@ -181,16 +188,19 @@ class Kubernetes_Information_Cluster:
         allow_containers_final = set()
         for allow in obj.allow:
             allow_containers = set()
+            first = True
             for allow_label in allow.concat_labels:
                 matrix_ids = set()
                 conts = self.containerTrie.find(allow_label)
                 if conts:
                     matrix_ids.update(cont.matrix_id for cont in conts)
-                if not allow_containers and matrix_ids:
+                if first and matrix_ids:
+                    first = False
                     allow_containers = matrix_ids
-                elif matrix_ids:
+                else:
                     allow_containers = allow_containers.intersection(matrix_ids)   
             allow_containers_final.update(allow_containers)
+
 
         
         # Now for each of the labels in these allow containers we find the existing NPs in the opposite direction
@@ -259,61 +269,63 @@ class Kubernetes_Information_Cluster:
             egresses = self.eggressTrie.find(label)
             if egresses is not None:
                 for pol in egresses:
-                    # Remove the policies to which the container does not match the entire select labels
-                    if not all(label in obj.concat_labels for label in pol.selector.concat_labels):
-                        rules.update(pol.id for pol in egresses)
+                    # Add the policies to which the container does not match the entire select labels
+                    if all(label2 in obj.concat_labels for label2 in pol.selector.concat_labels):
+                        rules.add(pol.id)
             ingresses = self.ingressTrie.find(label)
             if ingresses is not None:
                 for pol in ingresses:
-                    # Remove the policies to which the container does not match the entire select labels
-                    if not all(label in obj.concat_labels for label in pol.selector.concat_labels):
-                        rules.update(pol.id for pol in ingresses)
+                    # Add the policies to which the container does not match the entire select labels
+                    if all(label2 in obj.concat_labels for label2 in pol.selector.concat_labels):
+                        rules.add(pol.id)
 
         for id in rules:
+            print(f"Checking rule with id: {id}")
             rule = new_reachability.dict_pols[id]
             # we get the containers that have all the labels in the rules allow sets
             allow_containers_final = set()
             for allow in rule.allow:
                 allow_containers = set()
+                first = True
                 for allow_label in allow.concat_labels:
                     matrix_ids = set()
                     conts = cont_trie.find(allow_label)
                     if conts:
                         matrix_ids.update(cont.matrix_id for cont in conts)
-                    if not allow_containers and matrix_ids:
+                    if first and matrix_ids:
+                        first = False
                         allow_containers = matrix_ids
-                    elif matrix_ids:
-                        allow_containers = allow_containers.intersection(matrix_ids)   
+                    else:
+                        allow_containers = allow_containers.intersection(matrix_ids)
                 allow_containers_final.update(allow_containers)
 
-                # For these allowed containers we find policies in the opposite direction from this new container to our original
-                for sec_cont_id in allow_containers_final:
-                    second_container = self.matrixId_to_Container[sec_cont_id]
-                    secondrules = set()
-                    for sec_label in second_container.concat_labels:
-                        if rule.direction.direction:
-                            # INGRESS
-                            egresses2 = self.eggressTrie.find(sec_label)
-                        else:
-                            egresses2 = self.ingressTrie.find(sec_label)
-                        if egresses2 is not None:
-                            secondrules.update(pol2.id for pol2 in egresses2)
-                   
-                    for second_id in secondrules:
-                        secondrule = new_reachability.dict_pols[second_id]
-                        if all(label2 in second_container.concat_labels for label2 in secondrule.selector.concat_labels):
-                            for a in secondrule.allow:
-                                if all(label3 in obj.concat_labels for label3 in a.concat_labels):
-                                    # WE GOT A MATCH!
-                                    if rule.direction.direction:
-                                        # INGRESS
-                                        new_reachability.matrix[second_container.matrix_id][obj.matrix_id] = 1
-                                        new_reachability.resp_policies.add_item(second_container.id, obj.id, (rule.id, secondrule.id))
-                                    else:
-                                        # EGRESS
-                                        new_reachability.matrix[obj.matrix_id][second_container.matrix_id] = 1
-                                        new_reachability.resp_policies.add_item(obj.id, second_container.id, (secondrule.id, rule.id))
-
+            # For these allowed containers we find policies in the opposite direction from this new container to our original
+            for sec_cont_id in allow_containers_final:
+                second_container = self.matrixId_to_Container[sec_cont_id]
+                secondrules = set()
+                for sec_label in second_container.concat_labels:
+                    if rule.direction.direction:
+                        # INGRESS
+                        egresses2 = self.eggressTrie.find(sec_label)
+                    else:
+                        egresses2 = self.ingressTrie.find(sec_label)
+                    if egresses2 is not None:
+                        secondrules.update(pol2.id for pol2 in egresses2)
+                
+                for second_id in secondrules:
+                    secondrule = new_reachability.dict_pols[second_id]
+                    if all(label2 in second_container.concat_labels for label2 in secondrule.selector.concat_labels):
+                        for a in secondrule.allow:
+                            if all(label3 in obj.concat_labels for label3 in a.concat_labels):
+                                # WE GOT A MATCH!
+                                if rule.direction.direction:
+                                    # INGRESS
+                                    new_reachability.matrix[second_container.matrix_id][obj.matrix_id] = 1
+                                    new_reachability.resp_policies.add_item(second_container.id, obj.id, (rule.id, secondrule.id))
+                                else:
+                                    # EGRESS
+                                    new_reachability.matrix[obj.matrix_id][second_container.matrix_id] = 1
+                                    new_reachability.resp_policies.add_item(obj.id, second_container.id, (secondrule.id, rule.id))
         return new_reachability
     
     def reachabilityDeleteContainer(self, obj: Container):
@@ -369,6 +381,6 @@ class Kubernetes_Information_Cluster:
             print("#")    
             print("# Kano Matrix:")
             for row in range(len(self.reachabilitymatrix.dict_pods)):
-                print(f"# {self.reachabilitymatrix.matrix[row]}")
+                print(f"# {row}: {self.reachabilitymatrix.matrix[row]}")
             print("#")
 
