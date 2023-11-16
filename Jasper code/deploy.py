@@ -5,6 +5,22 @@ import time
 
 config.load_kube_config()
 
+def are_all_pods_ready(pods, ns):
+    pod_api_instance = client.CoreV1Api()
+
+    for pod_name in pods:
+        pod_status = pod_api_instance.read_namespaced_pod_status(pod_name, ns) 
+        if pod_status.status.phase != "Running":
+            return False
+        for container_status in pod_status.status.container_statuses or []:
+            if container_status.state.waiting:
+                return False
+            if container_status.state.terminated:
+                return False
+            if container_status.state.running is None:
+                return False
+    return True
+
 def deploy(podsnr, policiesnr, ns, key_limit):
     pod_api_instance = client.CoreV1Api()
     np_api_instance = client.NetworkingV1Api()
@@ -48,8 +64,13 @@ def deploy(podsnr, policiesnr, ns, key_limit):
     if policiesnr != 0:
         print("\n------------CREATING POLICIES-------------")
         nrofexistingpolicies = len(np_api_instance.list_namespaced_network_policy(ns).items)
-        num_digits = len(str(nrofexistingpolicies + policiesnr))
-
+        if nrofexistingpolicies == 0:
+            num_digits = len(str(policiesnr))
+        else:
+            temp_name = np_api_instance.list_namespaced_network_policy(ns).items[0].metadata.name
+            num_digits = len(temp_name.split("-")[1])
+    
+        
         for j in range(nrofexistingpolicies, (nrofexistingpolicies + policiesnr)):
 
             # CONSTANT: selects limit 1
@@ -109,12 +130,17 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                     else:
                         print(f"Error creating policy-{j}: {e}")
                         retries = 40
-
         print(f"{policiesnr} policies created")
+        
     if podsnr != 0:
         print("\n------------CREATING PODS-------------")
         nrofexistingpods = len(pod_api_instance.list_namespaced_pod(ns).items)
-        num_digits = len(str(nrofexistingpods + policiesnr))
+        if nrofexistingpods == 0:
+            num_digits = len(str(podsnr))
+        else:
+            temp_name = pod_api_instance.list_namespaced_pod(ns).items[0].metadata.name
+            num_digits = len(temp_name.split("-")[1])
+        pods = []
         for i in range(nrofexistingpods, (nrofexistingpods + podsnr)):
 
             labels = {}
@@ -155,6 +181,8 @@ def deploy(podsnr, policiesnr, ns, key_limit):
             while retries < 30:
                 try:
                     pod_api_instance.create_namespaced_pod(body=pod_manifest, namespace=ns)
+                    pods.append(f"pod-{nr}")
+
                     retries = 40
                 except client.exceptions.ApiException as e:
                     if "object is being deleted" in str(e):
@@ -164,7 +192,11 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                         print(f"Error creating pod-{i}: {e}")
                         retries = 40
             
-        print(f"{podsnr} pods created")
+        # print(f"{podsnr} pods created, now waiting untill they are ready")
+        # while not are_all_pods_ready(pods, ns):
+        #     time.sleep(1)
+
+        print(f"{podsnr} pods are ready")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

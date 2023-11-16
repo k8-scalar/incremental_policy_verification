@@ -34,7 +34,6 @@ def pods(ns, oparser):
             'nodeName':node_name
         }
         oparser.create_object(u_pod)
-    return pods
             
 def policies(ns, oparser):
     
