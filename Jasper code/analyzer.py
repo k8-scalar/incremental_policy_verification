@@ -236,7 +236,7 @@ class EventAnalyzer:
             if event['custom'] == "create":
                 obj.id = max(self.kic.reachabilitymatrix.dict_pods.keys()) + 1
                 new_reach = self.kic.reachabilityAddContainer(obj)
-                obj.matrix_id = new_reach.dict_pods[obj.id].matrix_id
+
                 # any_connection = False
                 # for j, i in new_reach.dict_pods.items():
                 #     if new_reach.matrix[obj.matrix_id][i.matrix_id] == 1:

@@ -251,7 +251,9 @@ class Kubernetes_Information_Cluster:
         new_reachability = copy.deepcopy(self.reachabilitymatrix)
         # First add the container to the list and extend the matrix with a row and colum
         obj.matrix_id = copy.deepcopy(len(new_reachability.dict_pods))
+        
         new_reachability.dict_pods[obj.id] = obj
+
         self.matrixId_to_Container[obj.matrix_id] = obj
 
         # We need this temporary container Trie to check for connections to itself as well. 
@@ -261,7 +263,6 @@ class Kubernetes_Information_Cluster:
         for row in new_reachability.matrix:
             row.append(0)
         new_reachability.matrix.append(bitarray('0' * len(new_reachability.dict_pods)))
-
         # Now lets find rules that are applied on this new container's labels and add them to matrix and other data structures
         # Create a set of all the Policies using the container's labels
         rules = set()
@@ -280,7 +281,6 @@ class Kubernetes_Information_Cluster:
                         rules.add(pol.id)
 
         for id in rules:
-            print(f"Checking rule with id: {id}")
             rule = new_reachability.dict_pols[id]
             # we get the containers that have all the labels in the rules allow sets
             allow_containers_final = set()
@@ -381,6 +381,6 @@ class Kubernetes_Information_Cluster:
             print("#")    
             print("# Kano Matrix:")
             for row in range(len(self.reachabilitymatrix.dict_pods)):
-                print(f"# {row}: {self.reachabilitymatrix.matrix[row]}")
+                print(f"{self.reachabilitymatrix.matrix[row]}")
             print("#")
 

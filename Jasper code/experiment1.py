@@ -9,6 +9,7 @@ from original.owatcher import *
 from original.omodel import ReachabilityMatrix as RM
 import time
 import tracemalloc
+import subprocess
 
     
 from kubernetes import client, config
@@ -42,6 +43,7 @@ if __name__ == "__main__":
 
  
     for i in range(args.nr_of_runs):
+
         print(colorize(f"\n\n----------------------RUN {i}----------------------", 35))
         # STEP 1: Remove all pods and policies from cluster
         print(colorize("\nSTEP 1: Removing all pods and policies from cluster", 36))
@@ -60,8 +62,10 @@ if __name__ == "__main__":
             time.sleep(1)
         ew_thread = threading.Thread(target=ew.run) 
         ew_thread.start()
-        
-        
+        while True:
+            if hasattr(ew, 'event_detected') and ew:
+                break
+            time.sleep(1)
         # STEP 4: execute event
         print(colorize(f"\nSTEP 4: execute event: {args.event_type}", 36))
         event = args.event_type
@@ -97,7 +101,7 @@ if __name__ == "__main__":
         (ocontainers, opolicies) = o_get_pods_and_policies(args.namespace)
         tracemalloc.start()
         o_time_start = time.perf_counter() # Start the timer
-        o_matrix = RM.build_matrix(ocontainers, opolicies)#, build_transpose_matrix=True)
+        o_matrix= RM.build_matrix(ocontainers, opolicies)#, build_transpose_matrix=True)
         o_time_elapsed = time.perf_counter() - o_time_start # final computation time
         o_current, o_peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
@@ -110,9 +114,16 @@ if __name__ == "__main__":
 
         else:
             results.append({'Run Number': i, 'Elapsed Time - INCR (seconds)': 'ERROR', 'Mem start analyser - INCR (bytes)': 'ERROR', 'Mem peak analyser - INCR (bytes)': 'ERROR', 'Mem Diff - INCR (bytes)':'ERROR', 'Elapsed Time - GEN (seconds)': 'ERROR', 'Mem start analyser - GEN (bytes)': 'ERROR', 'Mem peak analyser - GEN (bytes)': 'ERROR', 'Mem Diff - GEN (bytes)': 'ERROR'})
+            
+            print("\n#O_Container Ids:")
+            for item in o_matrix.index_map:
+                    print(f"{item}")
             print("\no_matrix")
             for row in o_matrix.matrix:
                 print(row)
+            print("\n#Container Ids:")
+            for i, pod in ew.analyzer.kic.reachabilitymatrix.dict_pods.items():
+                    print(f"{i}:{pod.name}")
             print("\nmatrix")
             for row in ew.analyzer.kic.reachabilitymatrix.matrix:
                 print(row)
