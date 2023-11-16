@@ -81,13 +81,13 @@ class EventWatcher:
     analyzer: EventAnalyzer
     stop: boolean
     event_detected: threading.Event # to signal when an event has been detected, for experiment purposes
-    elapesed_time: int
+    elapsed_time: int
 
     def __init__(self, verbose = False, debug = False, startup = False):
         self.stop = False
         self.existing_pods = []
         self.existing_pols = []
-        self.elapesed_time = 0
+        self.elapsed_time = 0
         self.memory_usage = None
         self.analyzer = EventAnalyzer(verbose, debug) # to signal when an event has been detected, for experiment purposes
 
@@ -132,13 +132,21 @@ class EventWatcher:
             n = executor.submit(self.policies)
             c = executor.submit(self.consumer)
             exception = c.exception()
+            exception2 = n.exception()
+            exception3 = p.exception()
             # handle exceptional case
             if exception:
                     print(exception)
                     traceback.print_exception(type(exception), exception, exception.__traceback__)
+            if exception2:
+                    print(exception2)
+                    traceback.print_exception(type(exception2), exception2, exception2.__traceback__)
+            if exception3:
+                    print(exception3)
+                    traceback.print_exception(type(exception3), exception3, exception3.__traceback__)
         
     def get_time_and_memory(self):
-        return (self.elapesed_time, self.memory_usage)
+        return (self.elapsed_time, self.memory_usage)
     
     def handle_interrupt(self, signum, frame):
         print("Terminating the event watcher...")
@@ -212,28 +220,29 @@ class EventWatcher:
                     u_pod['spec']={
                         'nodeName':node_name
                     }
-
                     # Modified and create pods
                     if event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None: #File exists so it is a modify and avoid delete modify
-                        for cond in updatedPod.status.conditions:
-                            if cond.type == "PodScheduled" and cond.status == "True":
-                                # CREATED
-                                if podName not in self.existing_pods:
-                                    if updatedPod.status.pod_ip is not None:
-                                        u_pod['custom']='create'
-                                        self.existing_pods.append(podName)
-                                        self.event_queue.put(u_pod)
-                                
-                                else:
-                                    # MODIFY
-                                    try:
-                                        namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace="test")
-                                        if updatedPod.metadata != namespaced_pod.metadata:
-                                            u_pod['custom']='update'
-                                            self.event_queue.put(u_pod)
-                                    except client.exceptions.ApiException as e:
-                                        print(e)
-                                    
+                        if updatedPod.status:
+                            if updatedPod.status.conditions:
+                                for cond in updatedPod.status.conditions:
+                                    if cond.type == "PodScheduled" and cond.status == "True":
+                                        # CREATED
+                                        if podName not in self.existing_pods:
+                                            if updatedPod.status.pod_ip is not None:
+                                                u_pod['custom']='create'
+                                                self.existing_pods.append(podName)
+                                                self.event_queue.put(u_pod)
+                                        
+                                        else:
+                                            # MODIFY
+                                            try:
+                                                namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace="test")
+                                                if  updatedPod.spec.node_name != namespaced_pod.spec.node_name  or updatedPod.metadata.labels != namespaced_pod.metadata.labels:
+                                                    u_pod['custom']='update'
+                                                    self.event_queue.put(u_pod)
+                                            except client.exceptions.ApiException as e:
+                                                print(e)
+                                        
                             
 
                     # Deleted pods
@@ -295,7 +304,7 @@ class EventWatcher:
                     current, peak = tracemalloc.get_traced_memory()
                     self.memory_usage = (current, peak)
                     tracemalloc.stop()
-                    self.elapesed_time = time_elapsed
+                    self.elapsed_time = time_elapsed
 
                     prettyprint_end_event(event)
                     print("\n-------------------Waiting for next event-------------------")
