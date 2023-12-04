@@ -1,25 +1,50 @@
 import argparse
 import random
+import re
+from xml.etree.ElementTree import QName
 from kubernetes import client, config
 import time
+import uuid  # Import the UUID module
 
 config.load_kube_config()
 
-def are_all_pods_ready(pods, ns):
-    pod_api_instance = client.CoreV1Api()
+def is_pod_ready(pod, ns):
+    try:
+        (pod_name, manifest) = pod
+        pod_api_instance = client.CoreV1Api()
+        try:
+            pod_status = pod_api_instance.read_namespaced_pod_status(pod_name, ns) 
+            if pod_status.status.phase == "Pending":
+                return False
+            
+            if pod_status.metadata.deletion_timestamp is not None:
+                return False
 
-    for pod_name in pods:
-        pod_status = pod_api_instance.read_namespaced_pod_status(pod_name, ns) 
-        if pod_status.status.phase != "Running":
+            for container_status in pod_status.status.container_statuses or []:
+                if container_status.state.waiting:
+                    if container_status.state.waiting.reason == 'ContainerCreating':
+                        return False
+                if container_status.state.terminated:
+                    return False
+                if container_status.state.running is None:
+                    return False
+
+        except client.exceptions.ApiException as e:
+            print(f"trying to redeploy pod {pod_name}")
+            try:
+                pod_api_instance.create_namespaced_pod(body=manifest, namespace=ns)
+            except client.exceptions.ApiException as e2:
+                print(e2)
+
             return False
-        for container_status in pod_status.status.container_statuses or []:
-            if container_status.state.waiting:
-                return False
-            if container_status.state.terminated:
-                return False
-            if container_status.state.running is None:
-                return False
+    except Exception as f:
+        print(f)
+        return False
+
     return True
+
+
+
 
 def deploy(podsnr, policiesnr, ns, key_limit):
     pod_api_instance = client.CoreV1Api()
@@ -65,7 +90,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
         print("\n------------CREATING POLICIES-------------")
         nrofexistingpolicies = len(np_api_instance.list_namespaced_network_policy(ns).items)
         if nrofexistingpolicies == 0:
-            num_digits = len(str(policiesnr))
+            num_digits = len(str(policiesnr)) + 1
         else:
             temp_name = np_api_instance.list_namespaced_network_policy(ns).items[0].metadata.name
             num_digits = len(temp_name.split("-")[1])
@@ -98,13 +123,14 @@ def deploy(podsnr, policiesnr, ns, key_limit):
             len_j = len(str(j))
             zeroes = (num_digits-len_j)*"0"
             nr = f"{zeroes}{j}"
+            name = nr + "-" + str(uuid.uuid4())[:8]
 
             (type, tf) =  random.choice(policytypes)
             network_policy_manifest = {
                 "apiVersion": "networking.k8s.io/v1",
                 "kind": "NetworkPolicy",
                 "metadata": {
-                    "name": f"policy-{nr}",
+                    "name": f"policy-{name}",
                     "namespace": ns,
                 },
                 "spec": {
@@ -127,16 +153,22 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                     if "object is being deleted" in str(e):
                         time.sleep(2)    
                         retries += 1
-                    else:
-                        print(f"Error creating policy-{j}: {e}")
+                    if "already exists" in str(e):
                         retries = 40
-        print(f"{policiesnr} policies created")
-        
+                    else:
+                        print(f"Error creating policy-{name}: {e}")
+                        retries = 0
+        print(f"{policiesnr} policies created, now waiting untill they are ready")
+        while len(np_api_instance.list_namespaced_network_policy(namespace=ns).items) != (nrofexistingpolicies + policiesnr):
+            time.sleep(4)
+        print(f"{policiesnr} policies are ready")
+
+
     if podsnr != 0:
         print("\n------------CREATING PODS-------------")
         nrofexistingpods = len(pod_api_instance.list_namespaced_pod(ns).items)
         if nrofexistingpods == 0:
-            num_digits = len(str(podsnr))
+            num_digits = len(str(podsnr)) + 1
         else:
             temp_name = pod_api_instance.list_namespaced_pod(ns).items[0].metadata.name
             num_digits = len(temp_name.split("-")[1])
@@ -151,52 +183,75 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                 value = random.choice(shortened_values)
                 labels[key] = value
 
-             # This makes sure the pods and policies are sorted on nr when returned by k8s
             # This makes sure the pods and policies are sorted on nr when returned by k8s
             len_i = len(str(i))
             zeroes = (num_digits-len_i)*"0"
             nr = f"{zeroes}{i}"
-
+            name = nr + "-" + str(uuid.uuid4())[:8]
 
             pod_manifest = {
-            "apiVersion": "v1",
-            "kind": "Pod",
-            "metadata": {
-                "name": f"pod-{nr}", 
-                "namespace": ns,
-                "labels": 
-                    labels
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "metadata": {
+                    "name": f"pod-{name}", 
+                    "namespace": ns,
+                    "labels": labels
                 },
-            "spec": {
-                "containers": [
-                    {
-                        "name": "nginx",
-                        "image": "nginx:latest",
-                        "ports": [{"containerPort": 80}]
-                    }
-                ]
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "nginx",
+                            "image": "nginx:latest",
+                            "resources": {
+                                "requests": {
+                                    "memory": "0",
+                                    "cpu": "0"
+                                },
+                                "limits": {
+                                    "memory": "0",
+                                    "cpu": "0"
+                                }
+                            },
+                            "ports": [{"containerPort": 80}]
+                        }
+                    ],
+                    "topologySpreadConstraints": [
+                        {
+                            "maxSkew": 1,
+                            "topologyKey": "kubernetes.io/hostname",
+                            "whenUnsatisfiable": "DoNotSchedule"
+                        }
+                    ]
                 }
             }
             retries = 0
             while retries < 30:
                 try:
                     pod_api_instance.create_namespaced_pod(body=pod_manifest, namespace=ns)
-                    pods.append(f"pod-{nr}")
-
+                    pods.append((f"pod-{name}", pod_manifest))
                     retries = 40
                 except client.exceptions.ApiException as e:
                     if "object is being deleted" in str(e):
                         time.sleep(2)    
                         retries += 1
-                    else:
-                        print(f"Error creating pod-{i}: {e}")
+                    if "already exists" in str(e):
+                        pods.append((f"pod-{name}", pod_manifest))
                         retries = 40
+                    else:
+                        print(f"Error creating pod-{name}: {e}")
+                        retries = 0
             
-        # print(f"{podsnr} pods created, now waiting untill they are ready")
-        # while not are_all_pods_ready(pods, ns):
-        #     time.sleep(1)
+        print(f"{podsnr} pods created, now waiting untill they are ready")
+        while len(pod_api_instance.list_namespaced_pod(namespace=ns).items) != (nrofexistingpods + podsnr):
+            time.sleep(4)
+        for pod in pods:
+            while not is_pod_ready(pod, ns):
+                time.sleep(1)
 
+       
         print(f"{podsnr} pods are ready")
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
