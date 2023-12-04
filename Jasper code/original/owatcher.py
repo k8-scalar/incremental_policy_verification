@@ -1,7 +1,7 @@
 from kubernetes import client, config, watch
 from kubernetes.config import ConfigException
 from urllib3.exceptions import ProtocolError
-import concurrent.futures
+import time
 import os
 import yaml
 from original.oparser import ConfigParser as CP
@@ -37,11 +37,18 @@ def pods(ns, oparser):
             
 def policies(ns, oparser):
     
-    np_api_instance = client.NetworkingV1Api()
-    policy_list = np_api_instance.list_namespaced_network_policy(ns).items
-    for pol in policy_list:
-        new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(pol.metadata.name)).read())
-        oparser.create_object(new_data)
+    while True:
+        oparser.policies =[]
+        np_api_instance = client.NetworkingV1Api()
+        policy_list = np_api_instance.list_namespaced_network_policy(ns).items
+        for pol in policy_list:
+            new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(pol.metadata.name)).read())
+            if new_data is not None:
+                oparser.create_object(new_data)
+            else:
+                break
+        if len(oparser.policies) == len(policy_list):
+            break
         
             
 def o_get_pods_and_policies(ns):

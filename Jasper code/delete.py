@@ -3,11 +3,20 @@ import random
 from kubernetes import client, config
 import time
 config.load_kube_config()
+pod_api_instance = client.CoreV1Api()
+np_api_instance = client.NetworkingV1Api()
+
+def is_pod_deleted(pod_name, ns):
+   
+    try:
+        pod_api_instance.read_namespaced_pod_status(pod_name, ns)
+        return False
+    except client.exceptions.ApiException as e:
+        return True
 
 
 def remove_random(removePod, ns):
     if removePod:
-        pod_api_instance = client.CoreV1Api()
         try: 
             pod_list = pod_api_instance.list_namespaced_pod(ns)
         except client.exceptions.ApiException as e:
@@ -21,7 +30,6 @@ def remove_random(removePod, ns):
             except client.exceptions.ApiException as e:
                 print(f"Error deleting Pod {random_pod.metadata.name}: {e}")
     else:
-        np_api_instance = client.NetworkingV1Api()
         try: 
             policy_list = np_api_instance.list_namespaced_network_policy(ns)
         except client.exceptions.ApiException as e:
@@ -36,34 +44,48 @@ def remove_random(removePod, ns):
                 print(f"Error deleting Pod {random_pol.metadata.name}: {e}")
 
 def resetCluster(ns):
-    pod_api_instance = client.CoreV1Api()
-    np_api_instance = client.NetworkingV1Api()
-    config.load_kube_config()
     delete_options = client.V1DeleteOptions(
-        propagation_policy='Foreground',
+        propagation_policy='Background',
         grace_period_seconds=0
     )
     # List all the pods in the namespace and delete them
     print("\n------------DELETING ALL PODS-------------")
-    pod_list = pod_api_instance.list_namespaced_pod(namespace=ns)
-    for pod in pod_list.items:
-        try:    
-            pod_api_instance.delete_namespaced_pod(pod.metadata.name, ns, body=delete_options)
+    pod_failed = True
+    while pod_failed:
+        try:
+            # Deleting all pods in the specified namespace
+            pod_api_instance.delete_collection_namespaced_pod(namespace=ns, body=delete_options)
+            print(f"Deleted all pods in namespace {ns}")
+            pod_failed = False
         except client.exceptions.ApiException as e:
-            print(f"Error deleting {pod.metadata.name}: {e}")
+            print(f"Error deleting pods: {e}")
+            time.sleep(8)
 
     # List all the policies and delete them
     print("\n------------DELETING ALL POLICIES-------------")
-    policy_list = np_api_instance.list_namespaced_network_policy(namespace=ns)
-    for policy in policy_list.items:
+    pol_failed = True
+    while pol_failed:
         try:
-            np_api_instance.delete_namespaced_network_policy(policy.metadata.name, ns, body=delete_options)
+            # Deleting all pods in the specified namespace
+            np_api_instance.delete_collection_namespaced_network_policy(namespace=ns, body=delete_options)
+            print(f"Deleted all network policies in namespace {ns}")
+            pol_failed = False
         except client.exceptions.ApiException as e:
-            print(f"Error deleting {policy.metadata.name}: {e}")
+            print(f"Error deleting network policies: {e}")
+            time.sleep(8)
+
     
-    # wait for it to be fully deleted to stop conflicts upon creation after
-    while len(np_api_instance.list_namespaced_network_policy(namespace=ns).items) != 0 or len(pod_api_instance.list_namespaced_pod(namespace=ns).items) != 0:
-        time.sleep(1)
+    print("\nMaking sure everything got removed correctly")
+
+    pod_list = pod_api_instance.list_namespaced_pod(namespace=ns)
+    while len(pod_list.items) != 0:
+        time.sleep(10)
+        pod_list = pod_api_instance.list_namespaced_pod(namespace=ns)
+
+    policy_list = np_api_instance.list_namespaced_network_policy(namespace=ns)
+    while len(policy_list.items) != 0:
+        time.sleep(10)
+        policy_list = np_api_instance.list_namespaced_network_policy(namespace=ns)
     print("\nSuccesfully deleted all pods and policies from the cluster")
  
 
