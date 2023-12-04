@@ -213,6 +213,7 @@ class Security_Group:
 class ReachabilityMatrix:
     dict_pods: {}
     dict_pols: {}
+    label_map: Dict[str, bitarray]
     matrix: []
     transpose_matrix: []
     resp_policies: Store
@@ -223,6 +224,7 @@ class ReachabilityMatrix:
         self.matrix = None
         self.transpose_matrix = None
         self.resp_policies = Store()
+        self.label_map = Dict[str, bitarray]
 
 
     def build_matrix(self, containers: List[Container], policies: List[Policy],
@@ -420,6 +422,7 @@ class ReachabilityMatrix:
         self.dict_pods = dict_pods
         self.dict_pols = dict_pols
         self.resp_policies = final_resp_policies
+        self.label_map = labelMap
         
     def build_tranpose(self):
         self.transpose_matrix = [bitarray('0' * self.container_size) for _ in range(self.container_size)]

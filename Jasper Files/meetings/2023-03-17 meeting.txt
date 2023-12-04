@@ -1,6 +1,15 @@
-1. Get Cluster running
-2. Generate Kano matrix
-3. Jasper.Algo (focus first on KanoDelta
+Dear LinkedIn network,
 
+As I approach the culmination of my studies in Applied Computer Science at UCLL and KUL, I am excited to share that I'm in the final stages of (hopefully ;) ) completing my thesis focused on security within the Kubernetes cloud stack.
 
-Introduction chapter: what are containers, why deployed, how to manage dynamically -> tools, e.g. Kubernetes = industry standard, talk about kubernetes , why security, why policies -> make a story.
+My passion for cloud architecture, DevOps, and code development has been a driving force throughout my academic journey, and I am looking forward to the start of my professional career. Ofcourse that is the (not-so) hidden reason I am writing this message to you all.
+
+I am now eagerly seeking a full-time, fully remote role for which I would be available starting this January and am open to a training period in the first half of 2024. I hope to find a job that allows me to contribute my expertise whilst learning more as I find my way through the field of computer science.
+Beyond my academic pursuits, I am drawn to roles that allow me to apply my knowledge while embracing the thrill of exploring diverse regions across Europe.
+
+If my background and aspirations resonate with your organization or if you'd like to connect to discuss potential collaborations, please don't hesitate to reach out.
+
+Thank you for being a part of my professional journey.
+
+Warm regards,
+Jasper

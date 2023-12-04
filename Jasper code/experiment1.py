@@ -1,5 +1,4 @@
 import argparse
-import enum
 from delete import resetCluster, remove_random
 from deploy import deploy
 from watcher import EventWatcher
@@ -9,7 +8,7 @@ from original.owatcher import *
 from original.omodel import ReachabilityMatrix as RM
 import time
 import tracemalloc
-import subprocess
+import signal
 
     
 from kubernetes import client, config
@@ -41,9 +40,8 @@ if __name__ == "__main__":
     print(colorize(f"    -key limit: {args.key_limit}", 35))
     print(colorize(f"    -event_type: {args.event_type}", 35))
 
- 
-    for i in range(args.nr_of_runs):
-
+    i = 0
+    while i < args.nr_of_runs:
         print(colorize(f"\n\n----------------------RUN {i}----------------------", 35))
         # STEP 1: Remove all pods and policies from cluster
         print(colorize("\nSTEP 1: Removing all pods and policies from cluster", 36))
@@ -58,14 +56,18 @@ if __name__ == "__main__":
         # Create and start the EventWatcher in a separate thread
         ew = EventWatcher(False, False, False)
         # make sure the watcher is ready
-        while len(ew.existing_pods) != args.nr_of_pods or len(ew.existing_pols) != args.nr_of_policies:
-            time.sleep(1)
-        ew_thread = threading.Thread(target=ew.run) 
+        
+        ew_thread = threading.Thread(target=ew.run(args.namespace)) 
         ew_thread.start()
         while True:
             if hasattr(ew, 'event_detected') and ew:
                 break
             time.sleep(1)
+        while not ew.policies_started.wait():
+            time.sleep(1)
+        while not ew.pods_started.wait():
+            time.sleep(1)
+            
         # STEP 4: execute event
         print(colorize(f"\nSTEP 4: execute event: {args.event_type}", 36))
         event = args.event_type
@@ -83,7 +85,21 @@ if __name__ == "__main__":
 
         # STEP 5: Wait for the event to be handled
         print(colorize("\nSTEP 5: Wait for the event to be handled", 36))
-        ew.event_detected.wait() # This makes the main thread wait for the ew_thread to finish
+        def timeout_handler(signum, frame):
+            raise TimeoutError("Event handling exceeded time limit")
+
+        timeout_seconds = 300
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(timeout_seconds)
+        
+        try:
+            ew.event_detected.wait() # This makes the main thread wait for the ew_thread to finish
+            signal.alarm(0)
+
+        except TimeoutError as e:
+            print(colorize("\nEvent handling timed out. Restarting the current run.", 31))
+            ew.stop_watching()  # Stop the watcher
+            continue
 
         # STEP 6: Get the processsing time and memory usage:
         print(colorize("\nSTEP 6: Get processing time and memory usage", 36))
@@ -94,10 +110,9 @@ if __name__ == "__main__":
         # STEP 7: stop the watcher
         print(colorize("\nSTEP 7: stop the watcher", 36))
         ew.stop_watching()
-
         # STEP 8: Use original kano generation to get matrix and its processing time
         print(colorize("\nSTEP 8: Get original kano generation time and memory usage", 36))
-       
+    
         (ocontainers, opolicies) = o_get_pods_and_policies(args.namespace)
         tracemalloc.start()
         o_time_start = time.perf_counter() # Start the timer
@@ -111,7 +126,7 @@ if __name__ == "__main__":
         
         if o_matrix.matrix == ew.analyzer.kic.reachabilitymatrix.matrix:
             results.append({'Run Number': i, 'Elapsed Time - INCR (seconds)': elapsed_time, 'Mem start analyser - INCR (bytes)': (current), 'Mem peak analyser - INCR (bytes)': (peak), 'Mem Diff - INCR (bytes)': ((peak - current)), 'Elapsed Time - GEN (seconds)': o_time_elapsed, 'Mem start analyser - GEN (bytes)': (o_current), 'Mem peak analyser - GEN (bytes)': (o_peak), 'Mem Diff - GEN (bytes)': ((o_peak - o_current))})
-
+            i += 1
         else:
             results.append({'Run Number': i, 'Elapsed Time - INCR (seconds)': 'ERROR', 'Mem start analyser - INCR (bytes)': 'ERROR', 'Mem peak analyser - INCR (bytes)': 'ERROR', 'Mem Diff - INCR (bytes)':'ERROR', 'Elapsed Time - GEN (seconds)': 'ERROR', 'Mem start analyser - GEN (bytes)': 'ERROR', 'Mem peak analyser - GEN (bytes)': 'ERROR', 'Mem Diff - GEN (bytes)': 'ERROR'})
             
@@ -128,6 +143,7 @@ if __name__ == "__main__":
             for row in ew.analyzer.kic.reachabilitymatrix.matrix:
                 print(row)
             break
+            
    
     experiment_info = {
     'Number of Runs': args.nr_of_runs,

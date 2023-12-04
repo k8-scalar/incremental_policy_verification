@@ -81,8 +81,11 @@ class EventWatcher:
     analyzer: EventAnalyzer
     stop: boolean
     event_detected: threading.Event # to signal when an event has been detected, for experiment purposes
+    pods_started: threading.Event
+    policies_started: threading.Event
     elapsed_time: int
-
+    podwatch: watch
+    polwatch: watch
     def __init__(self, verbose = False, debug = False, startup = False):
         self.stop = False
         self.existing_pods = []
@@ -90,7 +93,8 @@ class EventWatcher:
         self.elapsed_time = 0
         self.memory_usage = None
         self.analyzer = EventAnalyzer(verbose, debug) # to signal when an event has been detected, for experiment purposes
-
+        self.podwatch = watch.Watch()
+        self.polwatch = watch.Watch()
         print("\n##################################################################################")
         print("# Watching resources in namespace test")
         print("# resources will de displayed in color codes:")
@@ -121,12 +125,14 @@ class EventWatcher:
     def run(self, main_thread=False):
         print("Starting to watch for new events on the cluster..\n\n")
         # Run the watcher
-        self.event_detected = threading.Event()  # Create an event object
+        
+        self.pods_started = threading.Event()
+        self.policies_started = threading.Event()
+        self.event_detected = threading.Event() 
         self.event_queue = queue.Queue()
 
         if main_thread:
             signal.signal(signal.SIGINT, self.handle_interrupt)
-
         with concurrent.futures.ThreadPoolExecutor() as executor:
             p = executor.submit(self.pods)
             n = executor.submit(self.policies)
@@ -192,103 +198,100 @@ class EventWatcher:
             PolName = event.metadata.name
             if verbose:
                 print(f"# NetworkPolicy {PolName} currently exists on the cluster")
+            
             new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(PolName)).read())
+            while new_data == None:
+                time.sleep(1)
+                new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(PolName)).read())
             formatted_pol = self.analyzer.cp.create_object(new_data)
             init_pols.append(formatted_pol)
             self.existing_pols.append(formatted_pol.name)
         return(init_pods, init_pols)
 
     def pods(self):
-        w = watch.Watch()
-        try:
-            while not self.stop:
-                for event in w.stream(pod_api_instance.list_namespaced_pod, namespace = "test", timeout_seconds=1):
-                    if self.stop:
-                        break
-                    updatedPod = event["object"]
-                    podName = updatedPod.metadata.name
-                    labels = updatedPod.metadata.labels
-                    node_name=f"{updatedPod.spec.node_name}"
-                    u_pod = {}
-                    u_pod['apiVersion'] = 'v1'
-                    u_pod['kind'] = 'Pod'
-                    u_pod['metadata'] = {
-                        'name': podName,
-                        'namespace': 'test',
-                        'labels': labels     
-                    }
-                    u_pod['spec']={
-                        'nodeName':node_name
-                    }
-                    # Modified and create pods
-                    if event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None: #File exists so it is a modify and avoid delete modify
-                        if updatedPod.status:
-                            if updatedPod.status.conditions:
-                                for cond in updatedPod.status.conditions:
-                                    if cond.type == "PodScheduled" and cond.status == "True":
-                                        # CREATED
-                                        if podName not in self.existing_pods:
-                                            if updatedPod.status.pod_ip is not None:
-                                                u_pod['custom']='create'
-                                                self.existing_pods.append(podName)
+        self.pods_started.set()
+        while not self.stop:
+            for event in self.podwatch.stream(pod_api_instance.list_namespaced_pod, namespace = "test", timeout_seconds=10):
+                updatedPod = event["object"]
+                podName = updatedPod.metadata.name
+                labels = updatedPod.metadata.labels
+                node_name=f"{updatedPod.spec.node_name}"
+                u_pod = {}
+                u_pod['apiVersion'] = 'v1'
+                u_pod['kind'] = 'Pod'
+                u_pod['metadata'] = {
+                    'name': podName,
+                    'namespace': 'test',
+                    'labels': labels     
+                }
+                u_pod['spec']={
+                    'nodeName':node_name
+                }
+                # Modified and create pods
+                if event['type'] =="MODIFIED" and updatedPod.metadata.deletion_timestamp == None: #File exists so it is a modify and avoid delete modify
+                    if updatedPod.status:
+                        if updatedPod.status.conditions:
+                            for cond in updatedPod.status.conditions:
+                                if cond.type == "PodScheduled" and cond.status == "True":
+                                    # CREATED
+                                    if podName not in self.existing_pods:
+                                        if updatedPod.status.pod_ip is not None:
+                                            u_pod['custom']='create'
+                                            self.existing_pods.append(podName)
+                                            self.event_queue.put(u_pod)
+                                    
+                                    else:
+                                        # MODIFY
+                                        try:
+                                            namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace="test")
+                                            if  updatedPod.spec.node_name != namespaced_pod.spec.node_name  or updatedPod.metadata.labels != namespaced_pod.metadata.labels:
+                                                u_pod['custom']='update'
                                                 self.event_queue.put(u_pod)
-                                        
-                                        else:
-                                            # MODIFY
-                                            try:
-                                                namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace="test")
-                                                if  updatedPod.spec.node_name != namespaced_pod.spec.node_name  or updatedPod.metadata.labels != namespaced_pod.metadata.labels:
-                                                    u_pod['custom']='update'
-                                                    self.event_queue.put(u_pod)
-                                            except client.exceptions.ApiException as e:
-                                                print(e)
+                                        except client.exceptions.ApiException as e:
+                                            print(e)
                                         
                             
 
-                    # Deleted pods
-                    elif event['type'] =="DELETED" :
-                        if podName in self.existing_pods:
-                            u_pod['custom']='delete'
-                            self.existing_pods.remove(podName)
-                            self.event_queue.put(u_pod)
-            print("STOPPING PODS")
-        except ProtocolError:
-            print("watchPodEvents ProtocolError, continuing..")
+                # Deleted pods
+                elif event['type'] =="DELETED" :
+                    if podName in self.existing_pods:
+                        u_pod['custom']='delete'
+                        self.existing_pods.remove(podName)
+                        self.event_queue.put(u_pod)
+
+        print("STOPPING PODS")
+        self.pods_started.clear()
 
     def policies(self):
-        w = watch.Watch()
-        try:
-            while not self.stop:
-                for event in w.stream(policy_api_instance.list_namespaced_network_policy, namespace = "test", timeout_seconds=1):
-                    # stop the loop gracefully
-                    if self.stop:
-                        break
-                    temp_NewPol = event["object"]
-                    NewPol = temp_NewPol.to_dict()
-                    PolName = NewPol['metadata']['name']
-                    if PolName == "default-deny":
-                        continue
-                
-                    if event['type'] =="ADDED":
-                        if PolName not in self.existing_pols:
-                            NewPol['custom']='create'
-                            self.event_queue.put(NewPol)
-                            self.existing_pols.append(PolName)
+        self.policies_started.set()
+        while not self.stop:
+            for event in self.polwatch.stream(policy_api_instance.list_namespaced_network_policy, namespace = "test", timeout_seconds=10):
+                # stop the loop gracefully
+                temp_NewPol = event["object"]
+                NewPol = temp_NewPol.to_dict()
+                PolName = NewPol['metadata']['name']
+        
+                if PolName == "default-deny":
+                    continue
+            
+                if event['type'] =="ADDED":
+                    if PolName not in self.existing_pols:
+                        NewPol['custom']='create'
+                        self.event_queue.put(NewPol)
+                        self.existing_pols.append(PolName)
 
-                    elif event['type'] =="DELETED":
+                elif event['type'] =="DELETED":
+                    if PolName in self.existing_pols:
                         self.existing_pols.remove(PolName)
                         NewPol['custom']='delete'
                         self.event_queue.put(NewPol)
 
-                    elif event['type'] =="MODIFIED":
-                        if temp_NewPol.metadata != policy_api_instance.read_namespaced_network_policy(name=PolName, namespace="test")['metadata']:
-                            NewPol['custom']='update'
-                            self.event_queue.put(NewPol)
-            print("STOPPING POLICIES")
-        except ProtocolError:
-            print("watchPolicyEvents ProtocolError, continuing..")
-
-    
+                elif event['type'] =="MODIFIED":
+                    if temp_NewPol.metadata != policy_api_instance.read_namespaced_network_policy(name=PolName, namespace="test")['metadata']:
+                        NewPol['custom']='update'
+                        self.event_queue.put(NewPol)
+        print("STOPPING POLICIES")
+        self.policies_started.clear()
 
     def consumer(self):
         try:
@@ -315,8 +318,16 @@ class EventWatcher:
             print("Consumer ProtocolError, continuing..")
 
     def stop_watching(self):
-        self.stop = True 
+        self.stop = True
         self.event_queue.put(None)
+        self.podwatch.stop()
+        self.polwatch.stop()
+        while self.policies_started.is_set():
+            time.sleep(1)
+        while self.pods_started.is_set():
+            time.sleep(1)
+        
+
 
 
 if __name__ == "__main__":
