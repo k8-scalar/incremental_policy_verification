@@ -1,15 +1,15 @@
 from model import Container, Policy
 
-class TrieNode:
+class TreeNode:
     def __init__(self, label = ''):
         self.label = label
         self.children = dict()
         self.is_label = False
         self.objects = []
 
-class LabelTrie:
+class LabelTree:
     def __init__(self):
-        self.root = TrieNode()
+        self.root = TreeNode()
   
     def insert(self, label, obj):
         current = self.root
@@ -17,7 +17,7 @@ class LabelTrie:
         for i in range(len(split)):
             part = split[i]
             if part not in current.children:
-                current.children[part] = TrieNode(part)
+                current.children[part] = TreeNode(part)
             current = current.children[part]
             if i == len(split) - 1:  # If this is the last part of the label
                 current.is_label = True
