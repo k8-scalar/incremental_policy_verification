@@ -57,7 +57,7 @@ def resetCluster(ns):
             pod_api_instance.delete_collection_namespaced_pod(namespace=ns, body=delete_options)
             print(f"Deleted all pods in namespace {ns}")
             pod_failed = False
-        except client.exceptions.ApiException as e:
+        except Exception as e:
             print(f"Error deleting pods: {e}")
             time.sleep(8)
 
@@ -70,7 +70,7 @@ def resetCluster(ns):
             np_api_instance.delete_collection_namespaced_network_policy(namespace=ns, body=delete_options)
             print(f"Deleted all network policies in namespace {ns}")
             pol_failed = False
-        except client.exceptions.ApiException as e:
+        except Exception as e:
             print(f"Error deleting network policies: {e}")
             time.sleep(8)
 

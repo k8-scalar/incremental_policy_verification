@@ -86,7 +86,7 @@ class EventWatcher:
     elapsed_time: int
     podwatch: watch
     polwatch: watch
-    def __init__(self, verbose = False, debug = False, startup = False):
+    def __init__(self, ns, verbose = False, debug = False, startup = False):
         self.stop = False
         self.existing_pods = []
         self.existing_pols = []
@@ -96,7 +96,7 @@ class EventWatcher:
         self.podwatch = watch.Watch()
         self.polwatch = watch.Watch()
         print("\n##################################################################################")
-        print("# Watching resources in namespace test")
+        print(f"# Watching resources in namespace {ns}")
         print("# resources will de displayed in color codes:")
         print(f"#   - {colorize('Green', '32')} = newly created resources")
         print(f"#   - {colorize('Red', '31')} = deleted resources")
@@ -107,7 +107,7 @@ class EventWatcher:
         print("#")
         print("# STEP 1/2: Detecting existing resources")
         print("#")
-        (init_pods, init_pols) = self.initial_loader(verbose)
+        (init_pods, init_pols) = self.initial_loader(ns, verbose)
         print("#")
         print("# STEP 2/2: Creating base kanoMatrix and VMmatrix")
         print("#")
@@ -122,7 +122,7 @@ class EventWatcher:
         print("# Startup phase complete")
         print("##################################################################################\n")
 
-    def run(self, main_thread=False):
+    def run(self, ns, main_thread=False):
         print("Starting to watch for new events on the cluster..\n\n")
         # Run the watcher
         
@@ -134,8 +134,8 @@ class EventWatcher:
         if main_thread:
             signal.signal(signal.SIGINT, self.handle_interrupt)
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            p = executor.submit(self.pods)
-            n = executor.submit(self.policies)
+            p = executor.submit(self.pods, ns)
+            n = executor.submit(self.policies, ns)
             c = executor.submit(self.consumer)
             exception = c.exception()
             exception2 = n.exception()
@@ -159,14 +159,14 @@ class EventWatcher:
         self.stop_watching()
         sys.exit(0)
 
-    def initial_loader(self, verbose):
+    def initial_loader(self, ns, verbose):
         init_pods = []
         init_pols = []
 
         # look at all the pods, write their file, and print their existence
         if verbose: 
             print("# ======PODS======")
-        for event in pod_api_instance.list_namespaced_pod("test").items:
+        for event in pod_api_instance.list_namespaced_pod(ns).items:
             podName = event.metadata.name
             labels = event.metadata.labels
             node_name=f"{event.spec.node_name}"
@@ -176,7 +176,7 @@ class EventWatcher:
             u_pod['kind'] = 'Pod'
             u_pod['metadata'] = {
                 'name': podName,
-                'namespace': 'test',
+                'namespace': ns,
                 'labels': labels     
             }
             u_pod['spec']={
@@ -194,24 +194,24 @@ class EventWatcher:
             print("#")
             print("# ======POLICIES======")
 
-        for event in policy_api_instance.list_namespaced_network_policy("test").items:
+        for event in policy_api_instance.list_namespaced_network_policy(ns).items:
             PolName = event.metadata.name
             if verbose:
                 print(f"# NetworkPolicy {PolName} currently exists on the cluster")
             
-            new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(PolName)).read())
+            new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n {} -o yaml".format(PolName, ns)).read())
             while new_data == None:
                 time.sleep(1)
-                new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n test -o yaml".format(PolName)).read())
+                new_data = yaml.safe_load(os.popen("kubectl get networkpolicy {} -n {} -o yaml".format(PolName, ns)).read())
             formatted_pol = self.analyzer.cp.create_object(new_data)
             init_pols.append(formatted_pol)
             self.existing_pols.append(formatted_pol.name)
         return(init_pods, init_pols)
 
-    def pods(self):
+    def pods(self, ns):
         self.pods_started.set()
         while not self.stop:
-            for event in self.podwatch.stream(pod_api_instance.list_namespaced_pod, namespace = "test", timeout_seconds=10):
+            for event in self.podwatch.stream(pod_api_instance.list_namespaced_pod, namespace = ns, timeout_seconds=10):
                 updatedPod = event["object"]
                 podName = updatedPod.metadata.name
                 labels = updatedPod.metadata.labels
@@ -221,7 +221,7 @@ class EventWatcher:
                 u_pod['kind'] = 'Pod'
                 u_pod['metadata'] = {
                     'name': podName,
-                    'namespace': 'test',
+                    'namespace': ns,
                     'labels': labels     
                 }
                 u_pod['spec']={
@@ -243,29 +243,28 @@ class EventWatcher:
                                     else:
                                         # MODIFY
                                         try:
-                                            namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace="test")
+                                            namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace=ns)
                                             if  updatedPod.spec.node_name != namespaced_pod.spec.node_name  or updatedPod.metadata.labels != namespaced_pod.metadata.labels:
                                                 u_pod['custom']='update'
                                                 self.event_queue.put(u_pod)
                                         except client.exceptions.ApiException as e:
                                             print(e)
                                         
-                            
 
-                # Deleted pods
-                elif event['type'] =="DELETED" :
-                    if podName in self.existing_pods:
-                        u_pod['custom']='delete'
-                        self.existing_pods.remove(podName)
-                        self.event_queue.put(u_pod)
-
+                    # Deleted pods
+                    elif event['type'] =="DELETED" :
+                        if podName in self.existing_pods:
+                            u_pod['custom']='delete'
+                            self.existing_pods.remove(podName)
+                            self.event_queue.put(u_pod)
+    
         print("STOPPING PODS")
         self.pods_started.clear()
 
-    def policies(self):
+    def policies(self, ns):
         self.policies_started.set()
         while not self.stop:
-            for event in self.polwatch.stream(policy_api_instance.list_namespaced_network_policy, namespace = "test", timeout_seconds=10):
+            for event in self.polwatch.stream(policy_api_instance.list_namespaced_network_policy, namespace = ns, timeout_seconds=10):
                 # stop the loop gracefully
                 temp_NewPol = event["object"]
                 NewPol = temp_NewPol.to_dict()
@@ -287,13 +286,15 @@ class EventWatcher:
                         self.event_queue.put(NewPol)
 
                 elif event['type'] =="MODIFIED":
-                    if temp_NewPol.metadata != policy_api_instance.read_namespaced_network_policy(name=PolName, namespace="test")['metadata']:
+                    if temp_NewPol.metadata != policy_api_instance.read_namespaced_network_policy(name=PolName, namespace=ns)['metadata']:
                         NewPol['custom']='update'
                         self.event_queue.put(NewPol)
+
         print("STOPPING POLICIES")
         self.policies_started.clear()
 
     def consumer(self):
+        print("CONSUMER STARTED")
         try:
             while not self.stop:
                 event = self.event_queue.get() # blocks if no event is present untill a new one arrives
@@ -332,15 +333,15 @@ class EventWatcher:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Jasper's Kubernetes event watcher")
-    
+    parser.add_argument("namespace", type=str)
     # Add flags for verbose output, startup verification check and debug output
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument("-s", "--startup", action="store_true", help="Enable startup analysis")
     parser.add_argument("-d", "--debug", action="store_true", help="Enable debug outputs")
 
     args = parser.parse_args()
-    ew = EventWatcher(args.verbose, args.debug, args.startup)
-    ew.run(True)
+    ew = EventWatcher(args.namespace, args.verbose, args.debug, args.startup)
+    ew.run(args.namespace, True)
     
             
 

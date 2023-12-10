@@ -43,7 +43,26 @@ def is_pod_ready(pod, ns):
 
     return True
 
-
+def is_policy_ready(policy, ns): 
+    try:
+        np_api_instance = client.NetworkingV1Api()
+        try:
+            (pol_name, manifest) = policy
+            np_api_instance.read_namespaced_network_policy(name=pol_name, namespace=ns)
+            return True
+                
+        except client.exceptions.ApiException as e:
+            print(e)
+            print(f"trying to redeploy policy {pol_name}")
+            try:
+                np_api_instance.create_namespaced_network_policy(body=manifest, namespace=ns)
+                return False
+            except client.exceptions.ApiException as e2:
+                print(e2)
+                return False
+    except Exception as f:
+        print(f)
+        return False
 
 
 def deploy(podsnr, policiesnr, ns, key_limit):
@@ -88,14 +107,21 @@ def deploy(podsnr, policiesnr, ns, key_limit):
 
     if policiesnr != 0:
         print("\n------------CREATING POLICIES-------------")
-        nrofexistingpolicies = len(np_api_instance.list_namespaced_network_policy(ns).items)
-        if nrofexistingpolicies == 0:
-            num_digits = len(str(policiesnr)) + 1
-        else:
-            temp_name = np_api_instance.list_namespaced_network_policy(ns).items[0].metadata.name
-            num_digits = len(temp_name.split("-")[1])
+        start_done = False
+        while not start_done:
+            try:
+                nrofexistingpolicies = len(np_api_instance.list_namespaced_network_policy(ns).items)
+                if nrofexistingpolicies == 0:
+                    num_digits = len(str(policiesnr)) + 1
+                else:
+                    temp_name = np_api_instance.list_namespaced_network_policy(ns).items[0].metadata.name
+                    num_digits = len(temp_name.split("-")[1])
+                start_done = True
+            except Exception as e:
+                print(e)
     
-        
+        pols = []
+
         for j in range(nrofexistingpolicies, (nrofexistingpolicies + policiesnr)):
 
             # CONSTANT: selects limit 1
@@ -148,6 +174,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
             while retries < 30:
                 try:
                     np_api_instance.create_namespaced_network_policy(body=network_policy_manifest, namespace=ns)
+                    pols.append((f"policy-{name}", network_policy_manifest))
                     retries = 40
                 except client.exceptions.ApiException as e:
                     if "object is being deleted" in str(e):
@@ -159,19 +186,34 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                         print(f"Error creating policy-{name}: {e}")
                         retries = 0
         print(f"{policiesnr} policies created, now waiting untill they are ready")
-        while len(np_api_instance.list_namespaced_network_policy(namespace=ns).items) != (nrofexistingpolicies + policiesnr):
-            time.sleep(4)
+        all_ready = False
+        while not all_ready:
+            try:
+                while len(np_api_instance.list_namespaced_network_policy(namespace=ns).items) != (nrofexistingpolicies + policiesnr):
+                    time.sleep(4)
+                for pol in pols:
+                    while not is_policy_ready(pol, ns):
+                        time.sleep(1)
+                all_ready = True
+            except Exception as e:
+                print(e)
         print(f"{policiesnr} policies are ready")
 
 
     if podsnr != 0:
         print("\n------------CREATING PODS-------------")
-        nrofexistingpods = len(pod_api_instance.list_namespaced_pod(ns).items)
-        if nrofexistingpods == 0:
-            num_digits = len(str(podsnr)) + 1
-        else:
-            temp_name = pod_api_instance.list_namespaced_pod(ns).items[0].metadata.name
-            num_digits = len(temp_name.split("-")[1])
+        start_done = False
+        while not start_done:
+            try:
+                nrofexistingpods = len(pod_api_instance.list_namespaced_pod(ns).items)
+                if nrofexistingpods == 0:
+                    num_digits = len(str(podsnr)) + 1
+                else:
+                    temp_name = pod_api_instance.list_namespaced_pod(ns).items[0].metadata.name
+                    num_digits = len(temp_name.split("-")[1])
+                start_done = True
+            except Exception as e:
+                print(e)
         pods = []
         for i in range(nrofexistingpods, (nrofexistingpods + podsnr)):
 
@@ -230,7 +272,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                     pod_api_instance.create_namespaced_pod(body=pod_manifest, namespace=ns)
                     pods.append((f"pod-{name}", pod_manifest))
                     retries = 40
-                except client.exceptions.ApiException as e:
+                except Exception as e:
                     if "object is being deleted" in str(e):
                         time.sleep(2)    
                         retries += 1
@@ -242,12 +284,17 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                         retries = 0
             
         print(f"{podsnr} pods created, now waiting untill they are ready")
-        while len(pod_api_instance.list_namespaced_pod(namespace=ns).items) != (nrofexistingpods + podsnr):
-            time.sleep(4)
-        for pod in pods:
-            while not is_pod_ready(pod, ns):
-                time.sleep(1)
-
+        all_ready = False
+        while not all_ready:
+            try:
+                while len(pod_api_instance.list_namespaced_pod(namespace=ns).items) != (nrofexistingpods + podsnr):
+                    time.sleep(4)
+                for pod in pods:
+                    while not is_pod_ready(pod, ns):
+                        time.sleep(1)
+                all_ready = True
+            except Exception as e:
+                print(e)
        
         print(f"{podsnr} pods are ready")
 
