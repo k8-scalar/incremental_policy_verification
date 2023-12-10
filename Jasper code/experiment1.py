@@ -54,10 +54,10 @@ if __name__ == "__main__":
         # STEP 3: Start the watcher (non-verbose, non-debug, non-startupcheck)
         print(colorize("\nSTEP 3: Start the watcher", 36))
         # Create and start the EventWatcher in a separate thread
-        ew = EventWatcher(False, False, False)
+        ew = EventWatcher(args.namespace, False, False, False)
         # make sure the watcher is ready
         
-        ew_thread = threading.Thread(target=ew.run(args.namespace)) 
+        ew_thread = threading.Thread(target=ew.run, args=(args.namespace,))
         ew_thread.start()
         while True:
             if hasattr(ew, 'event_detected') and ew:

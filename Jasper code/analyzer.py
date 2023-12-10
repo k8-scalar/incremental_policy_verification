@@ -92,7 +92,10 @@ class EventAnalyzer:
         obj = self.cp.create_object_from_event(event)
         if isinstance(obj, Policy):
             if event['custom'] == "create":
-                obj.id = max(self.kic.reachabilitymatrix.dict_pols.keys()) + 1
+                if self.kic.reachabilitymatrix.dict_pols.keys() is not None:
+                    obj.id = max(self.kic.reachabilitymatrix.dict_pols.keys()) + 1
+                else:
+                    obj.id = 0
                 new_reach = self.kic.reachabilityAddNP(obj)
                 # deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
                    
@@ -361,46 +364,46 @@ class EventAnalyzer:
                 self.kic.delete_container(obj)
                 self.kic.matrixId_to_Container = new_matrixId_to_Container
 
-            elif event['custom'] == "update":
-                for key, value in self.kic.reachabilitymatrix.dict_pods.items():
-                    if value.name == obj.name:
-                        old_obj = value
-                        break
-                self.kic.update_container(old_obj, obj)
-                differences = find_obj_differences(old_obj, obj)
-                if differences:
-                    print("  The following changes have been found between the old Pod and the updated Pod")
+            # elif event['custom'] == "update":
+            #     for key, value in self.kic.reachabilitymatrix.dict_pods.items():
+            #         if value.name == obj.name:
+            #             old_obj = value
+            #             break
+            #     self.kic.update_container(old_obj, obj)
+            #     differences = find_obj_differences(old_obj, obj)
+            #     if differences:
+            #         print("  The following changes have been found between the old Pod and the updated Pod")
 
-                    for key, (value1, value2) in differences.items():
-                        # id is not assigned yet so should be ignored.
-                        if key != "id":
-                            print(f"\n    -{key}:")
-                            print(f"       old:     {value1}")
-                            print(f"       updated: {value2}")
+            #         for key, (value1, value2) in differences.items():
+            #             # id is not assigned yet so should be ignored.
+            #             if key != "id":
+            #                 print(f"\n    -{key}:")
+            #                 print(f"       old:     {value1}")
+            #                 print(f"       updated: {value2}")
                 
-                new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
-                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
-                if is_matrix_all_zero(deltakano):
-                    print("\n  The updated container does not trigger any change in connections and thus does not introduce any new conflicts")
-                    print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
-                else:
-                    for i, row in enumerate(deltakano):
-                         for j, value in enumerate(row):
+            #     new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
+            #     deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+            #     if is_matrix_all_zero(deltakano):
+            #         print("\n  The updated container does not trigger any change in connections and thus does not introduce any new conflicts")
+            #         print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
+            #     else:
+            #         for i, row in enumerate(deltakano):
+            #              for j, value in enumerate(row):
                             
-                            if deltakano[i][j] == 1:
-                                # First we get the nodes they are deployed on.
-                                nodeName1 = self.kic.matrixId_to_Container[i].nodeName
-                                nodeName2 = self.kic.matrixId_to_Container[j].nodeName
-                                # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
-                                print("\n  The container update has effect on the connectivity between following pods:")
-                                if self.kic.reachabilitymatrix.matrix[i][j] == 1:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
-                                    # Now we look at SGs
-                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
-                                else:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
-                                    # Now we look at SGs
-                                    self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
+            #                 if deltakano[i][j] == 1:
+            #                     # First we get the nodes they are deployed on.
+            #                     nodeName1 = self.kic.matrixId_to_Container[i].nodeName
+            #                     nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+            #                     # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
+            #                     print("\n  The container update has effect on the connectivity between following pods:")
+            #                     if self.kic.reachabilitymatrix.matrix[i][j] == 1:
+            #                         print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
+            #                         # Now we look at SGs
+            #                         self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
+            #                     else:
+            #                         print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
+            #                         # Now we look at SGs
+            #                         self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
         else:           
             raise ValueError("\ERROR: This is not a correct event and can not be handled correctly\n")
         
