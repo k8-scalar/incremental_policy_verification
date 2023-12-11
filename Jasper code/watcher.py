@@ -10,7 +10,7 @@ import concurrent.futures
 import os, sys
 import yaml
 from contextlib import contextmanager
-from time import process_time
+import datetime
 from analyzer import EventAnalyzer
 import sys
 import time
@@ -31,13 +31,6 @@ except ConfigException:
 
 pod_api_instance = client.CoreV1Api()
 policy_api_instance = client.NetworkingV1Api()
-
-@contextmanager
-def timing_processtime(description: str) -> None:
-    start = process_time()
-    yield
-    ellapsed_time = process_time() - start
-    print(f"{description}: {ellapsed_time}")
 
 def colorize(text, color_code):
     return f"\033[{color_code}m{text}\033[0m"
@@ -83,7 +76,8 @@ class EventWatcher:
     event_detected: threading.Event # to signal when an event has been detected, for experiment purposes
     pods_started: threading.Event
     policies_started: threading.Event
-    elapsed_time: int
+    end_time: datetime.datetime
+    detected_time: datetime.datetime
     podwatch: watch
     polwatch: watch
     def __init__(self, ns, verbose = False, debug = False, startup = False):
@@ -152,7 +146,7 @@ class EventWatcher:
                     traceback.print_exception(type(exception3), exception3, exception3.__traceback__)
         
     def get_time_and_memory(self):
-        return (self.elapsed_time, self.memory_usage)
+        return (self.detected_time, self.end_time, self.memory_usage)
     
     def handle_interrupt(self, signum, frame):
         print("Terminating the event watcher...")
@@ -251,12 +245,12 @@ class EventWatcher:
                                             print(e)
                                         
 
-                    # Deleted pods
-                    elif event['type'] =="DELETED" :
-                        if podName in self.existing_pods:
-                            u_pod['custom']='delete'
-                            self.existing_pods.remove(podName)
-                            self.event_queue.put(u_pod)
+                # Deleted pods
+                elif event['type'] =="DELETED" :
+                    if podName in self.existing_pods:
+                        u_pod['custom']='delete'
+                        self.existing_pods.remove(podName)
+                        self.event_queue.put(u_pod)
     
         print("STOPPING PODS")
         self.pods_started.clear()
@@ -294,7 +288,6 @@ class EventWatcher:
         self.policies_started.clear()
 
     def consumer(self):
-        print("CONSUMER STARTED")
         try:
             while not self.stop:
                 event = self.event_queue.get() # blocks if no event is present untill a new one arrives
@@ -302,13 +295,12 @@ class EventWatcher:
                     prettyprint_event(event)
 
                     tracemalloc.start()
-                    time_start = time.perf_counter() # Start the timer
+                    self.detected_time = datetime.datetime.now()
                     self.analyzer.analyseEvent(event)
-                    time_elapsed = time.perf_counter() - time_start # final computation time
+                    self.end_time = datetime.datetime.now()
                     current, peak = tracemalloc.get_traced_memory()
                     self.memory_usage = (current, peak)
                     tracemalloc.stop()
-                    self.elapsed_time = time_elapsed
 
                     prettyprint_end_event(event)
                     print("\n-------------------Waiting for next event-------------------")

@@ -5,7 +5,7 @@ from xml.etree.ElementTree import QName
 from kubernetes import client, config
 import time
 import uuid  # Import the UUID module
-
+import datetime
 config.load_kube_config()
 
 def is_pod_ready(pod, ns):
@@ -104,6 +104,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
     shortened_keys = keys[:key_limit]
     policytypes = [("Ingress", "from"), ("Egress", "to")]
 
+    start_time = None
 
     if policiesnr != 0:
         print("\n------------CREATING POLICIES-------------")
@@ -174,6 +175,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
             while retries < 30:
                 try:
                     np_api_instance.create_namespaced_network_policy(body=network_policy_manifest, namespace=ns)
+                    start_time = datetime.datetime.now()
                     pols.append((f"policy-{name}", network_policy_manifest))
                     retries = 40
                 except client.exceptions.ApiException as e:
@@ -270,6 +272,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
             while retries < 30:
                 try:
                     pod_api_instance.create_namespaced_pod(body=pod_manifest, namespace=ns)
+                    start_time = datetime.datetime.now()
                     pods.append((f"pod-{name}", pod_manifest))
                     retries = 40
                 except Exception as e:
@@ -297,7 +300,7 @@ def deploy(podsnr, policiesnr, ns, key_limit):
                 print(e)
        
         print(f"{podsnr} pods are ready")
-
+    return start_time
 
 
 if __name__ == "__main__":

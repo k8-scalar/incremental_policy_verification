@@ -95,6 +95,9 @@ class Security_Groups_Information_Cluster:
             low = random.randint(1, nr_of_nodes - 2)
         else: 
             low = 1
+        # CONSTANT Random number of security groups. 
+        # min = between 1 and nr_of_nodes -2
+        # max = nr_of_nodes + 8
         nr_of_sg = random.randint(low, nr_of_nodes + 8)
         # For testing purposes we use a low range of Ips.
         port_max = 10
@@ -105,7 +108,7 @@ class Security_Groups_Information_Cluster:
 
         for sg_id in range(nr_of_sg):
             security_group_name = f'SecurityGroup-{sg_id}'
-            num_rules = random.randint(3, 5)  # Random number of rules per group
+            num_rules = random.randint(3, 5)  # CONSTANT Random number of rules per group
             rules = []
             for ruleId in range(num_rules):
                 port_nr = random.randint(0, port_max)
@@ -151,7 +154,7 @@ class Security_Groups_Information_Cluster:
             self.ingress_node_Graph.add_node(node)
             self.egress_node_Graph.add_node(node)
 
-            nr_of_sg_to_link = random.randint(3,5)
+            nr_of_sg_to_link = random.randint(3,5) # Constant nr of sg to link to a node 
             while nr_of_sg_to_link > 0:
                 sg_to_link = random.randint(0, nr_of_sg - 1)
                 security_groups[sg_to_link]
