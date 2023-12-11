@@ -1,1 +1,5 @@
 scp -o ProxyJump=r0703236@st.cs.kuleuven.be  ubuntu@172.23.1.66:/home/ubuntu/experiments/results.xlsx C:\Users\jaspe\Desktop\results.xlsx
+
+scp -o ProxyJump=r0703236@st.cs.kuleuven.be  ubuntu@172.23.1.66:/home/ubuntu/experiments/events.xlsx C:\Users\jaspe\Desktop\events.xlsx
+
+scp -o ProxyJump=r0703236@st.cs.kuleuven.be  ubuntu@172.23.1.66:/home/ubuntu/experiments/startup.xlsx C:\Users\jaspe\Desktop\startup.xlsx

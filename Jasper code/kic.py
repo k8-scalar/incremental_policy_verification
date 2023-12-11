@@ -1,5 +1,5 @@
 from time import pthread_getcpuclockid
-from labelTrie import LabelTrie
+from labelTree import LabelTree
 from model import *
 import copy
 
@@ -7,16 +7,16 @@ def formatlabel(label, value):
     return str.format(label +  ":" + value)
 
 class Kubernetes_Information_Cluster:
-    eggressTrie: LabelTrie
-    ingressTrie: LabelTrie
+    eggressTree: LabelTree
+    ingressTree: LabelTree
     reachabilitymatrix: ReachabilityMatrix
     pods: list
     pols: list
     
 
     def __init__(self):
-        self.eggressTrie = LabelTrie()
-        self.ingressTrie = LabelTrie()
+        self.eggressTree = LabelTree()
+        self.ingressTree = LabelTree()
         self.reachabilitymatrix = ReachabilityMatrix()
         self.matrixId_to_Container = {}
         self.pods = []
@@ -55,11 +55,11 @@ class Kubernetes_Information_Cluster:
             if obj.direction.direction:
                 # Ingress
                 for lab in obj.selector.concat_labels:
-                    self.ingressTrie.insert(lab, obj)
+                    self.ingressTree.insert(lab, obj)
             else:
                 # Egress
                 for lab in obj.selector.concat_labels:
-                    self.eggressTrie.insert(lab, obj)
+                    self.eggressTree.insert(lab, obj)
         else:
             raise ValueError("data is not a Policy object")
         
@@ -69,11 +69,11 @@ class Kubernetes_Information_Cluster:
             if obj.direction.direction:
                 # Ingress
                 for lab in obj.selector.concat_labels:
-                    self.ingressTrie.delete(lab, obj)
+                    self.ingressTree.delete(lab, obj)
             else:
                 # Egress
                 for lab in obj.selector.concat_labels:
-                    self.eggressTrie.delete(lab, obj)
+                    self.eggressTree.delete(lab, obj)
         else:
             raise ValueError("Data is not a Policy object")
         
@@ -128,11 +128,11 @@ class Kubernetes_Information_Cluster:
                 for cont_label in self.matrixId_to_Container[container].concat_labels:
                     if obj.direction.direction:
                         # INGRESS -> we look at existing egress rules
-                        trienode = self.eggressTrie.find(cont_label)
+                        trienode = self.eggressTree.find(cont_label)
                         
                     else:
                         # EGRESS -> we look at existing ingress rules
-                        trienode = self.ingressTrie.find(cont_label)
+                        trienode = self.ingressTree.find(cont_label)
                     # we add all opposite policies to a set if their select labels match our containers labels
                     if trienode is not None:
                         for item in trienode:
@@ -200,11 +200,11 @@ class Kubernetes_Information_Cluster:
                 for cont_label in self.matrixId_to_Container[container].concat_labels:
                     if obj.direction.direction:
                         # INGRESS -> we look at existing egress rules
-                        trienode = self.eggressTrie.find(cont_label)
+                        trienode = self.eggressTree.find(cont_label)
                         
                     else:
                         # EGRESS -> we look at existing ingress rules
-                        trienode = self.ingressTrie.find(cont_label)
+                        trienode = self.ingressTree.find(cont_label)
                     # we add all opposite policies to a set if there select labels match our containers labels
                     if trienode is not None:
                         for item in trienode:
@@ -263,13 +263,13 @@ class Kubernetes_Information_Cluster:
         # Create a set of all the Policies using the container's labels
         rules = set()
         for label in obj.concat_labels:
-            egresses = self.eggressTrie.find(label)
+            egresses = self.eggressTree.find(label)
             if egresses is not None:
                 for pol in egresses:
                     # Add the policies to which the container does not match the entire select labels
                     if all(label2 in obj.concat_labels for label2 in pol.selector.concat_labels):
                         rules.add(pol.id)
-            ingresses = self.ingressTrie.find(label)
+            ingresses = self.ingressTree.find(label)
             if ingresses is not None:
                 for pol in ingresses:
                     # Add the policies to which the container does not match the entire select labels
@@ -302,9 +302,9 @@ class Kubernetes_Information_Cluster:
                 for sec_label in second_container.concat_labels:
                     if rule.direction.direction:
                         # INGRESS
-                        egresses2 = self.eggressTrie.find(sec_label)
+                        egresses2 = self.eggressTree.find(sec_label)
                     else:
-                        egresses2 = self.ingressTrie.find(sec_label)
+                        egresses2 = self.ingressTree.find(sec_label)
                     if egresses2 is not None:
                         secondrules.update(pol2.id for pol2 in egresses2)
                 for second_id in secondrules:
@@ -375,9 +375,9 @@ class Kubernetes_Information_Cluster:
             for label, new_arr in self.reachabilitymatrix.label_map.items():   
                 print(f"# {label}: {new_arr}")
             print("# Egress Trie:")
-            print(f"# {self.eggressTrie}\n")
+            print(f"# {self.eggressTree}\n")
             print("# Ingress Trie:")
-            print(f"# {self.ingressTrie}\n")
+            print(f"# {self.ingressTree}\n")
 
             print("# matrixIdtoContainer:")
             print(f"# {self.matrixId_to_Container}\n")
