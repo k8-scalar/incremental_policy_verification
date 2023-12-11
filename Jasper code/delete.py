@@ -2,6 +2,7 @@ import argparse
 import random
 from kubernetes import client, config
 import time
+import datetime
 config.load_kube_config()
 pod_api_instance = client.CoreV1Api()
 np_api_instance = client.NetworkingV1Api()
@@ -16,6 +17,7 @@ def is_pod_deleted(pod_name, ns):
 
 
 def remove_random(removePod, ns):
+    start_time = None
     if removePod:
         try: 
             pod_list = pod_api_instance.list_namespaced_pod(ns)
@@ -26,6 +28,7 @@ def remove_random(removePod, ns):
             random_pod = random.choice(pod_list.items)
             try:
                 pod_api_instance.delete_namespaced_pod(name=random_pod.metadata.name, namespace=ns, body=client.V1DeleteOptions())
+                start_time = datetime.datetime.now()
                 print(f"Pod {random_pod.metadata.name} deleted successfully.")
             except client.exceptions.ApiException as e:
                 print(f"Error deleting Pod {random_pod.metadata.name}: {e}")
@@ -39,9 +42,11 @@ def remove_random(removePod, ns):
             random_pol = random.choice(policy_list.items)
             try:
                 np_api_instance.delete_namespaced_network_policy(name=random_pol.metadata.name, namespace=ns, body=client.V1DeleteOptions())
+                start_time = datetime.datetime.now()
                 print(f"Pod {random_pol.metadata.name} deleted successfully.")
             except client.exceptions.ApiException as e:
                 print(f"Error deleting Pod {random_pol.metadata.name}: {e}")
+    return start_time
 
 def resetCluster(ns):
     delete_options = client.V1DeleteOptions(

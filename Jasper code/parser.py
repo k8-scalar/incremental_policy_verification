@@ -94,7 +94,7 @@ class ConfigParser:
                 self.containers.append(new_container)
                 return(new_container)
 
-    # Different because of differences in formatting of dict identifiers
+    # Different because of differences in formatting of To  identifiers
     def create_object_from_event(self, data):
         if data is not None:
             if data['kind'] == 'NetworkPolicy':
