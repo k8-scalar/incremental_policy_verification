@@ -1,0 +1,47 @@
+\begin{algorithm}
+    \caption{Event Analysis}
+    \label{algo:analyzer}
+    \begin{algorithmic}[1]
+    \Function{analyseEvent}{event}
+        \State obj $\gets$ parser.create\_object\_from\_event(event)
+        \State new\_reach $\gets$ kic.update\_kano\_matrix(obj)
+        \If{obj is a policy}
+            \State deltamatrix $\gets$ kic.kano\_reach AND new\_reach
+            \If{deltamatrix not all zeroes}
+                \For{i, j where deltamatrix[i][j] == 1}
+                    \State report changes
+                    \State sgic.check\_sg\_connectivity(i.node, j.node, connection\_wanted)
+                \EndFor
+            \EndIf
+            \\
+        \ElsIf{obj is a container}
+            \If{event['custom'] == "create"}
+                \For{i in new\_reach.containers}
+                    \If{new\_reach[obj][i] == 1}
+                        \State report changes
+                        \State sgic.check\_sg\_connectivity(obj.node, i.node, True)
+                    \EndIf
+                    \If{new\_reach[i][obj] == 1}
+                        \State report changes
+                        \State sgic.check\_sg\_connectivity(i.node, obj.node, True)
+                    \EndIf
+                \EndFor
+            \ElsIf{event['custom'] == "delete"}
+                \For{i in kic.containers}
+                    \If{kic.kano\_reach[obj][i] == 1}
+                        \State report changes
+                        \State sgic.check\_sg\_connectivity(obj.node, i.node, False)
+                    \EndIf
+                    \If{kic.kano\_reach[i][obj] == 1}
+                        \State report changes
+                        \State sgic.check\_sg\_connectivity(i.node, obj.node, False)
+                    \EndIf
+                \EndFor
+            \EndIf
+        \EndIf
+        \\
+        \State update cluster state
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+

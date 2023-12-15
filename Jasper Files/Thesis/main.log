@@ -1,0 +1,2532 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10.12) (preloaded format=pdflatex 2023.12.15)  15 DEC 2023 17:04
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./main.tex
+(main.tex
+LaTeX2e <2023-11-01>
+L3 programming layer <2023-12-08>
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\fix-cm.sty
+Package: fix-cm 2020/11/24 v1.1t fixes to LaTeX
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding TS1 on input line 47.
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\book.cls
+Document Class: book 2023/05/17 v1.4n Standard LaTeX document class
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\bk12.clo
+File: bk12.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count187
+\c@chapter=\count188
+\c@section=\count189
+\c@subsection=\count190
+\c@subsubsection=\count191
+\c@paragraph=\count192
+\c@subparagraph=\count193
+\c@figure=\count194
+\c@table=\count195
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\bibindent=\dimen140
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen141
+\Gin@req@width=\dimen142
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/textpos\textpos.sty
+Package: textpos 2022/07/23 v1.10.1
+Package textpos Info: choosing support for LaTeX3 on input line 60.
+\TP@textbox=\box51
+\TPHorizModule=\dimen143
+\TPVertModule=\dimen144
+\TP@margin=\dimen145
+\TP@absmargin=\dimen146
+Grid set 16 x 16 = 37.34424pt x 52.81541pt
+\TPboxrulesize=\dimen147
+\TP@tbargs=\toks18
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\helvet.sty
+Package: helvet 2020/03/25 PSNFSS-v9.3 (WaS) 
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
+Package: titlesec 2023/10/27 v2.16 Sectioning titles
+\ttl@box=\box52
+\beforetitleunit=\skip50
+\aftertitleunit=\skip51
+\ttl@plus=\dimen148
+\ttl@minus=\dimen149
+\ttl@toksa=\toks19
+\titlewidth=\dimen150
+\titlewidthlast=\dimen151
+\titlewidthfirst=\dimen152
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty
+Package: fancyhdr 2022/11/09 v4.1 Extensive control of page headers and footers
+
+\f@nch@headwidth=\skip52
+\f@nch@O@elh=\skip53
+\f@nch@O@erh=\skip54
+\f@nch@O@olh=\skip55
+\f@nch@O@orh=\skip56
+\f@nch@O@elf=\skip57
+\f@nch@O@erf=\skip58
+\f@nch@O@olf=\skip59
+\f@nch@O@orf=\skip60
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+Package: hyperref 2023-11-26 v7.01g Hypertext links for LaTeX
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
+ty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
+keys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
+ty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
+.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/letltxmacro\letltxmacro
+.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+Package: nameref 2023-11-26 v2.56 Cross-referencing by name of section
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
+lestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count196
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count197
+)
+\@linkdim=\dimen153
+\Hy@linkcounter=\count198
+\Hy@pagecounter=\count199
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+File: pd1enc.def 2023-11-26 v7.01g Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count266
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
+File: puenc.def 2023-11-26 v7.01g Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Hyper figures OFF on input line 4181.
+Package hyperref Info: Link nesting OFF on input line 4186.
+Package hyperref Info: Hyper index ON on input line 4189.
+Package hyperref Info: Plain pages OFF on input line 4196.
+Package hyperref Info: Backreferencing OFF on input line 4201.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4448.
+\c@Hy@tempcnt=\count267
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip16
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4786.
+\XeTeXLinkMargin=\dimen154
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
+.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count268
+\Field@Width=\dimen155
+\Fld@charsize=\dimen156
+Package hyperref Info: Hyper figures OFF on input line 6065.
+Package hyperref Info: Link nesting OFF on input line 6070.
+Package hyperref Info: Hyper index ON on input line 6073.
+Package hyperref Info: backreferencing OFF on input line 6080.
+Package hyperref Info: Link coloring OFF on input line 6085.
+Package hyperref Info: Link coloring with OCG OFF on input line 6090.
+Package hyperref Info: PDF/A mode OFF on input line 6095.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty
+Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
+package with kernel methods
+)
+\Hy@abspage=\count269
+\c@Item=\count270
+\c@Hfootnote=\count271
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+File: hpdftex.def 2023-11-26 v7.01g Hyperref driver for pdfTeX
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
+kage
+with kernel methods
+)
+\Fld@listcount=\count272
+\c@bookmark@seq@number=\count273
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
+echeck.sty
+Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
+ounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+85.
+)
+\Hy@SectionHShift=\skip61
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip62
+\bibsep=\skip63
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count274
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xargs\xargs.sty
+Package: xargs 2008/03/22 v1.1  extended macro definitions  (mpg)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval.sty
+Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyval.tex
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutils.tex
+\XKV@toks=\toks20
+\XKV@tempa@toks=\toks21
+)
+\XKV@depth=\count275
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+\xargs@max=\count276
+\xargs@toksa=\toks22
+\xargs@toksb=\toks23
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1350.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1354.
+Package xcolor Info: Model `RGB' extended on input line 1366.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1368.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/todonotes\todonotes.sty
+Package: todonotes 2023/01/31 v1.1.6 Todonotes source and documentation.
+Package: todonotes 2023/01/31
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
+sty
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.st
+y
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-common.tex
+\pgfutil@everybye=\toks24
+\pgfutil@tempdima=\dimen157
+\pgfutil@tempdimb=\dimen158
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-latex.def
+\pgfutil@abb=\box53
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
+code.tex
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
+Package: pgfrcs 2023-01-15 v3.1.10 (3.1.10)
+))
+Package: pgf 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.
+sty
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.
+sty
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s.code.tex
+Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex
+\pgfkeys@pathtoks=\toks25
+\pgfkeys@temptoks=\toks26
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+libraryfiltered.code.tex
+\pgfkeys@tmptoks=\toks27
+))
+\pgf@x=\dimen159
+\pgf@y=\dimen160
+\pgf@xa=\dimen161
+\pgf@ya=\dimen162
+\pgf@xb=\dimen163
+\pgf@yb=\dimen164
+\pgf@xc=\dimen165
+\pgf@yc=\dimen166
+\pgf@xd=\dimen167
+\pgf@yd=\dimen168
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count277
+\c@pgf@countb=\count278
+\c@pgf@countc=\count279
+\c@pgf@countd=\count280
+\t@pgf@toka=\toks28
+\t@pgf@tokb=\toks29
+\t@pgf@tokc=\toks30
+\pgf@sys@id@count=\count281
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
+fg
+File: pgf.cfg 2023-01-15 v3.1.10 (3.1.10)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-pdftex.def
+File: pgfsys-pdftex.def 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-common-pdf.def
+File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
+)))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+ssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfsyssoftpath@smallbuffer@items=\count282
+\pgfsyssoftpath@bigbuffer@items=\count283
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+sprotocol.code.tex
+File: pgfsysprotocol.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+e.code.tex
+Package: pgfcore 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.
+code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
+r.code.tex
+\pgfmath@dimen=\dimen169
+\pgfmath@count=\count284
+\pgfmath@box=\box54
+\pgfmath@toks=\toks31
+\pgfmath@stack@operand=\toks32
+\pgfmath@stack@operation=\toks33
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.basic.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.trigonometric.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.random.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.comparison.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.base.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.round.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.misc.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.integerarithmetics.code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.
+code.tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
+.code.tex
+\c@pgfmathroundto@lastzeros=\count285
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
+tex)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epoints.code.tex
+File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@picminx=\dimen170
+\pgf@picmaxx=\dimen171
+\pgf@picminy=\dimen172
+\pgf@picmaxy=\dimen173
+\pgf@pathminx=\dimen174
+\pgf@pathmaxx=\dimen175
+\pgf@pathminy=\dimen176
+\pgf@pathmaxy=\dimen177
+\pgf@xx=\dimen178
+\pgf@xy=\dimen179
+\pgf@yx=\dimen180
+\pgf@yy=\dimen181
+\pgf@zx=\dimen182
+\pgf@zy=\dimen183
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@path@lastx=\dimen184
+\pgf@path@lasty=\dimen185
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathusage.code.tex
+File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@shorten@end@additional=\dimen186
+\pgf@shorten@start@additional=\dimen187
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+escopes.code.tex
+File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfpic=\box55
+\pgf@hbox=\box56
+\pgf@layerbox@main=\box57
+\pgf@picture@serial@count=\count286
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+egraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgflinewidth=\dimen188
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransformations.code.tex
+File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@pt@x=\dimen189
+\pgf@pt@y=\dimen190
+\pgf@pt@temp=\dimen191
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+equick.code.tex
+File: pgfcorequick.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eobjects.code.tex
+File: pgfcoreobjects.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+earrows.code.tex
+File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowsep=\dimen192
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eshade.code.tex
+File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@max=\dimen193
+\pgf@sys@shading@range@num=\count287
+\pgf@shadingcount=\count288
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eimage.code.tex
+File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eexternal.code.tex
+File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfexternal@startupbox=\box58
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+elayers.code.tex
+File: pgfcorelayers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransparency.code.tex
+File: pgfcoretransparency.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epatterns.code.tex
+File: pgfcorepatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+erdf.code.tex
+File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+shapes.code.tex
+File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodeparttextbox=\box59
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+plot.code.tex
+File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-0-65.sty
+Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
+\pgf@nodesepstart=\dimen194
+\pgf@nodesepend=\dimen195
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-1-18.sty
+Package: pgfcomp-version-1-18 2023-01-15 v3.1.10 (3.1.10)
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.st
+y
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.s
+ty
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.
+code.tex
+Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
+\pgffor@iter=\dimen196
+\pgffor@skip=\dimen197
+\pgffor@stack=\toks34
+\pgffor@toks=\toks35
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z\tikz.code.tex
+Package: tikz 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@plot@mark@count=\count289
+\pgfplotmarksize=\dimen198
+)
+\tikz@lastx=\dimen199
+\tikz@lasty=\dimen256
+\tikz@lastxsaved=\dimen257
+\tikz@lastysaved=\dimen258
+\tikz@lastmovetox=\dimen259
+\tikz@lastmovetoy=\dimen260
+\tikzleveldistance=\dimen261
+\tikzsiblingdistance=\dimen262
+\tikz@figbox=\box60
+\tikz@figbox@bg=\box61
+\tikz@tempbox=\box62
+\tikz@tempbox@bg=\box63
+\tikztreelevel=\count290
+\tikznumberofchildren=\count291
+\tikznumberofcurrentchild=\count292
+\tikz@fig@count=\count293
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+matrix.code.tex
+File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfmatrixcurrentrow=\count294
+\pgfmatrixcurrentcolumn=\count295
+\pgf@matrix@numberofcolumns=\count296
+)
+\tikz@expandcount=\count297
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/tools\calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count298
+\calc@Bcount=\count299
+\calc@Adimen=\dimen263
+\calc@Bdimen=\dimen264
+\calc@Askip=\skip64
+\calc@Bskip=\skip65
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count300
+\calc@Cskip=\skip66
+)
+\c@@todonotes@numberoftodonotes=\count301
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.st
+y
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+ (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count302
+\float@exts=\toks36
+\float@box=\box64
+\@float@everytoks=\toks37
+\@floatcapt=\box65
+)
+\@float@every@algorithm=\toks38
+\c@algorithm=\count303
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algpseudoc
+ode.sty
+Package: algpseudocode 
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algorithmi
+cx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count304
+\c@ALG@rem=\count305
+\c@ALG@nested=\count306
+\ALG@tlm=\skip67
+\ALG@thistlm=\skip68
+\c@ALG@Lnr=\count307
+\c@ALG@blocknr=\count308
+\c@ALG@storecount=\count309
+\c@ALG@tmpcounter=\count310
+\ALG@tmplength=\skip69
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+Package: amsmath 2023/05/13 v2.17o AMS math features
+\@mathmargin=\skip70
+
+For additional information on amsmath, use the `?' option.
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks39
+\ex@=\dimen265
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen266
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count311
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count312
+\leftroot@=\count313
+LaTeX Info: Redefining \overline on input line 399.
+LaTeX Info: Redefining \colon on input line 410.
+\classnum@=\count314
+\DOTSCASE@=\count315
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box66
+\strutbox@=\box67
+LaTeX Info: Redefining \big on input line 722.
+LaTeX Info: Redefining \Big on input line 723.
+LaTeX Info: Redefining \bigg on input line 724.
+LaTeX Info: Redefining \Bigg on input line 725.
+\big@size=\dimen267
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count316
+LaTeX Info: Redefining \bmod on input line 905.
+LaTeX Info: Redefining \pmod on input line 910.
+LaTeX Info: Redefining \smash on input line 940.
+LaTeX Info: Redefining \relbar on input line 970.
+LaTeX Info: Redefining \Relbar on input line 971.
+\c@MaxMatrixCols=\count317
+\dotsspace@=\muskip17
+\c@parentequation=\count318
+\dspbrk@lvl=\count319
+\tag@help=\toks40
+\row@=\count320
+\column@=\count321
+\maxfields@=\count322
+\andhelp@=\toks41
+\eqnshift@=\dimen268
+\alignsep@=\dimen269
+\tagshift@=\dimen270
+\tagwidth@=\dimen271
+\totwidth@=\dimen272
+\lineht@=\dimen273
+\@envbody=\toks42
+\multlinegap=\skip71
+\multlinetaggap=\skip72
+\mathdisplay@stack=\toks43
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/nomencl\nomencl.sty
+Package: nomencl 2021/11/10 v5.6 Nomenclature package
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\tocbasic.st
+y
+Package: tocbasic 2023/07/07 v3.41 KOMA-Script package (handling toc-files)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrbase.sty
+Package: scrbase 2023/07/07 v3.41 KOMA-Script package (KOMA-Script-independent 
+basics and keyval usage)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrlfile.st
+y
+Package: scrlfile 2023/07/07 v3.41 KOMA-Script package (file load hooks)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrlfile-ho
+ok.sty
+Package: scrlfile-hook 2023/07/07 v3.41 KOMA-Script package (using LaTeX hooks)
+
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrlogo.sty
+Package: scrlogo 2023/07/07 v3.41 KOMA-Script package (logo)
+)))
+Applying: [2021/05/01] Usage of raw or classic option list on input line 252.
+Already applied: [0000/00/00] Usage of raw or classic option list on input line
+ 368.
+)
+\scr@dte@tocline@numberwidth=\skip73
+\scr@dte@tocline@numbox=\box68
+)
+Package tocbasic Info: omitting babel extension for `nlo'
+(tocbasic)             because of missing \bbl@set@language on input line 187.
+Package tocbasic Info: omitting babel extension for `nls'
+(tocbasic)             because of missing \bbl@set@language on input line 188.
+\nomlabelwidth=\dimen274
+\nom@tempdim=\dimen275
+\nomitemsep=\skip74
+)
+\@nomenclaturefile=\write4
+\openout4 = `main.nlo'.
+
+Package nomencl Info: Writing nomenclature file main.nlo on input line 91.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/base\glossar
+ies.sty
+Package: glossaries 2023/09/29 v4.53 (NLCT)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/mfirstuc\mfirstuc.sty
+Package: mfirstuc 2022/10/14 v2.08 (NLCT)
+\@glsmfirst=\toks44
+\@glsmrest=\toks45
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xfor\xfor.sty
+Package: xfor 2009/02/05 v1.05 (NLCT)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/datatool\datatool-base.
+sty
+Package: datatool-base 2019/09/27 v2.32 (NLCT)
+ (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/substr\substr.sty
+Package: substr 2009/10/20 v1.2 Handle substrings
+\c@su@anzahl=\count323
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/datatool\datatool-fp.st
+y
+Package: datatool-fp 2019/09/27 v2.32 (NLCT)
+ (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp.sty
+Package: fp 1995/04/02
+
+`Fixed Point Package', Version 0.8, April 2, 1995 (C) Michael Mehlich
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\defpattern.sty
+Package: defpattern 1994/10/12
+\actioncount=\count324
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-basic.sty
+Package: fp-basic 1996/05/13
+\FP@xs=\count325
+\FP@xia=\count326
+\FP@xib=\count327
+\FP@xfa=\count328
+\FP@xfb=\count329
+\FP@rega=\count330
+\FP@regb=\count331
+\FP@regs=\count332
+\FP@times=\count333
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-addons.sty
+Package: fp-addons 1995/03/15
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-snap.sty
+Package: fp-snap 1995/04/05
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-exp.sty
+Package: fp-exp 1995/04/03
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-trigo.sty
+Package: fp-trigo 1995/04/14
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-pas.sty
+Package: fp-pas 1994/08/29
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-random.sty
+Package: fp-random 1995/02/23
+\FPseed=\count334
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-eqn.sty
+Package: fp-eqn 1995/04/03
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-upn.sty
+Package: fp-upn 1996/10/21
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/fp\fp-eval.sty
+Package: fp-eval 1995/04/03
+)))
+\@dtl@toks=\toks46
+\@dtl@tmpcount=\count335
+\dtl@tmplength=\skip75
+\dtl@sortresult=\count336
+\@dtl@numgrpsepcount=\count337
+\@dtl@datatype=\count338
+\dtl@codeA=\count339
+\dtl@codeB=\count340
+\@dtl@foreach@level=\count341
+)
+\gls@level=\count342
+\@gls@tmpb=\toks47
+\gls@tmplen=\skip76
+\glskeylisttok=\toks48
+\glslabeltok=\toks49
+\glsshorttok=\toks50
+\glslongtok=\toks51
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
+ary-hypernav.sty
+Package: glossary-hypernav 2023/09/29 v4.53 (NLCT)
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
+ary-list.sty
+Package: glossary-list 2023/09/29 v4.53 (NLCT)
+\glslistdottedwidth=\skip77
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
+ary-long.sty
+Package: glossary-long 2023/09/29 v4.53 (NLCT)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
+Package: longtable 2023-11-01 v4.19 Multi-page Table package (DPC)
+\LTleft=\skip78
+\LTright=\skip79
+\LTpre=\skip80
+\LTpost=\skip81
+\LTchunksize=\count343
+\LTcapwidth=\dimen276
+\LT@head=\box69
+\LT@firsthead=\box70
+\LT@foot=\box71
+\LT@lastfoot=\box72
+\LT@gbox=\box73
+\LT@cols=\count344
+\LT@rows=\count345
+\c@LT@tables=\count346
+\c@LT@chunks=\count347
+\LT@p@ftn=\toks52
+)
+\glsdescwidth=\skip82
+\glspagelistwidth=\skip83
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
+ary-super.sty
+Package: glossary-super 2023/09/29 v4.53 (NLCT)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/supertabular\supertabul
+ar.sty
+Package: supertabular 2020/02/02 v4.1g the supertabular environment
+\c@tracingst=\count348
+\ST@wd=\dimen277
+\ST@rightskip=\skip84
+\ST@leftskip=\skip85
+\ST@parfillskip=\skip86
+\ST@pageleft=\dimen278
+\ST@headht=\dimen279
+\ST@tailht=\dimen280
+\ST@pagesofar=\dimen281
+\ST@pboxht=\dimen282
+\ST@lineht=\dimen283
+\ST@prevht=\dimen284
+\ST@toadd=\dimen285
+\ST@dimen=\dimen286
+\ST@pbox=\box74
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
+ary-tree.sty
+Package: glossary-tree 2023/09/29 v4.53 (NLCT)
+\glstreeindent=\skip87
+))
+\glswrite=\write5
+\glo@main@file=\write6
+\openout6 = `main.glo'.
+
+Package glossaries Info: Writing glossary file main.glo on input line 119.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\pifont.sty
+Package: pifont 2020/03/25 PSNFSS-v9.3 Pi font support (SPQR) 
+LaTeX Font Info:    Trying to load font information for U+pzd on input line 63.
+
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\upzd.fd
+File: upzd.fd 2001/06/04 font definitions for U/pzd.
+)
+LaTeX Font Info:    Trying to load font information for U+psy on input line 64.
+
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\upsy.fd
+File: upsy.fd 2001/06/04 font definitions for U/psy.
+))
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen287
+\lightrulewidth=\dimen288
+\cmidrulewidth=\dimen289
+\belowrulesep=\dimen290
+\belowbottomsep=\dimen291
+\aboverulesep=\dimen292
+\abovetopsep=\dimen293
+\cmidrulesep=\dimen294
+\cmidrulekern=\dimen295
+\defaultaddspace=\dimen296
+\@cmidla=\count349
+\@cmidlb=\count350
+\@aboverulesep=\dimen297
+\@belowrulesep=\dimen298
+\@thisruleclass=\count351
+\@lastruleclass=\count352
+\@thisrulewidth=\dimen299
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amscls\amsthm.sty
+Package: amsthm 2020/05/29 v2.20.6
+\thm@style=\toks53
+\thm@bodyfont=\toks54
+\thm@headfont=\toks55
+\thm@notefont=\toks56
+\thm@headpunct=\toks57
+\thm@preskip=\skip88
+\thm@postskip=\skip89
+\thm@headsep=\skip90
+\dth@everypar=\toks58
+)
+LaTeX Font Info:    Trying to load font information for OT1+phv on input line 1
+50.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1phv.fd
+File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
+tex.def
+File: l3backend-pdftex.def 2023-11-09 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count353
+\l__pdf_internal_box=\box75
+) (main.aux (frontpage/frontpage.aux) (chapters/preface/preface.aux)
+(chapters/summary/summary.aux) (chapters/summary/summaryNL.aux)
+(chapters/abstract/abstract.aux) (chapters/introduction/introduction.aux)
+(chapters/background/background.aux)
+(chapters/proposedsolution/proposedsolution.aux)
+(chapters/evaluation/evaluation.aux) (chapters/conclusion/conclusion.aux)
+(backpage/backpage.aux))
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 150.
+LaTeX Font Info:    ... okay on input line 150.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
+ii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count354
+\scratchdimen=\dimen300
+\scratchbox=\box76
+\nofMPsegments=\count355
+\nofMParguments=\count356
+\everyMPshowfont=\toks59
+\MPscratchCnt=\count357
+\MPscratchDim=\dimen301
+\MPnumerator=\count358
+\makeMPintoPDFobject=\count359
+\everyMPtoPDFconversion=\toks60
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
+ase.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.c
+fg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
+Package hyperref Info: Link coloring OFF on input line 150.
+ (main.out) (main.out)
+\@outlinefile=\write7
+\openout7 = `main.out'.
+
+\openout2 = `frontpage/frontpage.aux'.
+
+ (frontpage/frontpage.tex
+LaTeX Font Info:    Trying to load font information for U+msa on input line 17.
+
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 17.
+
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Overfull \hbox (9.33871pt too wide) in paragraph at lines 17--18
+[][][][][][][] 
+ []
+
+<frontpage/LogoKULeuven.png, id=164, 401.5pt x 143.53625pt>
+File: frontpage/LogoKULeuven.png Graphic file (type png)
+<use frontpage/LogoKULeuven.png>
+Package pdftex.def Info: frontpage/LogoKULeuven.png  used on input line 22.
+(pdftex.def)             Requested size: 157.58296pt x 56.33646pt.
+
+Overfull \hbox (6.55522pt too wide) in paragraph at lines 80--81
+[][][] 
+ []
+
+[1
+
+\openout5 = `main.ist'.
+
+
+{C:/Users/jaspe/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/jasp
+e/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./frontpage/LogoK
+ULeuven.png>])
+Underfull \hbox (badness 10000) in paragraph at lines 171--175
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 171--175
+
+ []
+
+[1
+
+
+]
+\openout2 = `chapters/preface/preface.aux'.
+
+ (chapters/preface/preface.tex
+pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.3 \cleardoublepage
+                     [1
+
+
+
+])
+\openout2 = `chapters/summary/summary.aux'.
+
+ (chapters/summary/summary.tex [2
+
+
+
+
+
+])
+\openout2 = `chapters/summary/summaryNL.aux'.
+
+
+(chapters/summary/summaryNL.tex [3
+
+
+
+
+
+])
+\openout2 = `chapters/abstract/abstract.aux'.
+
+ (chapters/abstract/abstract.tex [4
+
+
+
+
+
+])
+No file main.gls.
+[5
+
+
+
+
+
+]
+No file main.nls.
+(main.lof
+
+Package natbib Warning: Citation `4cs' on page vi undefined on input line 6.
+
+
+Package natbib Warning: Citation `Bernstein2014' on page vi undefined on input 
+line 8.
+
+
+Package natbib Warning: Citation `resman' on page vi undefined on input line 9.
+
+
+
+Package natbib Warning: Citation `moby' on page vi undefined on input line 10.
+
+
+Package natbib Warning: Citation `IslamShamim2020a' on page vi undefined on inp
+ut line 11.
+
+
+Package natbib Warning: Citation `kano' on page vi undefined on input line 15.
+
+
+Package natbib Warning: Citation `kano' on page vi undefined on input line 16.
+
+
+Package natbib Warning: Citation `kano' on page vi undefined on input line 17.
+
+
+Package natbib Warning: Citation `sg' on page vi undefined on input line 18.
+
+)
+\tf@lof=\write8
+\openout8 = `main.lof'.
+
+ [6
+
+
+
+] (main.lot
+
+Package natbib Warning: Citation `CNCFSurvey' on page vii undefined on input li
+ne 6.
+
+)
+\tf@lot=\write9
+\openout9 = `main.lot'.
+
+ [7
+
+
+] (main.toc [8
+
+])
+\tf@toc=\write10
+\openout10 = `main.toc'.
+
+ [9]
+\openout2 = `chapters/introduction/introduction.aux'.
+
+ (chapters/introduction/introduction.tex
+Chapter 1.
+
+Underfull \hbox (badness 10000) in paragraph at lines 13--15
+
+ []
+
+
+Package natbib Warning: Citation `CNCF' on page 1 undefined on input line 16.
+
+
+Package natbib Warning: Citation `cnci4' on page 1 undefined on input line 16.
+
+
+Package natbib Warning: Citation `CNCFSurvey' on page 1 undefined on input line
+ 16.
+
+
+Package natbib Warning: Citation `OCI' on page 1 undefined on input line 16.
+
+
+Package natbib Warning: Citation `rkt' on page 1 undefined on input line 16.
+
+
+Package natbib Warning: Citation `crio' on page 1 undefined on input line 16.
+
+
+Package natbib Warning: Citation `LXC' on page 1 undefined on input line 16.
+
+
+Package natbib Warning: Citation `Bernstein2014' on page 1 undefined on input l
+ine 16.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 16--18
+
+ []
+
+
+Package natbib Warning: Citation `Bernstein2014' on page 1 undefined on input l
+ine 19.
+
+
+Package natbib Warning: Citation `Mesos' on page 1 undefined on input line 19.
+
+
+Package natbib Warning: Citation `Openstack' on page 1 undefined on input line 
+19.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 19--21
+
+ []
+
+
+Package natbib Warning: Citation `CNCFSurvey' on page 1 undefined on input line
+ 22.
+
+
+Package natbib Warning: Citation `nps' on page 1 undefined on input line 22.
+
+
+Overfull \hbox (29.68277pt too wide) in paragraph at lines 26--34
+ [][] 
+ []
+
+
+Package natbib Warning: Citation `CNCFSurvey' on page 1 undefined on input line
+ 34.
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.37 \begin{quote}
+                   [1
+
+
+
+]
+
+Package natbib Warning: Citation `CNCFSurvey' on page 2 undefined on input line
+ 38.
+
+
+Package natbib Warning: Citation `4cs' on page 2 undefined on input line 42.
+
+
+Package natbib Warning: Citation `defensiveprogramming' on page 2 undefined on 
+input line 42.
+
+
+Package natbib Warning: Citation `OCI' on page 2 undefined on input line 42.
+
+
+Package natbib Warning: Citation `nps' on page 2 undefined on input line 42.
+
+
+Package natbib Warning: Citation `secgroups' on page 2 undefined on input line 
+42.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 42--44
+
+ []
+
+<images/4c.png, id=333, 776.9025pt x 448.074pt>
+File: images/4c.png Graphic file (type png)
+<use images/4c.png>
+Package pdftex.def Info: images/4c.png  used on input line 47.
+(pdftex.def)             Requested size: 364.19664pt x 210.05467pt.
+
+Package natbib Warning: Citation `4cs' on page 2 undefined on input line 48.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--54
+
+ []
+
+
+Package natbib Warning: Citation `leastprivilige' on page 2 undefined on input 
+line 55.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--57
+
+ []
+
+[2
+pdfTeX warning (ext4): destination with the same identifier (name{table.1.1}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.57 
+     ]
+Underfull \hbox (badness 10000) in paragraph at lines 58--60
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 63--65
+
+ []
+
+[3
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.66 \textbf{Grashopper}
+                         \cite{grashopper}  aims to solve the same problem o...
+ <./images/4c.png (PNG copy)>]
+
+Package natbib Warning: Citation `grashopper' on page 4 undefined on input line
+ 66.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--68
+
+ []
+
+
+Package natbib Warning: Citation `kano' on page 4 undefined on input line 69.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--72
+
+ []
+
+
+Package natbib Warning: Citation `nfvguard' on page 4 undefined on input line 7
+3.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 73--75
+
+ []
+
+
+Package natbib Warning: Citation `tenantguard' on page 4 undefined on input lin
+e 76.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--78
+
+ []
+
+[4]
+
+Package natbib Warning: Citation `leastprivilige' on page 5 undefined on input 
+line 79.
+
+
+Package natbib Warning: Citation `trust' on page 5 undefined on input line 79.
+
+
+Package natbib Warning: Citation `prismacloud' on page 5 undefined on input lin
+e 79.
+
+
+Package natbib Warning: Citation `illumio' on page 5 undefined on input line 79
+.
+
+
+Package natbib Warning: Citation `ciscoaci' on page 5 undefined on input line 7
+9.
+
+
+Package natbib Warning: Citation `vmwarensx' on page 5 undefined on input line 
+79.
+
+[5] [6])
+\openout2 = `chapters/background/background.aux'.
+
+ (chapters/background/background.tex
+Chapter 2.
+
+Package natbib Warning: Citation `Bernstein2014' on page 7 undefined on input l
+ine 8.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 8--10
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 11--13
+
+ []
+
+
+Package natbib Warning: Citation `OCI' on page 7 undefined on input line 14.
+
+
+Package natbib Warning: Citation `linuxfoundation' on page 7 undefined on input
+ line 14.
+
+
+Package natbib Warning: Citation `opencontainers' on page 7 undefined on input 
+line 14.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 14--16
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 17--19
+
+ []
+
+[7
+
+
+
+
+
+]
+<images/bernstein-hypervisor-vs-container-deployment.png, id=384, 603.0028pt x 
+454.69875pt>
+File: images/bernstein-hypervisor-vs-container-deployment.png Graphic file (typ
+e png)
+<use images/bernstein-hypervisor-vs-container-deployment.png>
+Package pdftex.def Info: images/bernstein-hypervisor-vs-container-deployment.pn
+g  used on input line 23.
+(pdftex.def)             Requested size: 364.19664pt x 274.62526pt.
+
+
+Package natbib Warning: Citation `Bernstein2014' on page 8 undefined on input l
+ine 24.
+
+
+Package natbib Warning: Citation `Bernstein2014' on page 8 undefined on input l
+ine 24.
+
+
+Package natbib Warning: Citation `dockerengine' on page 8 undefined on input li
+ne 31.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 31--33
+
+ []
+
+
+Package natbib Warning: Citation `cnwiki' on page 8 undefined on input line 34.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--36
+
+ []
+
+[8
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.36 
+      <./images/bernstein-hypervisor-vs-container-deployment.png>]
+<images/docker-containers.png, id=395, 343.2825pt x 278.54062pt>
+File: images/docker-containers.png Graphic file (type png)
+<use images/docker-containers.png>
+Package pdftex.def Info: images/docker-containers.png  used on input line 39.
+(pdftex.def)             Requested size: 182.09485pt x 147.74907pt.
+
+
+Package natbib Warning: Citation `resman' on page 9 undefined on input line 40.
+
+
+
+Package natbib Warning: Citation `docker' on page 9 undefined on input line 44.
+
+
+
+Package natbib Warning: Citation `comparisonenginevsdesktop' on page 9 undefine
+d on input line 44.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--46
+
+ []
+
+
+Package natbib Warning: Citation `moby' on page 9 undefined on input line 47.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--49
+
+ []
+
+<images/moby.png, id=398, 659.46375pt x 381.67593pt>
+File: images/moby.png Graphic file (type png)
+<use images/moby.png>
+Package pdftex.def Info: images/moby.png  used on input line 52.
+(pdftex.def)             Requested size: 364.19664pt x 210.79018pt.
+
+Package natbib Warning: Citation `moby' on page 9 undefined on input line 53.
+
+
+Package natbib Warning: Citation `containerterminology' on page 9 undefined on 
+input line 57.
+
+
+Package natbib Warning: Citation `contruntime' on page 9 undefined on input lin
+e 57.
+
+
+Package natbib Warning: Citation `containerd' on page 9 undefined on input line
+ 57.
+
+
+Package natbib Warning: Citation `crio' on page 9 undefined on input line 57.
+
+
+Package natbib Warning: Citation `mirantis' on page 9 undefined on input line 5
+7.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--59
+
+ []
+
+[9
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.59 
+      <./images/docker-containers.png>]
+
+Package natbib Warning: Citation `dockerswarm' on page 10 undefined on input li
+ne 65.
+
+
+Package natbib Warning: Citation `apachemesos' on page 10 undefined on input li
+ne 65.
+
+
+Package natbib Warning: Citation `resman' on page 10 undefined on input line 65
+.
+
+
+Package natbib Warning: Citation `CNCFSurvey' on page 10 undefined on input lin
+e 65.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 65--67
+
+ []
+
+
+Package natbib Warning: Citation `aws' on page 10 undefined on input line 68.
+
+
+Package natbib Warning: Citation `azure' on page 10 undefined on input line 68.
+
+
+
+Package natbib Warning: Citation `gcp' on page 10 undefined on input line 68.
+
+<images/kubernetes-structure.png, id=409, 453.19313pt x 202.25563pt>
+File: images/kubernetes-structure.png Graphic file (type png)
+<use images/kubernetes-structure.png>
+Package pdftex.def Info: images/kubernetes-structure.png  used on input line 72
+.
+(pdftex.def)             Requested size: 364.19664pt x 162.53613pt.
+
+Package natbib Warning: Citation `IslamShamim2020a' on page 10 undefined on inp
+ut line 73.
+
+
+Package natbib Warning: Citation `node' on page 10 undefined on input line 77.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 77--79
+
+ []
+
+[10
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.3}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.79 
+      <./images/moby.png>]
+
+Package natbib Warning: Citation `pod' on page 11 undefined on input line 80.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--82
+
+ []
+
+<images/pod.png, id=424, 222.07968pt x 225.84375pt>
+File: images/pod.png Graphic file (type png)
+<use images/pod.png>
+Package pdftex.def Info: images/pod.png  used on input line 85.
+(pdftex.def)             Requested size: 227.62204pt x 231.48099pt.
+
+Package natbib Warning: Citation `kubelet' on page 11 undefined on input line 9
+0.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 90--92
+
+ []
+
+
+Package natbib Warning: Citation `pythonk8s' on page 11 undefined on input line
+ 93.
+
+
+Package natbib Warning: Citation `kubeapiserver' on page 11 undefined on input 
+line 93.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--95
+
+ []
+
+[11
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.4}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.95 
+      <./images/kubernetes-structure.png>]
+
+Package natbib Warning: Citation `namespace' on page 12 undefined on input line
+ 97.
+
+
+Package natbib Warning: Citation `feasability' on page 12 undefined on input li
+ne 97.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--99
+
+ []
+
+
+Package natbib Warning: Citation `rbac' on page 12 undefined on input line 101.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 101--103
+
+ []
+
+
+Package natbib Warning: Citation `labels' on page 12 undefined on input line 10
+4.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
+
+ []
+
+[12
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.5}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.106 
+       <./images/pod.png>]
+<images/np.png, id=447, 273.27094pt x 310.15875pt>
+File: images/np.png Graphic file (type png)
+<use images/np.png>
+Package pdftex.def Info: images/np.png  used on input line 109.
+(pdftex.def)             Requested size: 227.62204pt x 258.34982pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--119
+
+ []
+
+
+Package natbib Warning: Citation `k8snp' on page 13 undefined on input line 121
+.
+
+[13
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.6}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.122 
+       <./images/np.png>]
+
+Package natbib Warning: Citation `kano' on page 14 undefined on input line 130.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 127--132
+
+ []
+
+<images/kano-combined-connections-graph.png, id=465, 647.41875pt x 286.82156pt>
+
+File: images/kano-combined-connections-graph.png Graphic file (type png)
+<use images/kano-combined-connections-graph.png>
+Package pdftex.def Info: images/kano-combined-connections-graph.png  used on in
+put line 139.
+(pdftex.def)             Requested size: 291.35841pt x 129.07726pt.
+<images/kano-matrix-generation.png, id=466, 921.4425pt x 364.36125pt>
+File: images/kano-matrix-generation.png Graphic file (type png)
+<use images/kano-matrix-generation.png>
+Package pdftex.def Info: images/kano-matrix-generation.png  used on input line 
+145.
+(pdftex.def)             Requested size: 291.35841pt x 115.20805pt.
+
+Package natbib Warning: Citation `kano' on page 14 undefined on input line 146.
+
+
+
+Package natbib Warning: Citation `kano' on page 14 undefined on input line 146.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 152--154
+
+ []
+
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 155--157
+
+ []
+
+
+Package natbib Warning: Citation `kano' on page 15 undefined on input line 158.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--169
+
+ []
+
+[15
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.7}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.169 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.8}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.169 
+       <./images/kano-combined-connections-graph.png> <./images/kano-matrix-gen
+eration.png>]
+<images/prefil_cont_labels.png, id=480, 429.10312pt x 271.0125pt>
+File: images/prefil_cont_labels.png Graphic file (type png)
+<use images/prefil_cont_labels.png>
+Package pdftex.def Info: images/prefil_cont_labels.png  used on input line 174.
+
+(pdftex.def)             Requested size: 204.85844pt x 129.38564pt.
+
+
+Package natbib Warning: Citation `kano' on page 16 undefined on input line 175.
+
+
+
+Package natbib Warning: Citation `kano' on page 16 undefined on input line 175.
+
+
+<images/prefil_pols.png, id=481, 440.39531pt x 267.24844pt>
+File: images/prefil_pols.png Graphic file (type png)
+<use images/prefil_pols.png>
+Package pdftex.def Info: images/prefil_pols.png  used on input line 181.
+(pdftex.def)             Requested size: 204.85844pt x 124.31409pt.
+
+Package natbib Warning: Citation `kano' on page 16 undefined on input line 182.
+
+
+
+Package natbib Warning: Citation `kano' on page 16 undefined on input line 182.
+
+
+
+Package natbib Warning: Citation `k8scni' on page 16 undefined on input line 19
+1.
+
+
+Package natbib Warning: Citation `k8snetworkmodel' on page 16 undefined on inpu
+t line 191.
+
+
+Package natbib Warning: Citation `cni' on page 16 undefined on input line 191.
+
+
+Package natbib Warning: Citation `weave' on page 16 undefined on input line 191
+.
+
+
+Package natbib Warning: Citation `cilium' on page 16 undefined on input line 19
+1.
+
+
+Package natbib Warning: Citation `calico' on page 16 undefined on input line 19
+1.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--193
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 194--196
+
+ []
+
+
+Package natbib Warning: Citation `ebpf' on page 16 undefined on input line 197.
+
+
+
+Package natbib Warning: Citation `neutron' on page 16 undefined on input line 1
+97.
+
+[16
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.9}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.198 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.10})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.198 
+       <./images/prefil_cont_labels.png> <./images/prefil_pols.png>]
+
+Package natbib Warning: Citation `CNCFSurvey' on page 17 undefined on input lin
+e 201.
+
+
+Package natbib Warning: Citation `chromeos' on page 17 undefined on input line 
+201.
+
+
+Package natbib Warning: Citation `aws' on page 17 undefined on input line 201.
+
+
+Package natbib Warning: Citation `Openstack' on page 17 undefined on input line
+ 201.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 201--203
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 204--206
+
+ []
+
+
+Package natbib Warning: Citation `sg' on page 17 undefined on input line 207.
+
+
+Package natbib Warning: Citation `sgquotas' on page 17 undefined on input line 
+207.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 207--209
+
+ []
+
+
+Package natbib Warning: Citation `sgrule' on page 17 undefined on input line 21
+0.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 210--212
+
+ []
+
+[17]
+<images/sgrule example.png, id=511, 938.75719pt x 207.02344pt>
+File: images/sgrule example.png Graphic file (type png)
+<use images/sgrule example.png>
+Package pdftex.def Info: images/sgrule example.png  used on input line 215.
+(pdftex.def)             Requested size: 455.24408pt x 100.3936pt.
+
+
+Package natbib Warning: Citation `sg' on page 18 undefined on input line 216.
+
+[18
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.11})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.220 \cleardoublepage
+                       <./images/sgrule example.png>])
+\openout2 = `chapters/proposedsolution/proposedsolution.aux'.
+
+
+(chapters/proposedsolution/proposedsolution.tex
+Chapter 3.
+
+Underfull \hbox (badness 10000) in paragraph at lines 21--23
+
+ []
+
+
+Package natbib Warning: Citation `namespace' on page 19 undefined on input line
+ 24.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 24--26
+
+ []
+
+[19
+
+
+
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{table.3.1}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.31     \item \textit
+                      {Analyzer:} The analyzer orchestrates the handling of ...
+]
+<images/algo-components.png, id=531, 623.32875pt x 297.11pt>
+File: images/algo-components.png Graphic file (type png)
+<use images/algo-components.png>
+Package pdftex.def Info: images/algo-components.png  used on input line 40.
+(pdftex.def)             Requested size: 364.19664pt x 173.59784pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--50
+
+ []
+
+[20
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.50 
+      <./images/algo-components.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 60--62
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 63--65
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--68
+
+ []
+
+
+Package natbib Warning: Citation `kano' on page 21 undefined on input line 69.
+
+[21]
+<images/store.png, id=546, 821.0675pt x 351.3125pt>
+File: images/store.png Graphic file (type png)
+<use images/store.png>
+Package pdftex.def Info: images/store.png  used on input line 87.
+(pdftex.def)             Requested size: 364.19664pt x 155.82698pt.
+ [22]
+Overfull \hbox (9.45786pt too wide) in paragraph at lines 97--98
+[]\OT1/cmr/bx/n/12 namespace: \OT1/cmr/m/n/12 The names-pace in which the al-go
+-rithm will look for con-flicts (\OT1/cmr/bx/n/12 required\OT1/cmr/m/n/12 ). 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 102--104
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--108
+
+ []
+
+[23
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.108 \section{Analyzer}
+                         \label{impl:analyzer} The main task of the analyser...
+ <./images/store.png>] (algorithms/analyzercode.tex
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 2.
+)
+Underfull \hbox (badness 10000) in paragraph at lines 120--122
+
+ []
+
+[24] [25]
+<images/labeltree.png, id=587, 1105.12875pt x 532.99126pt>
+File: images/labeltree.png Graphic file (type png)
+<use images/labeltree.png>
+Package pdftex.def Info: images/labeltree.png  used on input line 126.
+(pdftex.def)             Requested size: 364.19664pt x 175.64368pt.
+ [26
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3.3}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.131 \newpage
+               <./images/labeltree.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 143--147
+
+ []
+
+(algorithms/selectcontainerscode.tex) (algorithms/allowcontainercode.tex)
+[27] [28]
+Underfull \hbox (badness 10000) in paragraph at lines 154--156
+
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+phv on input line 1
+57.
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1phv.fd
+File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
+)
+[29] (algorithms/deletepolicycode.tex
+LaTeX Font Info:    Trying to load font information for OMS+phv on input line 9
+.
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsphv.fd
+File: omsphv.fd 
+)
+LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 9.
+)
+(algorithms/addpolicycode.tex) (algorithms/deletecontainercode.tex)
+(algorithms/addcontainercode.tex
+
+LaTeX Warning: Float too large for page by 88.96458pt on input line 59.
+
+) [30] [31] [32] [33]
+
+Package natbib Warning: Citation `secgroups' on page 34 undefined on input line
+ 175.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 175--177
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 178--180
+
+ []
+
+(algorithms/checkconnectivitycode.tex) [34] [35])
+\openout2 = `chapters/evaluation/evaluation.aux'.
+
+
+(chapters/evaluation/evaluation.tex
+Chapter 4.
+
+Underfull \hbox (badness 10000) in paragraph at lines 3--5
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--12
+
+ []
+
+<images/podyaml.png, id=671, 433.62pt x 603.75563pt>
+File: images/podyaml.png Graphic file (type png)
+<use images/podyaml.png>
+Package pdftex.def Info: images/podyaml.png  used on input line 17.
+(pdftex.def)             Requested size: 273.14922pt x 380.34042pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 22--24
+
+ []
+
+[36
+
+
+
+
+
+] [37
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.25 W
+      e want to know how each experiment behaves when the cluster size incre...
+ <./images/podyaml.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 25--27
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--49
+
+ []
+
+[38]
+
+Package natbib Warning: Citation `kano' on page 39 undefined on input line 50.
+
+[39]
+Underfull \hbox (badness 10000) in paragraph at lines 86--88
+
+ []
+
+
+Overfull \hbox (20.77174pt too wide) in paragraph at lines 89--91
+[]\OT1/cmr/bx/n/12 STEP 0: \OT1/cmr/m/n/12 Call the python file ex-per-i-ment1.
+py with the fol-low-ing ar-gu-ments: $\OML/cmm/m/it/12 number[]of[]runs$\OT1/cm
+r/m/n/12 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--91
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 92--94
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 95--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 98--100
+
+ []
+
+[40
+pdfTeX warning (ext4): destination with the same identifier (name{table.4.1}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.101 \textbf{STEP 4:}
+                       We execute one event, depending on the $event\_type$ ...
+]
+Underfull \hbox (badness 10000) in paragraph at lines 101--103
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--109
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 110--112
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 113--115
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 120--122
+
+ []
+
+[41]
+<images/experiment1/addNP-time.png, id=718, 799.788pt x 336.165pt>
+File: images/experiment1/addNP-time.png Graphic file (type png)
+<use images/experiment1/addNP-time.png>
+Package pdftex.def Info: images/experiment1/addNP-time.png  used on input line 
+138.
+(pdftex.def)             Requested size: 455.24408pt x 191.34418pt.
+<images/experiment1/addPod-time.png, id=719, 799.788pt x 336.165pt>
+File: images/experiment1/addPod-time.png Graphic file (type png)
+<use images/experiment1/addPod-time.png>
+Package pdftex.def Info: images/experiment1/addPod-time.png  used on input line
+ 144.
+(pdftex.def)             Requested size: 455.24408pt x 191.34418pt.
+ [42]
+<images/experiment1/delNP-time.png, id=724, 800.007pt x 336.384pt>
+File: images/experiment1/delNP-time.png Graphic file (type png)
+<use images/experiment1/delNP-time.png>
+Package pdftex.def Info: images/experiment1/delNP-time.png  used on input line 
+150.
+(pdftex.def)             Requested size: 455.24408pt x 191.4175pt.
+<images/experiment1/delPod-time.png, id=725, 806.139pt x 336.165pt>
+File: images/experiment1/delPod-time.png Graphic file (type png)
+<use images/experiment1/delPod-time.png>
+Package pdftex.def Info: images/experiment1/delPod-time.png  used on input line
+ 156.
+(pdftex.def)             Requested size: 455.24408pt x 189.84123pt.
+ [43
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.159 \end{figure}
+                  
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.3}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.159 \end{figure}
+                   <./images/experiment1/addNP-time.png> <./images/experiment1/
+addPod-time.png>] [44
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.4}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.167     \item W
+                 e can see that the ratio in which the memory increases for ...
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.5}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.167     \item W
+                 e can see that the ratio in which the memory increases for ...
+ <./images/experiment1/delNP-time.png> <./images/experiment1/delPod-time.png>]
+<images/experiment1/addNP-memory.png, id=745, 800.007pt x 336.165pt>
+File: images/experiment1/addNP-memory.png Graphic file (type png)
+<use images/experiment1/addNP-memory.png>
+Package pdftex.def Info: images/experiment1/addNP-memory.png  used on input lin
+e 172.
+(pdftex.def)             Requested size: 455.24408pt x 191.29288pt.
+<images/experiment1/addPod-memory.png, id=746, 800.007pt x 336.165pt>
+File: images/experiment1/addPod-memory.png Graphic file (type png)
+<use images/experiment1/addPod-memory.png>
+Package pdftex.def Info: images/experiment1/addPod-memory.png  used on input li
+ne 178.
+(pdftex.def)             Requested size: 455.24408pt x 191.29288pt.
+<images/experiment1/delNP-memory.png, id=747, 800.007pt x 336.165pt>
+File: images/experiment1/delNP-memory.png Graphic file (type png)
+<use images/experiment1/delNP-memory.png>
+Package pdftex.def Info: images/experiment1/delNP-memory.png  used on input lin
+e 184.
+(pdftex.def)             Requested size: 455.24408pt x 191.29288pt.
+<images/experiment1/delPod-memory.png, id=748, 806.577pt x 336.165pt>
+File: images/experiment1/delPod-memory.png Graphic file (type png)
+<use images/experiment1/delPod-memory.png>
+Package pdftex.def Info: images/experiment1/delPod-memory.png  used on input li
+ne 190.
+(pdftex.def)             Requested size: 455.24408pt x 189.73865pt.
+
+[45
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.6}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.193 \end{figure}
+                  
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.7}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.193 \end{figure}
+                   <./images/experiment1/addNP-memory.png> <./images/experiment
+1/addPod-memory.png>] [46
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.8}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.209     \item \textit
+                       {Hypothesis Q3:} We predict that the time that the al...
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.9}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.209     \item \textit
+                       {Hypothesis Q3:} We predict that the time that the al...
+ <./images/experiment1/delNP-memory.png> <./images/experiment1/delPod-memory.pn
+g>] [47]
+Underfull \hbox (badness 10000) in paragraph at lines 255--257
+
+ []
+
+
+Overfull \hbox (20.77174pt too wide) in paragraph at lines 258--260
+[]\OT1/cmr/bx/n/12 STEP 0: \OT1/cmr/m/n/12 Call the python file ex-per-i-ment2.
+py with the fol-low-ing ar-gu-ments: $\OML/cmm/m/it/12 number[]of[]runs$\OT1/cm
+r/m/n/12 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 258--260
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 261--263
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 264--267
+
+ []
+
+[48
+pdfTeX warning (ext4): destination with the same identifier (name{table.4.2}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.267 
+      ]
+Underfull \hbox (badness 10000) in paragraph at lines 268--270
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 271--273
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 274--276
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 277--280
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 281--283
+
+ []
+
+[49] [50])
+\openout2 = `chapters/conclusion/conclusion.aux'.
+
+ (chapters/conclusion/conclusion.tex
+Chapter 5.
+[51
+
+
+
+
+
+])
+No file main.bbl.
+(main.tdo)
+\tf@tdo=\write11
+\openout11 = `main.tdo'.
+
+ [52
+
+
+
+
+]
+\openout2 = `backpage/backpage.aux'.
+
+ (backpage/backpage.tex
+<backpage/sedes.png, id=797, 402.5439pt x 683.6742pt>
+File: backpage/sedes.png Graphic file (type png)
+<use backpage/sedes.png>
+Package pdftex.def Info: backpage/sedes.png  used on input line 33.
+(pdftex.def)             Requested size: 27.64043pt x 46.94704pt.
+
+Overfull \hbox (0.55522pt too wide) in paragraph at lines 37--38
+[][][] 
+ []
+
+) [53
+
+ <./backpage/sedes.png>]
+
+Package natbib Warning: There were undefined citations.
+
+(main.aux (frontpage/frontpage.aux) (chapters/preface/preface.aux)
+(chapters/summary/summary.aux) (chapters/summary/summaryNL.aux)
+(chapters/abstract/abstract.aux) (chapters/introduction/introduction.aux)
+(chapters/background/background.aux)
+(chapters/proposedsolution/proposedsolution.aux)
+(chapters/evaluation/evaluation.aux) (chapters/conclusion/conclusion.aux)
+(backpage/backpage.aux))
+ ***********
+LaTeX2e <2023-11-01>
+L3 programming layer <2023-12-08>
+ ***********
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 8D72321D6717B28DA15EBCD0B8E867D1;4514.
+ ) 
+Here is how much of TeX's memory you used:
+ 28823 strings out of 474491
+ 541651 string characters out of 5743833
+ 1960473 words of memory out of 5000000
+ 50269 multiletter control sequences out of 15000+600000
+ 587550 words of font info for 93 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 110i,12n,107p,2371b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{glo:sgic} has been referenced but does not exist, r
+eplaced by a fixed one
+
+
+pdfTeX warning (dest): name{glo:kic} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{glo:sg} has been referenced but does not exist, rep
+laced by a fixed one
+
+
+pdfTeX warning (dest): name{glo:nat} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{glo:cni} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{glo:np} has been referenced but does not exist, rep
+laced by a fixed one
+
+
+pdfTeX warning (dest): name{glo:rbac} has been referenced but does not exist, r
+eplaced by a fixed one
+
+
+pdfTeX warning (dest): name{glo:gcp} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{glo:aws} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{glo:os} has been referenced but does not exist, rep
+laced by a fixed one
+
+
+pdfTeX warning (dest): name{glo:fol} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{glo:vm} has been referenced but does not exist, rep
+laced by a fixed one
+
+
+pdfTeX warning (dest): name{glo:k8s} has been referenced but does not exist, re
+placed by a fixed one
+
+
+pdfTeX warning (dest): name{glo:oci} has been referenced but does not exist, re
+placed by a fixed one
+
+ <C:\Users\jaspe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm10
+00.pk><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
+/cm/cmbx12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/amsfonts/cm/cmmi12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/typ
+e1/public/amsfonts/cm/cmr12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/jaspe/AppData/Local/Programs
+/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/jaspe/AppData/Local
+/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/jaspe/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Us
+ers/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:
+/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb>
+<C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.
+pfb>
+Output written on main.pdf (64 pages, 2325826 bytes).
+PDF statistics:
+ 887 PDF objects out of 1000 (max. 8388607)
+ 153 named destinations out of 1000 (max. 500000)
+ 475 words of extra memory for PDF output out of 10000 (max. 10000000)
+

@@ -1,0 +1,60 @@
+\begin{algorithm}
+    \caption{Add container to reachability matrix}
+    \label{algo:addcontainer}
+    \begin{algorithmic}[1]
+    \Function{reachabilityAddContainer}{container}
+        \State new\_reach $\gets$ kic.reachabilitymatrix
+        \State container.matrix\_id $\gets$ len(containers)
+        \State matrixId\_to\_Container[container.matrix\_id] = container
+        \For{label, array in label\_map}
+            \State array.append(False)
+        \EndFor
+        \For{row in new\_reach} 
+            \State row.append(0)
+        \EndFor
+        \State new\_reach.append(bitarray(0 * amount of containers))
+        \State rules = Set()
+        \For{label in container.labels}: 
+            \For{policy in eggressTrie.find(label)}
+                \If{all policy.select.label in container.labels}
+                    \State rules.add
+                \EndIf
+            \EndFor
+            \For{policy in ingressTrie.find(label)}
+                \If{all policy.select.label in container.labels}
+                    \State rules.add
+                \EndIf
+            \EndFor
+        \EndFor
+        \For{rule in rules}
+            \State allow\_containers $\gets$ \autoref{algo:allow} 
+            \For{secondcontainer in allow\_containers}
+                secondRules = Set()
+                \For{secondlabel in secondcontainer.labels}:
+                    \For{policy in eggressTrie.find(label)}
+                        \If{all policy.select.label in container.labels}
+                            \State secondRules.add
+                        \EndIf
+                    \EndFor
+                    \For{policy in ingressTrie.find(label)}
+                        \If{all policy.select.label in container.labels}
+                            \State secondRules.add
+                        \EndIf
+                    \EndFor
+                \EndFor
+                \For{secondrule in secondRules}
+                    \If{all labels of secondrule.selector in secondcontainer}
+                        \For{secondallow in secondrule.allow}
+                            \If{all labels of secondallow in container.labels}
+                                \State update the matrix for new connection
+                            \EndIf
+                        \EndFor
+                    \EndIf
+                \EndFor    
+            \EndFor 
+        \EndFor   
+        \State \textbf{return} new\_reachability
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
