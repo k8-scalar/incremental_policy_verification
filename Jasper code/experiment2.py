@@ -70,18 +70,17 @@ if __name__ == "__main__":
         while not ew.pods_started.wait():
             time.sleep(0)
 
-        # STEP 4: Save the processsing time and memory usage:
+        #Save the processsing time and memory usage:
         ew_startup_time_elapsed = time.perf_counter() - time_start # final computation time
         ew_current, ew_peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
 
-        print(colorize("\nSTEP 4: Save startup time and memory usage", 36))
         print(f"    Watcher startup time usage: {ew_startup_time_elapsed} seconds")
         print(f"    Watcher startup memory usage is {ew_current / 10**3}KB; Peak was {ew_peak / 10**3}KB; Diff = {(ew_peak - ew_current) / 10**3}KB")
         results.append({'Run Number': i, 'Elapsed Time (seconds)': ew_startup_time_elapsed, 'Mem start (bytes)': (ew_current), 'Mem peak (bytes)': (ew_peak), 'Mem Diff (bytes)': ((ew_peak - ew_current))})
 
-        # STEP 5: execute event
-        print(colorize(f"\nSTEP 5: execute event: {args.event_type}", 36))
+        # STEP 4: execute event
+        print(colorize(f"\nSTEP 4: execute event: {args.event_type}", 36))
         event = args.event_type
         if event == "addNP":
             start_time = deploy(0, 1, args.namespace, args.key_limit)
@@ -95,8 +94,8 @@ if __name__ == "__main__":
         else:
             raise Exception("Not a correct event type.")
 
-        # STEP 6: Wait for the event to be handled
-        print(colorize("\nSTEP 6: Wait for the event to be handled", 36))
+        # STEP 5: Wait for the event to be handled
+        print(colorize("\nSTEP 5: Wait for the event to be handled", 36))
         def timeout_handler(signum, frame):
             raise TimeoutError("Event handling exceeded time limit")
 
@@ -113,8 +112,8 @@ if __name__ == "__main__":
             ew.stop_watching()  # Stop the watcher
             continue
         
-        # STEP 7: Get and save processsing time and memory usage:
-        print(colorize("\nSTEP 7: Get processing time and memory usage", 36))
+        # STEP 6: Get and save processsing time and memory usage:
+        print(colorize("\nSTEP 6: Get processing time and memory usage", 36))
         (consumer_time, end_time, (current, peak)) = ew.get_time_and_memory()
         total_difference = end_time - start_time
         analyse_difference = end_time - consumer_time
@@ -130,8 +129,8 @@ if __name__ == "__main__":
 
         results2.append({'Run Number': i, 'Total Time (seconds)': total_time, 'Detection Time (seconds)': detection_time, 'Analyzer Time (seconds)': analyse_time, 'Mem start (bytes)': (current), 'Mem peak (bytes)': (peak), 'Mem Diff (bytes)': ((peak - current))})
 
-        # STEP 8: stop the watcher
-        print(colorize("\nSTEP 8: stop the watcher", 36))
+        # STEP 7: stop the watcher
+        print(colorize("\nSTEP 7: stop the watcher", 36))
         ew.stop_watching()
 
 

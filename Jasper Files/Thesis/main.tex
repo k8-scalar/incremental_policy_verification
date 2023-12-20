@@ -16,8 +16,7 @@
 \usepackage{helvet}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
-\usepackage{hyperref}
-\usepackage{natbib}
+\usepackage[numbers]{natbib}
 \usepackage{xargs}                      
 \usepackage[pdftex,dvipsnames]{xcolor} 
 \usepackage{hyperref}
@@ -26,6 +25,8 @@
 \usepackage{algpseudocode}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+
+
 % -------------------- Pagina-instellingen --------------------------
 % Indien je deze wijzigt, zal het titelblad ook wijzigen.  Dit dien je
 % dan manueel aan te passen.
@@ -79,27 +80,19 @@
 \newcommand{\algorithmautorefname}{Algorithm}
 
 
-% for the nomenclature (comment out if you do not use the nomencl package
-\usepackage{nomencl}   % For nomenclature
-\renewcommand{\nomname}{List of Symbols}
-\newcommand{\myprintnomenclature}{%
-  \cleardoublepage%
-  \printnomenclature%
-  \chaptermark{\nomname}
-  \addcontentsline{toc}{chapter}{\nomname} %% comment to exclude from TOC
-}
-\makenomenclature%
-
 % for the list of abbreviations (comment out if you do not use the glossaries package
-\usepackage{glossaries} % For list of abbreviations
+\usepackage{glossaries} % For list of abbreviations\renewcommand{\glossname}{List of Abbreviations}
 \newcommand{\glossname}{List of Abbreviations}
 \newcommand{\myprintglossary}{%
   \renewcommand{\glossaryname}{\glossname}
   \cleardoublepage%
   \printglossary[title=\glossname]
+  \fancyhead[R]{\thepage}
   \chaptermark{\glossname}
-  \addcontentsline{toc}{chapter}{\glossname} %% comment to exclude from TOC
+   \addcontentsline{toc}{chapter}{\glossname} %% comment to exclude from TOC
 }
+
+
 \renewcommand{\glsgroupskip}{\vspace{-0.3cm}} % Adjust the space between groups
 \newacronym{oci}{OCI}{Open Container Initiative}
 \newacronym{k8s}{K8s}{Kubernetes}
@@ -118,10 +111,10 @@
 
 \makeglossaries%
 
+
 % For the list of tables
 \newcommand{\listtablenames}{List of Tables}
 \newcommand{\myprintlistoftables}{%
-  \cleardoublepage%
   \listoftables%
   \chaptermark{\listtablename}
   \addcontentsline{toc}{chapter}{\listtablename} %% comment to exclude from TOC
@@ -146,6 +139,7 @@
 \usepackage{booktabs}
 \usepackage{amssymb,amsthm}
 \usepackage{amsmath}
+\makeindex
 
 \begin{document}
 
@@ -153,7 +147,7 @@
 
 % Setup for main thesis
 
-\include{frontpage/frontpage}
+\input{frontpage/frontpage}
 
 % Als je het titelblad wil integreren met de rest van je thesis,
 % kan je hieronder verder.
@@ -179,15 +173,15 @@ A written permission of the promoter is also required to use the methods, produc
 
 \frontmatter % to get \pagenumbering{roman}
 
-\include{chapters/preface/preface}
-\include{chapters/summary/summary}
-\include{chapters/summary/summaryNL}
-\include{chapters/abstract/abstract}
+\input{chapters/preface/preface}
+\input{chapters/abstract/abstract}
+\input{chapters/abstract/abstractNL}
+
 \cleardoublepage
 \myprintglossary
-\myprintnomenclature
 \myprintlistoffigures
 \myprintlistoftables
+
 
 \tableofcontents
 \newpage
@@ -208,29 +202,29 @@ A written permission of the promoter is also required to use the methods, produc
 \renewcommand{\thesection}{\arabic{chapter}.\arabic{section}}
 
 \newpage
-\include{chapters/introduction/introduction}
+\input{chapters/introduction/introduction}
 
 \newpage
-\include{chapters/background/background}
+\input{chapters/background/background}
 
 \newpage
-\include{chapters/proposedsolution/proposedsolution}
+\input{chapters/proposedsolution/proposedsolution}
 
 \newpage
-\include{chapters/evaluation/evaluation}
+\input{chapters/evaluation/evaluation}
 
 \newpage
-\include{chapters/conclusion/conclusion}
+\input{chapters/conclusion/conclusion}
 
 
 
 \newpage
-\bibliographystyle{plainnat}
+\bibliographystyle{IEEEtran}
 \bibliography{sources/sources}
 
 
 
 \listoftodos[Notes]
 
-\include{backpage/backpage}
+\input{backpage/backpage}
 \end{document}

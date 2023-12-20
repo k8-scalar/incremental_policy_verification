@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10.12) (preloaded format=pdflatex 2023.12.15)  15 DEC 2023 17:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10.12) (preloaded format=pdflatex 2023.12.18)  18 DEC 2023 16:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -94,9 +94,51 @@ Package: fancyhdr 2022/11/09 v4.1 Extensive control of page headers and footers
 \f@nch@O@olf=\skip59
 \f@nch@O@orf=\skip60
 )
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
-Package: hyperref 2023-11-26 v7.01g Hypertext links for LaTeX
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip61
+\bibsep=\skip62
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count196
+)
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xargs\xargs.sty
+Package: xargs 2008/03/22 v1.1  extended macro definitions  (mpg)
 
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval.sty
+Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyval.tex
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutils.tex
+\XKV@toks=\toks20
+\XKV@tempa@toks=\toks21
+)
+\XKV@depth=\count197
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+\xargs@max=\count198
+\xargs@toksa=\toks22
+\xargs@toksb=\toks23
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
+
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1350.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1354.
+Package xcolor Info: Model `RGB' extended on input line 1366.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1368.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+Package: hyperref 2023-11-26 v7.01g Hypertext links for LaTeX
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
 )
@@ -149,15 +191,15 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
-\c@section@level=\count196
+\c@section@level=\count199
 )
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count197
+\etb@tempcnta=\count266
 )
 \@linkdim=\dimen153
-\Hy@linkcounter=\count198
-\Hy@pagecounter=\count199
+\Hy@linkcounter=\count267
+\Hy@pagecounter=\count268
 
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
 File: pd1enc.def 2023-11-26 v7.01g Hyperref: PDFDocEncoding definition (HO)
@@ -167,7 +209,7 @@ Now handling font encoding PD1 ...
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count266
+\Hy@SavedSpaceFactor=\count269
 
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2023-11-26 v7.01g Hyperref: PDF Unicode definition (HO)
@@ -181,7 +223,7 @@ Package hyperref Info: Plain pages OFF on input line 4196.
 Package hyperref Info: Backreferencing OFF on input line 4201.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4448.
-\c@Hy@tempcnt=\count267
+\c@Hy@tempcnt=\count270
 
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip16
@@ -198,7 +240,7 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count268
+\Fld@menulength=\count271
 \Field@Width=\dimen155
 \Fld@charsize=\dimen156
 Package hyperref Info: Hyper figures OFF on input line 6065.
@@ -213,9 +255,9 @@ Package hyperref Info: PDF/A mode OFF on input line 6095.
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count269
-\c@Item=\count270
-\c@Hfootnote=\count271
+\Hy@abspage=\count272
+\c@Item=\count273
+\c@Hfootnote=\count274
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
@@ -226,8 +268,8 @@ Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
 kage
 with kernel methods
 )
-\Fld@listcount=\count272
-\c@bookmark@seq@number=\count273
+\Fld@listcount=\count275
+\c@bookmark@seq@number=\count276
 
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
 echeck.sty
@@ -240,51 +282,7 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 85.
 )
-\Hy@SectionHShift=\skip61
-)
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty
-Package: natbib 2010/09/13 8.31b (PWD, AO)
-\bibhang=\skip62
-\bibsep=\skip63
-LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count274
-)
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xargs\xargs.sty
-Package: xargs 2008/03/22 v1.1  extended macro definitions  (mpg)
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval.sty
-Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyval.tex
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutils.tex
-\XKV@toks=\toks20
-\XKV@tempa@toks=\toks21
-)
-\XKV@depth=\count275
-File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
-))
-\xargs@max=\count276
-\xargs@toksa=\toks22
-\xargs@toksb=\toks23
-) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
-Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
-)
-Package xcolor Info: Driver file: pdftex.def on input line 274.
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1350.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1354.
-Package xcolor Info: Model `RGB' extended on input line 1366.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1368.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1369.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
-) (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/graphics\dvipsnam.def
-File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+\Hy@SectionHShift=\skip63
 )
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/todonotes\todonotes.sty
 Package: todonotes 2023/01/31 v1.1.6 Todonotes source and documentation.
@@ -725,49 +723,6 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 )
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/nomencl\nomencl.sty
-Package: nomencl 2021/11/10 v5.6 Nomenclature package
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\tocbasic.st
-y
-Package: tocbasic 2023/07/07 v3.41 KOMA-Script package (handling toc-files)
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrbase.sty
-Package: scrbase 2023/07/07 v3.41 KOMA-Script package (KOMA-Script-independent 
-basics and keyval usage)
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrlfile.st
-y
-Package: scrlfile 2023/07/07 v3.41 KOMA-Script package (file load hooks)
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrlfile-ho
-ok.sty
-Package: scrlfile-hook 2023/07/07 v3.41 KOMA-Script package (using LaTeX hooks)
-
-
-(C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/koma-script\scrlogo.sty
-Package: scrlogo 2023/07/07 v3.41 KOMA-Script package (logo)
-)))
-Applying: [2021/05/01] Usage of raw or classic option list on input line 252.
-Already applied: [0000/00/00] Usage of raw or classic option list on input line
- 368.
-)
-\scr@dte@tocline@numberwidth=\skip73
-\scr@dte@tocline@numbox=\box68
-)
-Package tocbasic Info: omitting babel extension for `nlo'
-(tocbasic)             because of missing \bbl@set@language on input line 187.
-Package tocbasic Info: omitting babel extension for `nls'
-(tocbasic)             because of missing \bbl@set@language on input line 188.
-\nomlabelwidth=\dimen274
-\nom@tempdim=\dimen275
-\nomitemsep=\skip74
-)
-\@nomenclaturefile=\write4
-\openout4 = `main.nlo'.
-
-Package nomencl Info: Writing nomenclature file main.nlo on input line 91.
-
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/base\glossar
 ies.sty
 Package: glossaries 2023/09/29 v4.53 (NLCT)
@@ -840,7 +795,7 @@ Package: fp-eval 1995/04/03
 )))
 \@dtl@toks=\toks46
 \@dtl@tmpcount=\count335
-\dtl@tmplength=\skip75
+\dtl@tmplength=\skip73
 \dtl@sortresult=\count336
 \@dtl@numgrpsepcount=\count337
 \@dtl@datatype=\count338
@@ -850,7 +805,7 @@ Package: fp-eval 1995/04/03
 )
 \gls@level=\count342
 \@gls@tmpb=\toks47
-\gls@tmplen=\skip76
+\gls@tmplen=\skip74
 \glskeylisttok=\toks48
 \glslabeltok=\toks49
 \glsshorttok=\toks50
@@ -863,7 +818,7 @@ Package: glossary-hypernav 2023/09/29 v4.53 (NLCT)
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
 ary-list.sty
 Package: glossary-list 2023/09/29 v4.53 (NLCT)
-\glslistdottedwidth=\skip77
+\glslistdottedwidth=\skip75
 )
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
 ary-long.sty
@@ -871,25 +826,25 @@ Package: glossary-long 2023/09/29 v4.53 (NLCT)
 
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
 Package: longtable 2023-11-01 v4.19 Multi-page Table package (DPC)
-\LTleft=\skip78
-\LTright=\skip79
-\LTpre=\skip80
-\LTpost=\skip81
+\LTleft=\skip76
+\LTright=\skip77
+\LTpre=\skip78
+\LTpost=\skip79
 \LTchunksize=\count343
-\LTcapwidth=\dimen276
-\LT@head=\box69
-\LT@firsthead=\box70
-\LT@foot=\box71
-\LT@lastfoot=\box72
-\LT@gbox=\box73
+\LTcapwidth=\dimen274
+\LT@head=\box68
+\LT@firsthead=\box69
+\LT@foot=\box70
+\LT@lastfoot=\box71
+\LT@gbox=\box72
 \LT@cols=\count344
 \LT@rows=\count345
 \c@LT@tables=\count346
 \c@LT@chunks=\count347
 \LT@p@ftn=\toks52
 )
-\glsdescwidth=\skip82
-\glspagelistwidth=\skip83
+\glsdescwidth=\skip80
+\glspagelistwidth=\skip81
 )
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
 ary-super.sty
@@ -899,31 +854,31 @@ Package: glossary-super 2023/09/29 v4.53 (NLCT)
 ar.sty
 Package: supertabular 2020/02/02 v4.1g the supertabular environment
 \c@tracingst=\count348
-\ST@wd=\dimen277
-\ST@rightskip=\skip84
-\ST@leftskip=\skip85
-\ST@parfillskip=\skip86
-\ST@pageleft=\dimen278
-\ST@headht=\dimen279
-\ST@tailht=\dimen280
-\ST@pagesofar=\dimen281
-\ST@pboxht=\dimen282
-\ST@lineht=\dimen283
-\ST@prevht=\dimen284
-\ST@toadd=\dimen285
-\ST@dimen=\dimen286
-\ST@pbox=\box74
+\ST@wd=\dimen275
+\ST@rightskip=\skip82
+\ST@leftskip=\skip83
+\ST@parfillskip=\skip84
+\ST@pageleft=\dimen276
+\ST@headht=\dimen277
+\ST@tailht=\dimen278
+\ST@pagesofar=\dimen279
+\ST@pboxht=\dimen280
+\ST@lineht=\dimen281
+\ST@prevht=\dimen282
+\ST@toadd=\dimen283
+\ST@dimen=\dimen284
+\ST@pbox=\box73
 ))
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/glossaries/styles\gloss
 ary-tree.sty
 Package: glossary-tree 2023/09/29 v4.53 (NLCT)
-\glstreeindent=\skip87
+\glstreeindent=\skip85
 ))
-\glswrite=\write5
-\glo@main@file=\write6
-\openout6 = `main.glo'.
+\glswrite=\write4
+\glo@main@file=\write5
+\openout5 = `main.glo'.
 
-Package glossaries Info: Writing glossary file main.glo on input line 119.
+Package glossaries Info: Writing glossary file main.glo on input line 112.
 
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
@@ -944,23 +899,23 @@ File: upsy.fd 2001/06/04 font definitions for U/psy.
 ))
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen287
-\lightrulewidth=\dimen288
-\cmidrulewidth=\dimen289
-\belowrulesep=\dimen290
-\belowbottomsep=\dimen291
-\aboverulesep=\dimen292
-\abovetopsep=\dimen293
-\cmidrulesep=\dimen294
-\cmidrulekern=\dimen295
-\defaultaddspace=\dimen296
+\heavyrulewidth=\dimen285
+\lightrulewidth=\dimen286
+\cmidrulewidth=\dimen287
+\belowrulesep=\dimen288
+\belowbottomsep=\dimen289
+\aboverulesep=\dimen290
+\abovetopsep=\dimen291
+\cmidrulesep=\dimen292
+\cmidrulekern=\dimen293
+\defaultaddspace=\dimen294
 \@cmidla=\count349
 \@cmidlb=\count350
-\@aboverulesep=\dimen297
-\@belowrulesep=\dimen298
+\@aboverulesep=\dimen295
+\@belowrulesep=\dimen296
 \@thisruleclass=\count351
 \@lastruleclass=\count352
-\@thisrulewidth=\dimen299
+\@thisrulewidth=\dimen297
 )
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
@@ -972,14 +927,18 @@ Package: amsthm 2020/05/29 v2.20.6
 \thm@headfont=\toks55
 \thm@notefont=\toks56
 \thm@headpunct=\toks57
-\thm@preskip=\skip88
-\thm@postskip=\skip89
-\thm@headsep=\skip90
+\thm@preskip=\skip86
+\thm@postskip=\skip87
+\thm@headsep=\skip88
 \dth@everypar=\toks58
 )
-LaTeX Font Info:    Trying to load font information for OT1+phv on input line 1
-50.
+\@indexfile=\write6
+\openout6 = `main.idx'.
 
+
+Writing index file main.idx
+LaTeX Font Info:    Trying to load font information for OT1+phv on input line 1
+44.
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1phv.fd
 File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
 )
@@ -987,46 +946,40 @@ File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
 tex.def
 File: l3backend-pdftex.def 2023-11-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count353
-\l__pdf_internal_box=\box75
-) (main.aux (frontpage/frontpage.aux) (chapters/preface/preface.aux)
-(chapters/summary/summary.aux) (chapters/summary/summaryNL.aux)
-(chapters/abstract/abstract.aux) (chapters/introduction/introduction.aux)
-(chapters/background/background.aux)
-(chapters/proposedsolution/proposedsolution.aux)
-(chapters/evaluation/evaluation.aux) (chapters/conclusion/conclusion.aux)
-(backpage/backpage.aux))
+\l__pdf_internal_box=\box74
+) (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 150.
-LaTeX Font Info:    ... okay on input line 150.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 144.
+LaTeX Font Info:    ... okay on input line 144.
 
 (C:\Users\jaspe\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count354
-\scratchdimen=\dimen300
-\scratchbox=\box76
+\scratchdimen=\dimen298
+\scratchbox=\box75
 \nofMPsegments=\count355
 \nofMParguments=\count356
 \everyMPshowfont=\toks59
 \MPscratchCnt=\count357
-\MPscratchDim=\dimen301
+\MPscratchDim=\dimen299
 \MPnumerator=\count358
 \makeMPintoPDFobject=\count359
 \everyMPtoPDFconversion=\toks60
@@ -1041,12 +994,10 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 fg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 150.
+Package hyperref Info: Link coloring OFF on input line 144.
  (main.out) (main.out)
 \@outlinefile=\write7
 \openout7 = `main.out'.
-
-\openout2 = `frontpage/frontpage.aux'.
 
  (frontpage/frontpage.tex
 LaTeX Font Info:    Trying to load font information for U+msa on input line 17.
@@ -1065,7 +1016,7 @@ Overfull \hbox (9.33871pt too wide) in paragraph at lines 17--18
 [][][][][][][] 
  []
 
-<frontpage/LogoKULeuven.png, id=164, 401.5pt x 143.53625pt>
+<frontpage/LogoKULeuven.png, id=158, 401.5pt x 143.53625pt>
 File: frontpage/LogoKULeuven.png Graphic file (type png)
 <use frontpage/LogoKULeuven.png>
 Package pdftex.def Info: frontpage/LogoKULeuven.png  used on input line 22.
@@ -1077,28 +1028,21 @@ Overfull \hbox (6.55522pt too wide) in paragraph at lines 80--81
 
 [1
 
-\openout5 = `main.ist'.
-
+\openout4 = `main.ist'.
 
 {C:/Users/jaspe/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/jasp
 e/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./frontpage/LogoK
 ULeuven.png>])
-Underfull \hbox (badness 10000) in paragraph at lines 171--175
+Underfull \hbox (badness 10000) in paragraph at lines 165--169
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--175
+Underfull \hbox (badness 10000) in paragraph at lines 165--169
 
  []
 
-[1
-
-
-]
-\openout2 = `chapters/preface/preface.aux'.
-
- (chapters/preface/preface.tex
+[1] (chapters/preface/preface.tex
 pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has 
 been already used, duplicate ignored
 <to be read again> 
@@ -1107,231 +1051,111 @@ l.3 \cleardoublepage
                      [1
 
 
+]) (chapters/abstract/abstract.tex
+Underfull \hbox (badness 10000) in paragraph at lines 3--4
 
-])
-\openout2 = `chapters/summary/summary.aux'.
-
- (chapters/summary/summary.tex [2
-
+ []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 5--7
+
+ []
+
+[2
 
 
-])
-\openout2 = `chapters/summary/summaryNL.aux'.
+]) (chapters/abstract/abstractNL.tex
+Overfull \hbox (6.8178pt too wide) in paragraph at lines 4--5
+\OT1/cmr/m/n/12 De cloud-native be-nader-ing van het on-twikke-len en im-ple-me
+nteren van container-applicaties
+ []
 
 
-(chapters/summary/summaryNL.tex [3
+Underfull \hbox (badness 10000) in paragraph at lines 4--5
+
+ []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 7--9
+
+ []
+
+) [3
 
 
-
-])
-\openout2 = `chapters/abstract/abstract.aux'.
-
- (chapters/abstract/abstract.tex [4
-
-
-
-
-
-])
-No file main.gls.
-[5
-
-
-
-
-
-]
-No file main.nls.
-(main.lof
-
-Package natbib Warning: Citation `4cs' on page vi undefined on input line 6.
-
-
-Package natbib Warning: Citation `Bernstein2014' on page vi undefined on input 
-line 8.
-
-
-Package natbib Warning: Citation `resman' on page vi undefined on input line 9.
+] (main.gls) [4
 
 
 
-Package natbib Warning: Citation `moby' on page vi undefined on input line 10.
 
-
-Package natbib Warning: Citation `IslamShamim2020a' on page vi undefined on inp
-ut line 11.
-
-
-Package natbib Warning: Citation `kano' on page vi undefined on input line 15.
-
-
-Package natbib Warning: Citation `kano' on page vi undefined on input line 16.
-
-
-Package natbib Warning: Citation `kano' on page vi undefined on input line 17.
-
-
-Package natbib Warning: Citation `sg' on page vi undefined on input line 18.
-
-)
+] (main.lof)
 \tf@lof=\write8
 \openout8 = `main.lof'.
 
- [6
+ [5
 
 
-
-] (main.lot
-
-Package natbib Warning: Citation `CNCFSurvey' on page vii undefined on input li
-ne 6.
-
-)
+] (main.lot)
 \tf@lot=\write9
 \openout9 = `main.lot'.
 
- [7
+ [6
 
-
-] (main.toc [8
+] (main.toc [7
 
 ])
 \tf@toc=\write10
 \openout10 = `main.toc'.
 
- [9]
-\openout2 = `chapters/introduction/introduction.aux'.
-
- (chapters/introduction/introduction.tex
+ [8]
+(chapters/introduction/introduction.tex
 Chapter 1.
 
-Underfull \hbox (badness 10000) in paragraph at lines 13--15
+Underfull \hbox (badness 10000) in paragraph at lines 14--16
 
  []
 
 
-Package natbib Warning: Citation `CNCF' on page 1 undefined on input line 16.
-
-
-Package natbib Warning: Citation `cnci4' on page 1 undefined on input line 16.
-
-
-Package natbib Warning: Citation `CNCFSurvey' on page 1 undefined on input line
- 16.
-
-
-Package natbib Warning: Citation `OCI' on page 1 undefined on input line 16.
-
-
-Package natbib Warning: Citation `rkt' on page 1 undefined on input line 16.
-
-
-Package natbib Warning: Citation `crio' on page 1 undefined on input line 16.
-
-
-Package natbib Warning: Citation `LXC' on page 1 undefined on input line 16.
-
-
-Package natbib Warning: Citation `Bernstein2014' on page 1 undefined on input l
-ine 16.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 16--18
+Underfull \hbox (badness 10000) in paragraph at lines 17--19
 
  []
 
 
-Package natbib Warning: Citation `Bernstein2014' on page 1 undefined on input l
-ine 19.
-
-
-Package natbib Warning: Citation `Mesos' on page 1 undefined on input line 19.
-
-
-Package natbib Warning: Citation `Openstack' on page 1 undefined on input line 
-19.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 19--21
+Underfull \hbox (badness 10000) in paragraph at lines 20--22
 
  []
 
 
-Package natbib Warning: Citation `CNCFSurvey' on page 1 undefined on input line
- 22.
-
-
-Package natbib Warning: Citation `nps' on page 1 undefined on input line 22.
-
-
-Overfull \hbox (29.68277pt too wide) in paragraph at lines 26--34
+Overfull \hbox (29.68277pt too wide) in paragraph at lines 27--35
  [][] 
  []
-
-
-Package natbib Warning: Citation `CNCFSurvey' on page 1 undefined on input line
- 34.
 
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.37 \begin{quote}
+l.38 \begin{quote}
                    [1
 
 
-
 ]
-
-Package natbib Warning: Citation `CNCFSurvey' on page 2 undefined on input line
- 38.
-
-
-Package natbib Warning: Citation `4cs' on page 2 undefined on input line 42.
-
-
-Package natbib Warning: Citation `defensiveprogramming' on page 2 undefined on 
-input line 42.
-
-
-Package natbib Warning: Citation `OCI' on page 2 undefined on input line 42.
-
-
-Package natbib Warning: Citation `nps' on page 2 undefined on input line 42.
-
-
-Package natbib Warning: Citation `secgroups' on page 2 undefined on input line 
-42.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 42--44
+Underfull \hbox (badness 10000) in paragraph at lines 43--45
 
  []
 
-<images/4c.png, id=333, 776.9025pt x 448.074pt>
+<images/4c.png, id=457, 776.9025pt x 448.074pt>
 File: images/4c.png Graphic file (type png)
 <use images/4c.png>
-Package pdftex.def Info: images/4c.png  used on input line 47.
+Package pdftex.def Info: images/4c.png  used on input line 48.
 (pdftex.def)             Requested size: 364.19664pt x 210.05467pt.
 
-Package natbib Warning: Citation `4cs' on page 2 undefined on input line 48.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 52--54
+Underfull \hbox (badness 10000) in paragraph at lines 53--55
 
  []
 
 
-Package natbib Warning: Citation `leastprivilige' on page 2 undefined on input 
-line 55.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 55--57
+Underfull \hbox (badness 10000) in paragraph at lines 56--58
 
  []
 
@@ -1340,14 +1164,14 @@ pdfTeX warning (ext4): destination with the same identifier (name{table.1.1}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.57 
+l.58 
      ]
-Underfull \hbox (badness 10000) in paragraph at lines 58--60
+Underfull \hbox (badness 10000) in paragraph at lines 59--61
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 63--65
+Underfull \hbox (badness 10000) in paragraph at lines 64--66
 
  []
 
@@ -1356,77 +1180,30 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.66 \textbf{Grashopper}
+l.67 \textbf{Grashopper}
                          \cite{grashopper}  aims to solve the same problem o...
  <./images/4c.png (PNG copy)>]
-
-Package natbib Warning: Citation `grashopper' on page 4 undefined on input line
- 66.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 66--68
+Underfull \hbox (badness 10000) in paragraph at lines 67--69
 
  []
 
 
-Package natbib Warning: Citation `kano' on page 4 undefined on input line 69.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 69--72
+Underfull \hbox (badness 10000) in paragraph at lines 70--73
 
  []
 
 
-Package natbib Warning: Citation `nfvguard' on page 4 undefined on input line 7
-3.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 73--75
+Underfull \hbox (badness 10000) in paragraph at lines 74--76
 
  []
 
 
-Package natbib Warning: Citation `tenantguard' on page 4 undefined on input lin
-e 76.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 76--78
+Underfull \hbox (badness 10000) in paragraph at lines 77--79
 
  []
 
-[4]
-
-Package natbib Warning: Citation `leastprivilige' on page 5 undefined on input 
-line 79.
-
-
-Package natbib Warning: Citation `trust' on page 5 undefined on input line 79.
-
-
-Package natbib Warning: Citation `prismacloud' on page 5 undefined on input lin
-e 79.
-
-
-Package natbib Warning: Citation `illumio' on page 5 undefined on input line 79
-.
-
-
-Package natbib Warning: Citation `ciscoaci' on page 5 undefined on input line 7
-9.
-
-
-Package natbib Warning: Citation `vmwarensx' on page 5 undefined on input line 
-79.
-
-[5] [6])
-\openout2 = `chapters/background/background.aux'.
-
- (chapters/background/background.tex
+[4] [5] [6]) (chapters/background/background.tex
 Chapter 2.
-
-Package natbib Warning: Citation `Bernstein2014' on page 7 undefined on input l
-ine 8.
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 8--10
 
@@ -1436,17 +1213,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 8--10
 Underfull \hbox (badness 10000) in paragraph at lines 11--13
 
  []
-
-
-Package natbib Warning: Citation `OCI' on page 7 undefined on input line 14.
-
-
-Package natbib Warning: Citation `linuxfoundation' on page 7 undefined on input
- line 14.
-
-
-Package natbib Warning: Citation `opencontainers' on page 7 undefined on input 
-line 14.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 14--16
@@ -1461,11 +1227,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--19
 [7
 
 
-
-
-
 ]
-<images/bernstein-hypervisor-vs-container-deployment.png, id=384, 603.0028pt x 
+<images/bernstein-hypervisor-vs-container-deployment.png, id=530, 603.0028pt x 
 454.69875pt>
 File: images/bernstein-hypervisor-vs-container-deployment.png Graphic file (typ
 e png)
@@ -1474,26 +1237,9 @@ Package pdftex.def Info: images/bernstein-hypervisor-vs-container-deployment.pn
 g  used on input line 23.
 (pdftex.def)             Requested size: 364.19664pt x 274.62526pt.
 
-
-Package natbib Warning: Citation `Bernstein2014' on page 8 undefined on input l
-ine 24.
-
-
-Package natbib Warning: Citation `Bernstein2014' on page 8 undefined on input l
-ine 24.
-
-
-Package natbib Warning: Citation `dockerengine' on page 8 undefined on input li
-ne 31.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 31--33
 
  []
-
-
-Package natbib Warning: Citation `cnwiki' on page 8 undefined on input line 34.
-
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 34--36
@@ -1507,64 +1253,26 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.36 
       <./images/bernstein-hypervisor-vs-container-deployment.png>]
-<images/docker-containers.png, id=395, 343.2825pt x 278.54062pt>
+<images/docker-containers.png, id=545, 343.2825pt x 278.54062pt>
 File: images/docker-containers.png Graphic file (type png)
 <use images/docker-containers.png>
 Package pdftex.def Info: images/docker-containers.png  used on input line 39.
 (pdftex.def)             Requested size: 182.09485pt x 147.74907pt.
-
-
-Package natbib Warning: Citation `resman' on page 9 undefined on input line 40.
-
-
-
-Package natbib Warning: Citation `docker' on page 9 undefined on input line 44.
-
-
-
-Package natbib Warning: Citation `comparisonenginevsdesktop' on page 9 undefine
-d on input line 44.
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 44--46
 
  []
 
 
-Package natbib Warning: Citation `moby' on page 9 undefined on input line 47.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 47--49
 
  []
 
-<images/moby.png, id=398, 659.46375pt x 381.67593pt>
+<images/moby.png, id=552, 659.46375pt x 381.67593pt>
 File: images/moby.png Graphic file (type png)
 <use images/moby.png>
 Package pdftex.def Info: images/moby.png  used on input line 52.
 (pdftex.def)             Requested size: 364.19664pt x 210.79018pt.
-
-Package natbib Warning: Citation `moby' on page 9 undefined on input line 53.
-
-
-Package natbib Warning: Citation `containerterminology' on page 9 undefined on 
-input line 57.
-
-
-Package natbib Warning: Citation `contruntime' on page 9 undefined on input lin
-e 57.
-
-
-Package natbib Warning: Citation `containerd' on page 9 undefined on input line
- 57.
-
-
-Package natbib Warning: Citation `crio' on page 9 undefined on input line 57.
-
-
-Package natbib Warning: Citation `mirantis' on page 9 undefined on input line 5
-7.
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 57--59
 
@@ -1577,50 +1285,16 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.59 
       <./images/docker-containers.png>]
-
-Package natbib Warning: Citation `dockerswarm' on page 10 undefined on input li
-ne 65.
-
-
-Package natbib Warning: Citation `apachemesos' on page 10 undefined on input li
-ne 65.
-
-
-Package natbib Warning: Citation `resman' on page 10 undefined on input line 65
-.
-
-
-Package natbib Warning: Citation `CNCFSurvey' on page 10 undefined on input lin
-e 65.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 65--67
 
  []
 
-
-Package natbib Warning: Citation `aws' on page 10 undefined on input line 68.
-
-
-Package natbib Warning: Citation `azure' on page 10 undefined on input line 68.
-
-
-
-Package natbib Warning: Citation `gcp' on page 10 undefined on input line 68.
-
-<images/kubernetes-structure.png, id=409, 453.19313pt x 202.25563pt>
+<images/kubernetes-structure.png, id=581, 453.19313pt x 202.25563pt>
 File: images/kubernetes-structure.png Graphic file (type png)
 <use images/kubernetes-structure.png>
 Package pdftex.def Info: images/kubernetes-structure.png  used on input line 72
 .
 (pdftex.def)             Requested size: 364.19664pt x 162.53613pt.
-
-Package natbib Warning: Citation `IslamShamim2020a' on page 10 undefined on inp
-ut line 73.
-
-
-Package natbib Warning: Citation `node' on page 10 undefined on input line 77.
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 77--79
 
@@ -1633,35 +1307,19 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.79 
       <./images/moby.png>]
-
-Package natbib Warning: Citation `pod' on page 11 undefined on input line 80.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 80--82
 
  []
 
-<images/pod.png, id=424, 222.07968pt x 225.84375pt>
+<images/pod.png, id=603, 222.07968pt x 225.84375pt>
 File: images/pod.png Graphic file (type png)
 <use images/pod.png>
 Package pdftex.def Info: images/pod.png  used on input line 85.
 (pdftex.def)             Requested size: 227.62204pt x 231.48099pt.
 
-Package natbib Warning: Citation `kubelet' on page 11 undefined on input line 9
-0.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 90--92
 
  []
-
-
-Package natbib Warning: Citation `pythonk8s' on page 11 undefined on input line
- 93.
-
-
-Package natbib Warning: Citation `kubeapiserver' on page 11 undefined on input 
-line 93.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 93--95
@@ -1675,31 +1333,14 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.95 
       <./images/kubernetes-structure.png>]
-
-Package natbib Warning: Citation `namespace' on page 12 undefined on input line
- 97.
-
-
-Package natbib Warning: Citation `feasability' on page 12 undefined on input li
-ne 97.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 97--99
 
  []
 
 
-Package natbib Warning: Citation `rbac' on page 12 undefined on input line 101.
-
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 101--103
 
  []
-
-
-Package natbib Warning: Citation `labels' on page 12 undefined on input line 10
-4.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 104--106
@@ -1713,7 +1354,7 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.106 
        <./images/pod.png>]
-<images/np.png, id=447, 273.27094pt x 310.15875pt>
+<images/np.png, id=639, 273.27094pt x 310.15875pt>
 File: images/np.png Graphic file (type png)
 <use images/np.png>
 Package pdftex.def Info: images/np.png  used on input line 109.
@@ -1723,10 +1364,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 115--119
 
  []
 
-
-Package natbib Warning: Citation `k8snp' on page 13 undefined on input line 121
-.
-
 [13
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.6}) 
 has been already used, duplicate ignored
@@ -1734,36 +1371,23 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.122 
        <./images/np.png>]
-
-Package natbib Warning: Citation `kano' on page 14 undefined on input line 130.
-
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 127--132
 
  []
 
-<images/kano-combined-connections-graph.png, id=465, 647.41875pt x 286.82156pt>
+<images/kano-combined-connections-graph.png, id=658, 647.41875pt x 286.82156pt>
 
 File: images/kano-combined-connections-graph.png Graphic file (type png)
 <use images/kano-combined-connections-graph.png>
 Package pdftex.def Info: images/kano-combined-connections-graph.png  used on in
 put line 139.
 (pdftex.def)             Requested size: 291.35841pt x 129.07726pt.
-<images/kano-matrix-generation.png, id=466, 921.4425pt x 364.36125pt>
+<images/kano-matrix-generation.png, id=659, 921.4425pt x 364.36125pt>
 File: images/kano-matrix-generation.png Graphic file (type png)
 <use images/kano-matrix-generation.png>
 Package pdftex.def Info: images/kano-matrix-generation.png  used on input line 
 145.
 (pdftex.def)             Requested size: 291.35841pt x 115.20805pt.
-
-Package natbib Warning: Citation `kano' on page 14 undefined on input line 146.
-
-
-
-Package natbib Warning: Citation `kano' on page 14 undefined on input line 146.
-
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 152--154
 
@@ -1773,10 +1397,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 152--154
 Underfull \hbox (badness 10000) in paragraph at lines 155--157
 
  []
-
-
-Package natbib Warning: Citation `kano' on page 15 undefined on input line 158.
-
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 167--169
@@ -1797,57 +1417,17 @@ has been already used, duplicate ignored
 l.169 
        <./images/kano-combined-connections-graph.png> <./images/kano-matrix-gen
 eration.png>]
-<images/prefil_cont_labels.png, id=480, 429.10312pt x 271.0125pt>
+<images/prefil_cont_labels.png, id=676, 429.10312pt x 271.0125pt>
 File: images/prefil_cont_labels.png Graphic file (type png)
 <use images/prefil_cont_labels.png>
 Package pdftex.def Info: images/prefil_cont_labels.png  used on input line 174.
 
 (pdftex.def)             Requested size: 204.85844pt x 129.38564pt.
-
-
-Package natbib Warning: Citation `kano' on page 16 undefined on input line 175.
-
-
-
-Package natbib Warning: Citation `kano' on page 16 undefined on input line 175.
-
-
-<images/prefil_pols.png, id=481, 440.39531pt x 267.24844pt>
+<images/prefil_pols.png, id=679, 440.39531pt x 267.24844pt>
 File: images/prefil_pols.png Graphic file (type png)
 <use images/prefil_pols.png>
 Package pdftex.def Info: images/prefil_pols.png  used on input line 181.
 (pdftex.def)             Requested size: 204.85844pt x 124.31409pt.
-
-Package natbib Warning: Citation `kano' on page 16 undefined on input line 182.
-
-
-
-Package natbib Warning: Citation `kano' on page 16 undefined on input line 182.
-
-
-
-Package natbib Warning: Citation `k8scni' on page 16 undefined on input line 19
-1.
-
-
-Package natbib Warning: Citation `k8snetworkmodel' on page 16 undefined on inpu
-t line 191.
-
-
-Package natbib Warning: Citation `cni' on page 16 undefined on input line 191.
-
-
-Package natbib Warning: Citation `weave' on page 16 undefined on input line 191
-.
-
-
-Package natbib Warning: Citation `cilium' on page 16 undefined on input line 19
-1.
-
-
-Package natbib Warning: Citation `calico' on page 16 undefined on input line 19
-1.
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 191--193
 
@@ -1857,14 +1437,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 191--193
 Underfull \hbox (badness 10000) in paragraph at lines 194--196
 
  []
-
-
-Package natbib Warning: Citation `ebpf' on page 16 undefined on input line 197.
-
-
-
-Package natbib Warning: Citation `neutron' on page 16 undefined on input line 1
-97.
 
 [16
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.9}) 
@@ -1879,22 +1451,6 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.10})
                                                   \__shipout_drop_firstpage_...
 l.198 
        <./images/prefil_cont_labels.png> <./images/prefil_pols.png>]
-
-Package natbib Warning: Citation `CNCFSurvey' on page 17 undefined on input lin
-e 201.
-
-
-Package natbib Warning: Citation `chromeos' on page 17 undefined on input line 
-201.
-
-
-Package natbib Warning: Citation `aws' on page 17 undefined on input line 201.
-
-
-Package natbib Warning: Citation `Openstack' on page 17 undefined on input line
- 201.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 201--203
 
  []
@@ -1905,20 +1461,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 204--206
  []
 
 
-Package natbib Warning: Citation `sg' on page 17 undefined on input line 207.
-
-
-Package natbib Warning: Citation `sgquotas' on page 17 undefined on input line 
-207.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 207--209
 
  []
-
-
-Package natbib Warning: Citation `sgrule' on page 17 undefined on input line 21
-0.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 210--212
@@ -1926,35 +1471,24 @@ Underfull \hbox (badness 10000) in paragraph at lines 210--212
  []
 
 [17]
-<images/sgrule example.png, id=511, 938.75719pt x 207.02344pt>
+<images/sgrule example.png, id=731, 938.75719pt x 207.02344pt>
 File: images/sgrule example.png Graphic file (type png)
 <use images/sgrule example.png>
 Package pdftex.def Info: images/sgrule example.png  used on input line 215.
 (pdftex.def)             Requested size: 455.24408pt x 100.3936pt.
-
-
-Package natbib Warning: Citation `sg' on page 18 undefined on input line 216.
-
-[18
+ [18
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.11})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.220 \cleardoublepage
                        <./images/sgrule example.png>])
-\openout2 = `chapters/proposedsolution/proposedsolution.aux'.
-
-
 (chapters/proposedsolution/proposedsolution.tex
 Chapter 3.
 
 Underfull \hbox (badness 10000) in paragraph at lines 21--23
 
  []
-
-
-Package natbib Warning: Citation `namespace' on page 19 undefined on input line
- 24.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 24--26
@@ -1965,9 +1499,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--26
 
 
 
-
-
-
 pdfTeX warning (ext4): destination with the same identifier (name{table.3.1}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
@@ -1975,7 +1506,7 @@ as been already used, duplicate ignored
 l.31     \item \textit
                       {Analyzer:} The analyzer orchestrates the handling of ...
 ]
-<images/algo-components.png, id=531, 623.32875pt x 297.11pt>
+<images/algo-components.png, id=754, 623.32875pt x 297.11pt>
 File: images/algo-components.png Graphic file (type png)
 <use images/algo-components.png>
 Package pdftex.def Info: images/algo-components.png  used on input line 40.
@@ -2006,11 +1537,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 66--68
 
  []
 
-
-Package natbib Warning: Citation `kano' on page 21 undefined on input line 69.
-
 [21]
-<images/store.png, id=546, 821.0675pt x 351.3125pt>
+<images/store.png, id=767, 821.0675pt x 351.3125pt>
 File: images/store.png Graphic file (type png)
 <use images/store.png>
 Package pdftex.def Info: images/store.png  used on input line 87.
@@ -2047,7 +1575,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 120--122
  []
 
 [24] [25]
-<images/labeltree.png, id=587, 1105.12875pt x 532.99126pt>
+<images/labeltree.png, id=806, 1105.12875pt x 532.99126pt>
 File: images/labeltree.png Graphic file (type png)
 <use images/labeltree.png>
 Package pdftex.def Info: images/labeltree.png  used on input line 126.
@@ -2090,11 +1618,6 @@ LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <12> not available
 LaTeX Warning: Float too large for page by 88.96458pt on input line 59.
 
 ) [30] [31] [32] [33]
-
-Package natbib Warning: Citation `secgroups' on page 34 undefined on input line
- 175.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 175--177
 
  []
@@ -2105,9 +1628,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 178--180
  []
 
 (algorithms/checkconnectivitycode.tex) [34] [35])
-\openout2 = `chapters/evaluation/evaluation.aux'.
-
-
 (chapters/evaluation/evaluation.tex
 Chapter 4.
 
@@ -2120,7 +1640,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 10--12
 
  []
 
-<images/podyaml.png, id=671, 433.62pt x 603.75563pt>
+<images/podyaml.png, id=886, 433.62pt x 603.75563pt>
 File: images/podyaml.png Graphic file (type png)
 <use images/podyaml.png>
 Package pdftex.def Info: images/podyaml.png  used on input line 17.
@@ -2131,9 +1651,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 22--24
  []
 
 [36
-
-
-
 
 
 ] [37
@@ -2153,11 +1670,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 47--49
 
  []
 
-[38]
-
-Package natbib Warning: Citation `kano' on page 39 undefined on input line 50.
-
-[39]
+[38] [39]
 Underfull \hbox (badness 10000) in paragraph at lines 86--88
 
  []
@@ -2227,26 +1740,26 @@ Underfull \hbox (badness 10000) in paragraph at lines 120--122
  []
 
 [41]
-<images/experiment1/addNP-time.png, id=718, 799.788pt x 336.165pt>
+<images/experiment1/addNP-time.png, id=931, 799.788pt x 336.165pt>
 File: images/experiment1/addNP-time.png Graphic file (type png)
 <use images/experiment1/addNP-time.png>
 Package pdftex.def Info: images/experiment1/addNP-time.png  used on input line 
 138.
 (pdftex.def)             Requested size: 455.24408pt x 191.34418pt.
-<images/experiment1/addPod-time.png, id=719, 799.788pt x 336.165pt>
+<images/experiment1/addPod-time.png, id=932, 799.788pt x 336.165pt>
 File: images/experiment1/addPod-time.png Graphic file (type png)
 <use images/experiment1/addPod-time.png>
 Package pdftex.def Info: images/experiment1/addPod-time.png  used on input line
  144.
 (pdftex.def)             Requested size: 455.24408pt x 191.34418pt.
  [42]
-<images/experiment1/delNP-time.png, id=724, 800.007pt x 336.384pt>
+<images/experiment1/delNP-time.png, id=936, 800.007pt x 336.384pt>
 File: images/experiment1/delNP-time.png Graphic file (type png)
 <use images/experiment1/delNP-time.png>
 Package pdftex.def Info: images/experiment1/delNP-time.png  used on input line 
 150.
 (pdftex.def)             Requested size: 455.24408pt x 191.4175pt.
-<images/experiment1/delPod-time.png, id=725, 806.139pt x 336.165pt>
+<images/experiment1/delPod-time.png, id=937, 806.139pt x 336.165pt>
 File: images/experiment1/delPod-time.png Graphic file (type png)
 <use images/experiment1/delPod-time.png>
 Package pdftex.def Info: images/experiment1/delPod-time.png  used on input line
@@ -2280,25 +1793,25 @@ has been already used, duplicate ignored
 l.167     \item W
                  e can see that the ratio in which the memory increases for ...
  <./images/experiment1/delNP-time.png> <./images/experiment1/delPod-time.png>]
-<images/experiment1/addNP-memory.png, id=745, 800.007pt x 336.165pt>
+<images/experiment1/addNP-memory.png, id=956, 800.007pt x 336.165pt>
 File: images/experiment1/addNP-memory.png Graphic file (type png)
 <use images/experiment1/addNP-memory.png>
 Package pdftex.def Info: images/experiment1/addNP-memory.png  used on input lin
 e 172.
 (pdftex.def)             Requested size: 455.24408pt x 191.29288pt.
-<images/experiment1/addPod-memory.png, id=746, 800.007pt x 336.165pt>
+<images/experiment1/addPod-memory.png, id=957, 800.007pt x 336.165pt>
 File: images/experiment1/addPod-memory.png Graphic file (type png)
 <use images/experiment1/addPod-memory.png>
 Package pdftex.def Info: images/experiment1/addPod-memory.png  used on input li
 ne 178.
 (pdftex.def)             Requested size: 455.24408pt x 191.29288pt.
-<images/experiment1/delNP-memory.png, id=747, 800.007pt x 336.165pt>
+<images/experiment1/delNP-memory.png, id=958, 800.007pt x 336.165pt>
 File: images/experiment1/delNP-memory.png Graphic file (type png)
 <use images/experiment1/delNP-memory.png>
 Package pdftex.def Info: images/experiment1/delNP-memory.png  used on input lin
 e 184.
 (pdftex.def)             Requested size: 455.24408pt x 191.29288pt.
-<images/experiment1/delPod-memory.png, id=748, 806.577pt x 336.165pt>
+<images/experiment1/delPod-memory.png, id=959, 806.577pt x 336.165pt>
 File: images/experiment1/delPod-memory.png Graphic file (type png)
 <use images/experiment1/delPod-memory.png>
 Package pdftex.def Info: images/experiment1/delPod-memory.png  used on input li
@@ -2391,33 +1904,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 281--283
 
  []
 
-[49] [50])
-\openout2 = `chapters/conclusion/conclusion.aux'.
-
- (chapters/conclusion/conclusion.tex
+[49] [50]) (chapters/conclusion/conclusion.tex
 Chapter 5.
 [51
 
 
+]) (main.bbl [52
 
 
-
-])
-No file main.bbl.
-(main.tdo)
+] [53] [54] [55]) [56] (main.tdo)
 \tf@tdo=\write11
 \openout11 = `main.tdo'.
 
- [52
-
-
-
+ (backpage/backpage.tex
+[57
 
 ]
-\openout2 = `backpage/backpage.aux'.
-
- (backpage/backpage.tex
-<backpage/sedes.png, id=797, 402.5439pt x 683.6742pt>
+<backpage/sedes.png, id=1115, 402.5439pt x 683.6742pt>
 File: backpage/sedes.png Graphic file (type png)
 <use backpage/sedes.png>
 Package pdftex.def Info: backpage/sedes.png  used on input line 33.
@@ -2427,106 +1930,46 @@ Overfull \hbox (0.55522pt too wide) in paragraph at lines 37--38
 [][][] 
  []
 
-) [53
-
- <./backpage/sedes.png>]
-
-Package natbib Warning: There were undefined citations.
-
-(main.aux (frontpage/frontpage.aux) (chapters/preface/preface.aux)
-(chapters/summary/summary.aux) (chapters/summary/summaryNL.aux)
-(chapters/abstract/abstract.aux) (chapters/introduction/introduction.aux)
-(chapters/background/background.aux)
-(chapters/proposedsolution/proposedsolution.aux)
-(chapters/evaluation/evaluation.aux) (chapters/conclusion/conclusion.aux)
-(backpage/backpage.aux))
+) [58 <./backpage/sedes.png>] (main.aux)
  ***********
 LaTeX2e <2023-11-01>
 L3 programming layer <2023-12-08>
  ***********
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 8D72321D6717B28DA15EBCD0B8E867D1;4514.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: CC8A97487F24A42C8B457BBB001C98D8;4308
+(rerunfilecheck)             After:  3EC3E00AEAC15040B084EC3743BCE242;4152.
  ) 
 Here is how much of TeX's memory you used:
- 28823 strings out of 474491
- 541651 string characters out of 5743833
+ 28042 strings out of 474491
+ 517330 string characters out of 5743833
  1960473 words of memory out of 5000000
- 50269 multiletter control sequences out of 15000+600000
- 587550 words of font info for 93 fonts, out of 8000000 for 9000
+ 49479 multiletter control sequences out of 15000+600000
+ 587887 words of font info for 94 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 110i,12n,107p,2371b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{glo:sgic} has been referenced but does not exist, r
-eplaced by a fixed one
-
-
-pdfTeX warning (dest): name{glo:kic} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{glo:sg} has been referenced but does not exist, rep
-laced by a fixed one
-
-
-pdfTeX warning (dest): name{glo:nat} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{glo:cni} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{glo:np} has been referenced but does not exist, rep
-laced by a fixed one
-
-
-pdfTeX warning (dest): name{glo:rbac} has been referenced but does not exist, r
-eplaced by a fixed one
-
-
-pdfTeX warning (dest): name{glo:gcp} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{glo:aws} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{glo:os} has been referenced but does not exist, rep
-laced by a fixed one
-
-
-pdfTeX warning (dest): name{glo:fol} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{glo:vm} has been referenced but does not exist, rep
-laced by a fixed one
-
-
-pdfTeX warning (dest): name{glo:k8s} has been referenced but does not exist, re
-placed by a fixed one
-
-
-pdfTeX warning (dest): name{glo:oci} has been referenced but does not exist, re
-placed by a fixed one
-
- <C:\Users\jaspe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm10
-00.pk><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmbx12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/amsfonts/cm/cmmi12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmr12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/jaspe/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/jaspe/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/jaspe/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Us
-ers/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:
-/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb>
-<C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.
-pfb>
-Output written on main.pdf (64 pages, 2325826 bytes).
+ 99i,12n,101p,2371b,821s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\jaspe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
+1200.pk> <C:\Users\jaspe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
+0\tcrm1000.pk><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+amsfonts/cm/cmbx12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmmi12.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/jaspe/AppData/Local/Programs/
+MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/jaspe/AppData/Local/
+Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/jaspe/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/ja
+spe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pf
+b><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a
+.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhv
+r8a.pfb><C:/Users/jaspe/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/
+uhvro8a.pfb>
+Output written on main.pdf (68 pages, 2399386 bytes).
 PDF statistics:
- 887 PDF objects out of 1000 (max. 8388607)
- 153 named destinations out of 1000 (max. 500000)
- 475 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1225 PDF objects out of 1440 (max. 8388607)
+ 223 named destinations out of 1000 (max. 500000)
+ 459 words of extra memory for PDF output out of 10000 (max. 10000000)
 
