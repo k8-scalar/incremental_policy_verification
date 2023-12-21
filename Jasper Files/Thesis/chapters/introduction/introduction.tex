@@ -82,7 +82,7 @@ To achieve this Kano generates a square matrix of size \(kxk\) where \(k\ =\ amo
 % ===============================================================
 \section{Goals} \label{sec:goals}
 %  try to sketch the overall goal: incremental verification of network policies and pods as they are being added or removed and conflict detection between policies and pod scheduling on the  one hand and  security groups on the other hand
-
+\todo{What are the security guarantees?  Algo can check posisble placements before deployment: integrate into sheduler. Verification of new deployments? }
 As mentioned in the previous section there is a gap in current state-of-the-art technologies for detection of conflicts in network rules through the cloud and cluster layer. Our goal is to fill this gap with an algorithm that incrementally verifies network policies and pods in a container cluster, after which we detect conflicts between network policies and pod scheduling on the one hand and security groups and their security rules on the other hand. With an incrementally verifying algorithm we refer to an algorithm that, upon each event in the cluster that might induce new conflicts or resolve existing conflicts due to a chance in the cluster layer, triggers a new verification. Events in the cloud layer might affect conflicts as well but are out of scope for this thesis. Additionally, the algorithm should detect any existing conflicts in the cluster state upon execution to ascertain whether or not the current state is conflict-free.
 
 

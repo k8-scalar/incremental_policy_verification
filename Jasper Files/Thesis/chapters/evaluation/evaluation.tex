@@ -142,7 +142,7 @@ The results of the experiment will be divided into eight different graphs: for e
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/experiment1/addPod-time.png}
-    \caption{Time consumption of adding a pod}
+    \caption{Time consumption of adding a container}
     \label{fig:exp1-addPod-time}
 \end{figure}
 \begin{figure}[H]
@@ -154,7 +154,7 @@ The results of the experiment will be divided into eight different graphs: for e
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/experiment1/delPod-time.png}
-    \caption{Time consumption of deleting a pod}
+    \caption{Time consumption of deleting a container}
     \label{fig:exp1-delPod-time}
 \end{figure}
 
@@ -176,7 +176,7 @@ The results of the experiment will be divided into eight different graphs: for e
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/experiment1/addPod-memory.png}
-    \caption{Memory consumption of adding a pod}
+    \caption{Memory consumption of adding a container}
     \label{fig:exp1-addPod-memory}
 \end{figure}
 \begin{figure}[H]
@@ -188,7 +188,7 @@ The results of the experiment will be divided into eight different graphs: for e
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/experiment1/delPod-memory.png}
-    \caption{Memory consumption of deleting a pod}
+    \caption{Memory consumption of deleting a container}
     \label{fig:exp1-delPod-memory}
 \end{figure}
 
@@ -284,5 +284,94 @@ The approach for this experiment is very similar to experiment 1 but with small 
 
 % =========================================
 \subsection{experiment results} \label{exp2:results}
+Similarly to experiment 1 we created a graph that displays average and median time as well as a graph that shows average and median memory consumption for each of the four events, the difference being that it now shows the data for the entire conflict detection solution instead of only the incremental update. Aside from these 8 event graphs we also have two graphs regarding the time and memory consumption of the intiliazation process of the watcher and thus directly the algorithm itself. In these startup graphs we do not seperate the data per event since the event has not occured yet when the watcher is executed and thus has no influence. Please note that the conflict detection graphs all use the same values and increments on their axis to allow a direct comparison, but that the startup graph does not follow this promise: It shows the time in seconds instead of ms. We will start by looking at the startup graphs after which we continue with the time and memory graphs for conflict detection.
+\\[10pt]
+
+\textbf{Watcher Startup}
+\newline The time and memory consumption for initialising the watcher can be seen in \autoref{fig:exp2-startup-time} and \autoref{fig:exp2-startup-memory} respectively. The goal of these graphs is to give a general sense of resource consumption for the algorithm, but since the algorithm should in theory only be started once, in a non-time sensitive environment the required startup time has no direct consequences. We can deduct two interesting conclusions from the graphs:
+
+\begin{itemize}
+    	\item The median time deviates from the average time, showing once again that the amount of connections in the cluster setup directly influences the speed of our solution. This difference increases with cluster size since more network policies and containers directly translates to a higher chance of container connection.
+	\item The memory consumption shows no surprises nor does it show any significant difference between the average and mean values meaning that it remains very stable. Interestingly enough this indicates that variables whose size depend on the amount of allowed connections, such as resp\_policies  in the reachability structure (see \autoref{impl:model}) do not have much influence on the total memory consumption.
+
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/watcher-startup-time.png}
+    \caption{Time consumption of starting up the algorithm}
+    \label{fig:exp2-startup-time}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/watcher-startup-memory.png}
+    \caption{Memory consumption of starting up the algorithm}
+    \label{fig:exp2-startup-memory}
+\end{figure}
+
+
+
+\textbf{Time consumption}
+\newline The time consumption for the full conflict detection solution for each of the four events are shown in \autoref{fig:exp2-addNP-time-conflict}, \autoref{fig:exp2-addPod-time-conflict}, \autoref{fig:exp2-delNP-time-conflict} and \autoref{fig:exp2-delPod-time-conflict}. When looking at the grasshopper research paper we can read that in their experiments they found that the deployment time of an application can be up to 4 seconds in case of a cold start \cite{grasshopper}. We can see that the conflict detection time remains safely below these values with the highest average being 474ms for the deletion of a network policy. Furthermore we can deduct some conclusions out of the graphs:
+\begin{itemize}
+    \item For each of the events and cluster setup combinations the median value lies lower than the average value, indicating the presence of high values that pull the average up. We once again assume this is related to the amount of container connections.
+    \item When we compare the graphs for experiment2 to the incremental approach of the corresponding event graphs in experiment1 we see that the incremental update approach is the main contributor to time consumption, while the conflict detection only adds a slight overhead.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/addNP-time-conflict.png}
+    \caption{conflict detection time consumption - add network policy}
+    \label{fig:exp2-addNP-time-conflict}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/addPod-time-conflict.png}
+    \caption{conflict detection time consumption - add container}
+    \label{fig:exp2-addPod-time-conflict}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/delNP-time-conflict.png}
+    \caption{conflict detection time consumption - delete network policy}
+    \label{fig:exp2-delNP-time-conflict}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/delPod-time-conflict.png}
+    \caption{conflict detection time consumption - delete container}
+    \label{fig:exp2-delPod-time-conflict}
+\end{figure}
+
+
+
+\textbf{Memory consumption}
+\newline The memory consumption for the full conflict detection solution for each of the four events are shown in \autoref{fig:exp2-addNP-memory-conflict}, \autoref{fig:exp2-addPod-memory-conflict}, \autoref{fig:exp2-delNP-memory-conflict} and \autoref{fig:exp2-delPod-memory-conflict}. The average value are usually in line with the averages meaning little to no skewing of data due to outliers occurs . One exception is the addition of a network policy where the median lies higher than the average, which was also visible in the corresponding graph in experiment 1. We therefore assume that this is due to the incremental update of the cluster state and not because of the conflict detection itself. Some small differences between events can be found but no specific outliers catch the eye.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/addNP-memory-conflict.png}
+    \caption{conflict detection memory consumption - add network policy}
+    \label{fig:exp2-addNP-memory-conflict}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/addPod-memory-conflict.png}
+    \caption{conflict detection memory consumption - add container}
+    \label{fig:exp2-addPod-memory-conflict}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/delNP-memory-conflict.png}
+    \caption{conflict detection memory consumption - delete network policy}
+    \label{fig:exp2-delNP-memory-conflict}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiment2/delPod-memory-conflict.png}
+    \caption{conflict detection memory consumption - delete container}
+    \label{fig:exp2-delPod-memory-conflict}
+\end{figure}
+
 
 \cleardoublepage
