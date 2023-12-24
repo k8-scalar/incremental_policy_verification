@@ -1,8 +1,4 @@
-import time
-from yaml.loader import FullLoader
-from model import *
-from yaml import load, dump, load_all
-import os
+from model import * # type: ignore
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
