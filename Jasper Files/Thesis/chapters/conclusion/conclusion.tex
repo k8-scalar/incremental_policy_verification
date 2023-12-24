@@ -1,0 +1,40 @@
+%!TeX root=../../main.tex
+\chapter{Conclusion}                     \label{ch:conclusion}
+%======================================
+\section{Overview} \label{sec:overview}
+In this thesis, we researched the Kubernetes technology stack regarding network security and defined the possibility of conflicts arising due to misconfigurations between different layers of the stack. After we defined our problem statement we researched existing state-of-the-art solutions regarding these conflicts and identified a knowledge gap within the current solutions as well as a possibility for improvement for Kano, an existing research solution. We continued by leveraging Kano's ideas to implement our algorithm that detects and reports on these conflicts. The implementation uses an incremental approach of updating the last locally saved cluster state, triggered by the monitoring and capturing of events that influence the connections between containers. 
+\\[10pt]
+
+In our evaluation we compared the incremental update functionality of our implementation against Kano's generative approach and concluded that the generative approach is faster than our incremental solution for smaller clusters, whereas our incremental approach outperforms Kano's when the cluster becomes sufficiently large. A drawback of our incremental approach is the increased memory usage due to the storage of cluster state information as well as extra data required for the conflict detection. In our second experiment, we evaluated the general time and memory consumption for our entire conflict detection algorithm which showed us that the time consumption average never crossed 474ms for the highest average thus making our algorithm faster than the average cold-start pod deployment.
+\\[10pt]
+
+
+
+%======================================
+\section{Future work} \label{sec:futurework}
+We briefly mentioned a startup-verification method to detect already existing conflicts within the cluster, which is implemented but remains untested due to time constraints for this thesis. When the memory consumption of the implemented algorithm proves to be too excessive the generative approach combined with the conflict detection could be executed periodically instead in order to detect existing conflict within the cluster. Some adaptations should be made such as the API monitoring and the removal of variables that were only required for the incremental update approach.
+\\[10pt]
+
+Our solution only provides conflict detection and does not offer a conflict solution nor an automatic conflict resolution step due to the multiple-truth problem of the different layers. This research problem would prove for an interesting study.
+\\[10pt]
+
+The solution algorithm does not monitor cloud-level changes to the cluster but instead mimics it by generating randomised OpenStack security groups and their rules. Future work could include the continuous monitoring for events that influence inter-VM connections similarly to the implemented cluster-layer watcher.
+\\[10pt]
+
+
+
+
+%======================================
+\section{Kano V2} \label{sec:kanov2}
+During the creation of this thesis, the researchers responsible for Kano released a second paper which partially overlaps with our solution.  Since a complete rework of the thesis was infeasible at the moment of the paper's release we decided to continue our heading. Additionally, we would not take into account their new ideas in order to reach our deadlines. As compensation, we introduce this section in which we will talk about the implications this new research paper might have on this thesis and its future work. To avoid confusion we will adapt the paper's annotation of nodes for objects that were called containers or pods in the previous parts of the thesis. \cite{kano2}
+\\[10pt]
+
+Within the new Kano paper, which we will Kano V2, they improve their initial solution by introducing a more general ABAC-formed cloud-native network policy verification method that replaces their previous more Kubernetes network policy-specific approach. Additionally, they added incremental verification which only looks at affected parts of the network instead of regenerating the reachabilitymatrix. It is striking how similar our idea of the incremental update approach is to Kano V2's improvement even though these ideas were found independently. Both incremental approaches define the addition and deletion of network policies and nodes as the core events that necessitate the verification of the cluster state, although our solution also captures update events due to its Kubernetes-specific implementation.
+\\[10pt]
+
+A big addition to the Kano algorithm is the \acrfull{bnp} map which saves the matches between nodes and policies and allows for quick retrieval when given a specific policy or node to search for. This data structure leverages bit vectors to efficiently store these connections to improve space and time complexity. In the implementation of this thesis, we used a more rudimentary approach where we stored network policies in the labelTree structure and containers in the LabelMap. Although this enables us to quickly retrieve a network policy for a given selector we still need to do extra verification to make sure all labelselectors of policies are present within a pod. As a direct result, our algorithm might become slower when the amount of labels within single objects increases. The \acrshort{bnp} map allows for direct retrieval and could be an improvement if implemented in our solution, but only if updating the data structure can be done efficiently.
+\\[10pt]
+
+Although Kano V2 introduced a lot of new concepts and ideas our conflict detection method still proves an extension of the paper as it takes into account the cloud layer of the Kubernetes stack as well, while their verification approach remains within a single layer. It would be interesting to try converting the cloud layer networking rules, such as OpenStack's security groups and rules, into ABAC style labels \cite{sg} \cite{sgrule}. This way conflict detection could still be performed while utilising the benefits of Kano V2. Additionally, the more general cloud-native approach of Kano V2 can be a guide in translating conflict detection to a more general solution that applies to different technologies in the stack instead of focusing on OpenStack and Kubernetes. Unfortunately, we must leave these ideas and thoughts for future work.
+
+\cleardoublepage

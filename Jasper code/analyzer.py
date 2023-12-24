@@ -2,10 +2,9 @@ from model import *
 from parser import ConfigParser
 import copy
 from bitarray import bitarray
-import numpy as np
 from sgic import Security_Groups_Information_Cluster
 from kic import Kubernetes_Information_Cluster
-from labelTrie import LabelTrie
+from labelTree import LabelTree
 
 def is_matrix_all_zero(matrix):
     for row in matrix:
@@ -74,8 +73,8 @@ class EventAnalyzer:
         self.sgic.generate_sg_information()
 
         # Set to true if you want all generated security groups and rules to be printed as well
-        self.sgic.print_info(self.debug)
-        self.kic.print_info(self.debug)
+        self.sgic.print_info(self.debug, self.verbose)
+        self.kic.print_info(self.debug, self.verbose)
 
 
     def analyseStartup(self):    
@@ -92,7 +91,10 @@ class EventAnalyzer:
         obj = self.cp.create_object_from_event(event)
         if isinstance(obj, Policy):
             if event['custom'] == "create":
-                obj.id = max(self.kic.reachabilitymatrix.dict_pols.keys()) + 1
+                if self.kic.reachabilitymatrix.dict_pols.keys():
+                    obj.id = max(self.kic.reachabilitymatrix.dict_pols.keys()) + 1
+                else:
+                    obj.id = 0
                 new_reach = self.kic.reachabilityAddNP(obj)
                 deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
                    
@@ -130,36 +132,40 @@ class EventAnalyzer:
                     # So even though a NP was removed there is still a connection between the containers according to the labels.
                     print("\n  This NetworkPolicy deletion does not remove any existing container connections")
                     # we get the containers that have all the labels in the select set
-                    select_containers = set()
-                    for select_label in obj.selector.concat_labels:
-                        matrix_ids = set()
-                        conts = self.kic.containerTrie.find(select_label)
-                        if conts:
-                            matrix_ids.update(cont.matrix_id for cont in conts)
-
-                        if not select_containers and matrix_ids:
-                            select_containers = matrix_ids
-                        elif matrix_ids:
-                            select_containers = select_containers.intersection(matrix_ids)
+                    select_containers = bitarray('0'*len(new_reach.dict_pods))
+                    first = True
+                    for label in obj.selector.concat_labels:
+                        conts = copy.deepcopy(new_reach.label_map.get(label))
+                        if conts is not None:
+                            if first:
+                                first = False
+                                select_containers = conts
+                            else:
+                                select_containers &= conts
+                        else:
+                            select_containers = bitarray('0'*len(new_reach.dict_pods))
 
                     # we get the containers that have all the labels in the allow set
-                    allow_containers_final = set()
+                    allow_containers_final = bitarray('0'*len(new_reach.dict_pods))
                     for allow in obj.allow:
-                        allow_containers = set()
+                        allow_containers = bitarray('0'*len(new_reach.dict_pods))
+                        first = True
                         for allow_label in allow.concat_labels:
-                            matrix_ids = set()
-                            conts = self.kic.containerTrie.find(allow_label)
-                            if conts:
-                                matrix_ids.update(cont.matrix_id for cont in conts)
-                            if not allow_containers and matrix_ids:
-                                allow_containers = matrix_ids
-                            elif matrix_ids:
-                                allow_containers = allow_containers.intersection(matrix_ids)   
-                        allow_containers_final.update(allow_containers)
+                            conts = copy.deepcopy(new_reach.label_map.get(allow_label))
+                            if conts is not None:
+                                if first:
+                                    first = False
+                                    allow_containers = conts
+                                else:
+                                    allow_containers &= conts 
+                            else:
+                                allow_containers = bitarray('0'*len(new_reach.dict_pods))
+                                break
+                        allow_containers_final |= allow_containers
 
                     if select_containers and allow_containers_final:
-                        for select_cont in select_containers:
-                            for allow_cont in allow_containers_final:
+                        for select_cont in list(select_containers.itersearch(1)):
+                            for allow_cont in list(allow_containers_final.itersearch(1)):
                                 print(f"\n   container {self.kic.matrixId_to_Container[select_cont].name} connected to {self.kic.matrixId_to_Container[allow_cont].name} used this networkPolicy. This connection is however maintained by the following:")
                                 for (index1, index2) in new_reach.resp_policies.get_items(self.kic.matrixId_to_Container[select_cont].id, self.kic.matrixId_to_Container[allow_cont].id):
                                     if obj.direction.direction:
@@ -193,21 +199,28 @@ class EventAnalyzer:
                         old_obj = value
                         break
                 differences = find_obj_differences(old_obj, obj)
-                print("  The following changes have been found between the old NetworkPolicy and the updated Networkpolicy")
+                if differences:
+                    print("  The following changes have been found between the old NetworkPolicy and the updated Networkpolicy")
 
-                for key, (value1, value2) in differences.items():
-                    #some keys should be ignored.
-                    if key != "id" and key != "working_select_set" and key != "working_allow_set":
-                        print(f"\n    -{key}:")
-                        print(f"       old:     {value1}")
-                        print(f"       updated: {value2}")
-                
+                    for key, (value1, value2) in differences.items():
+                        #some keys should be ignored.
+                        if key != "id" and key != "working_select_set" and key != "working_allow_set":
+                            print(f"\n    -{key}:")
+                            print(f"       old:     {value1}")
+                            print(f"       updated: {value2}")
+                    
                 obj.id = old_obj.id
+
+                old_matrix = copy.deepcopy(self.kic.reachabilitymatrix)
+                old_matrixId_to_Container = copy.deepcopy(self.kic.matrixId_to_Container)
+                deleted_reach = self.kic.reachabilityDeleteNP(old_obj)
                 self.kic.delete_policy(old_obj)
+                self.kic.reachabilitymatrix = deleted_reach
+
+                new_reach = self.kic.reachabilityAddNP(obj)
                 self.kic.insert_policy(obj)
-                new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
              
-                deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
+                deltakano = [row1 ^ row2 for row1, row2 in zip(old_matrix.matrix, new_reach.matrix)]
                 if is_matrix_all_zero(deltakano):
                     print("\n  The updated network policy does not trigger any change in connections and thus does not introduce any new conflicts")
                     print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO CONFLICTS\n')
@@ -217,25 +230,28 @@ class EventAnalyzer:
                             
                             if deltakano[i][j] == 1:
                                 # First we get the nodes they are deployed on.
-                                nodeName1 = self.kic.matrixId_to_Container[i].nodeName
-                                nodeName2 = self.kic.matrixId_to_Container[j].nodeName
+                                nodeName1 = old_matrixId_to_Container[i].nodeName
+                                nodeName2 = old_matrixId_to_Container[j].nodeName
                                 # So connectivity between these 2 containers has been removed, let us see see which security groups they belong to.
                                 print("\n  The NetworkPolicy update has effect on the connectivity between following pods:")
-                                if self.kic.reachabilitymatrix.matrix[i][j] == 1:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2} anymore")
+                                if old_matrix.matrix[i][j] == 1:
+                                    print(f"  {old_matrixId_to_Container[i].name} on node {nodeName1} can not send messages to {old_matrixId_to_Container[j].name} on node {nodeName2} anymore")
                                     # Now we look at SGs
                                     self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
                                 else:
-                                    print(f"  {self.kic.matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {self.kic.matrixId_to_Container[j].name} on node {nodeName2}")
+                                    print(f"  {old_matrixId_to_Container[i].name} on node {nodeName1} can now send messages to {old_matrixId_to_Container[j].name} on node {nodeName2}")
                                     # Now we look at SGs
                                     self.sgic.check_sg_connectivity(nodeName1, nodeName2, True)
                 
 
         elif isinstance(obj, Container):
             if event['custom'] == "create":
-                obj.id = max(self.kic.reachabilitymatrix.dict_pods.keys()) + 1
+                if (self.kic.reachabilitymatrix.dict_pods.keys()):
+                    obj.id = max(self.kic.reachabilitymatrix.dict_pods.keys()) + 1
+                else: 
+                    obj.id = 0
+
                 new_reach = self.kic.reachabilityAddContainer(obj)
-                obj.matrix_id = new_reach.dict_pods[obj.id].matrix_id
                 any_connection = False
                 for j, i in new_reach.dict_pods.items():
                     if new_reach.matrix[obj.matrix_id][i.matrix_id] == 1:
@@ -323,11 +339,11 @@ class EventAnalyzer:
                                     affected_policies.add(index2)
                         self.sgic.check_sg_connectivity(nodeName1, nodeName2, False)
                 if affected_policies:
-                    print("\n    Let us look at the NetworkPolicies that were used in combination with the now deleted NetworkPolicy, to check them for redundancy:")
+                    print("\n    Let us look at the NetworkPolicies that were used in combination with the now deleted pod, to check them for redundancy:")
                 any_redundant = False
                 for index in affected_policies:
                     policy = self.kic.reachabilitymatrix.dict_pols[index]
-                    redundant = self.is_policy_redundant(policy, obj)
+                    redundant = self.is_policy_redundant(policy, obj, new_reach, new_matrixId_to_Container)
                     if redundant:
                         any_redundant = True  
                         if policy.direction.direction:
@@ -339,13 +355,13 @@ class EventAnalyzer:
                 if not any_redundant:
                     print("\n    No aforementioned NetworkPolicies have become redundant since either their select or one of their allow labels is still used by another pod")
 
-                
+
                 if not any_connections:
                     print(f"\n  The deleted pod {obj.name} was deployed on node {obj.nodeName} but had no connections to other pods according to the current NetworkPolicies")
                     print("  Checking the Security Groups is therefore also not necessary")
                     print(f'\n    {colorize(f"=>", 32)} CONCLUSION: NO POD LEVEL CONFLICTS\n')
 
-                # Lets update all that needs updating before finishing up
+                # # Lets update all that needs updating before finishing up
                 self.kic.delete_container(obj)
                 self.kic.matrixId_to_Container = new_matrixId_to_Container
 
@@ -356,14 +372,15 @@ class EventAnalyzer:
                         break
                 self.kic.update_container(old_obj, obj)
                 differences = find_obj_differences(old_obj, obj)
-                print("  The following changes have been found between the old Pod and the updated Pod")
+                if differences:
+                    print("  The following changes have been found between the old Pod and the updated Pod")
 
-                for key, (value1, value2) in differences.items():
-                    # id is not assigned yet so should be ignored.
-                    if key != "id":
-                        print(f"\n    -{key}:")
-                        print(f"       old:     {value1}")
-                        print(f"       updated: {value2}")
+                    for key, (value1, value2) in differences.items():
+                        # id is not assigned yet so should be ignored.
+                        if key != "id":
+                            print(f"\n    -{key}:")
+                            print(f"       old:     {value1}")
+                            print(f"       updated: {value2}")
                 
                 new_reach = self.kic.generateReachability(self.kic.pods, self.kic.pols)
                 deltakano = [row1 ^ row2 for row1, row2 in zip(self.kic.reachabilitymatrix.matrix, new_reach.matrix)]
@@ -405,63 +422,58 @@ class EventAnalyzer:
                 print(f"  *     {row}")
             
 
-            # print(f"\n   Responsible:")
-            # for cont1 in new_reach.dict_pods.values():
-            #     for cont2 in new_reach.dict_pods.values():
-            #         a = new_reach.resp_policies.get_items(cont1.id, cont2.id)
-            #         if a:
-            #             print(f"{cont1.name} to {cont2.name}: {a}")
+            print(f"\n   Responsible:")
+            for cont1 in new_reach.dict_pods.values():
+                for cont2 in new_reach.dict_pods.values():
+                    a = new_reach.resp_policies.get_items(cont1.id, cont2.id)
+                    if a:
+                        print(f"{cont1.name} to {cont2.name}: {a}")
             print("  ***********************************************************************")
-
         self.kic.reachabilitymatrix = new_reach
         
 
-    def is_policy_redundant(self, pol, cont):
-    # For each responsible policy where the connection was severed we look if it is responsible for another 
+    def is_policy_redundant(self, pol, cont, new_reach, new_matrixId_to_Container):
+        # For each responsible policy where the connection was severed we look if it is responsible for another 
         # we get the containers that have all the labels in the select set
-        select_containers = set()
-        for select_label in pol.selector.concat_labels:
-            matrix_ids = set()
-            conts = self.kic.containerTrie.find(select_label)
-            if conts:
-                matrix_ids.update(cont.matrix_id for cont in conts)
-
-            if not select_containers and matrix_ids:
-                select_containers = matrix_ids
-            elif matrix_ids:
-                select_containers = select_containers.intersection(matrix_ids)
-
-        # If any other container is selected it is clearly not redundant
-        for matrix_id in select_containers:
-            if cont.matrix_id != matrix_id:
-                return False
-            
+        select_containers = bitarray('0'*len(new_reach.dict_pods))
+        first = True
+        for label in pol.selector.concat_labels:
+            if label in new_reach.label_map.keys():
+                conts = copy.deepcopy(new_reach.label_map.get(label))
+                if conts is not None:
+                    if first:
+                        first = False
+                        select_containers = conts
+                    else:
+                        select_containers &= conts
+                else:
+                    select_containers = bitarray('0'*len(new_reach.dict_pods))
+                    break
         # we get the containers that have all the labels in the allow set
-        allow_containers_final = set()
+        allow_containers_final = bitarray('0'*len(new_reach.dict_pods))
         for allow in pol.allow:
-            allow_containers = set()
+            allow_containers = bitarray('0'*len(new_reach.dict_pods))
+            first = True
             for allow_label in allow.concat_labels:
-                matrix_ids = set()
-                conts = self.kic.containerTrie.find(allow_label)
-                if conts:
-                    matrix_ids.update(cont.matrix_id for cont in conts)
-                if not allow_containers and matrix_ids:
-                    allow_containers = matrix_ids
-                elif matrix_ids:
-                    allow_containers = allow_containers.intersection(matrix_ids)   
-            allow_containers_final.update(allow_containers)
+                if allow_label in new_reach.label_map.keys():
+                    conts = copy.deepcopy(new_reach.label_map.get(allow_label))
+                    if conts is not None:
+                        if first:
+                            first = False
+                            allow_containers = conts
+                        else:
+                            allow_containers &= conts 
+                    else:            
+                        allow_containers = bitarray('0'*len(new_reach.dict_pods))
+                        break
+            allow_containers_final |= allow_containers
         # If any other container is allowed it is clearly not redundant
-
-        for matrix_id in allow_containers_final:
-            if cont.matrix_id != matrix_id:
-                return False
-
+        for matrix_id1 in select_containers:
+            if self.kic.matrixId_to_Container[matrix_id1].id != cont.id:
+                for matrix_id2 in allow_containers_final:
+                    if self.kic.matrixId_to_Container[matrix_id2].id != cont.id:
+                        resp1 = new_reach.resp_policies.get_items(new_matrixId_to_Container[matrix_id1].id, new_matrixId_to_Container[matrix_id2].id)
+                        resp2 = new_reach.resp_policies.get_items(new_matrixId_to_Container[matrix_id2].id, new_matrixId_to_Container[matrix_id1].id)
+                        if resp1 or resp2:
+                            return False 
         return True
-if __name__ == '__main__':
-    # Create a fake event for testing
-
-    testevent = {'api_version': 'networking.k8s.io/v1', 'kind': 'NetworkPolicy', 'metadata': {'annotations': {'kubectl.kubernetes.io/last-applied-configuration': '{"apiVersion":"networking.k8s.io/v1","kind":"NetworkPolicy","metadata":{"annotations":{},"name":"green-from-blue","namespace":"test"},"spec":{"ingress":[{"from":[{"podSelector":{"matchLabels":{"color":"blue"}}}],"ports":[{"port":80}]}],"podSelector":{"matchLabels":{"color":"green"}},"policyTypes":["Ingress"]}}\n'}, 'creation_timestamp': None, 'deletion_grace_period_seconds': None, 'deletion_timestamp': None, 'finalizers': None, 'generate_name': None, 'generation': 1, 'labels': None, 'managed_fields': [{'api_version': 'networking.k8s.io/v1', 'fields_type': 'FieldsV1', 'fields_v1': {'f:metadata': {'f:annotations': {'.': {}, 'f:kubectl.kubernetes.io/last-applied-configuration': {}}}, 'f:spec': {'f:ingress': {}, 'f:podSelector': {}, 'f:policyTypes': {}}}, 'manager': 'kubectl-client-side-apply', 'operation': 'Update', 'subresource': None, 'time': None}], 'name': 'green-from-blue', 'namespace': 'test', 'owner_references': None, 'resource_version': '38841157', 'self_link': None, 'uid': '0df34ecd-dc19-4eb1-b2c7-59132fca9314'}, 'spec': {'egress': None, 'ingress': [{'_from': [{'ip_block': None, 'namespace_selector': None, 'pod_selector': {'match_expressions': None, 'match_labels': {'color': 'blue'}}}], 'ports': [{'end_port': None, 'port': 80, 'protocol': 'TCP'}]}], 'pod_selector': {'match_expressions': None, 'match_labels': {'color': 'green'}}, 'policy_types': ['Ingress']}, 'status': None, 'custom': 'create'}
-    analyzer = EventAnalyzer()
-    analyzer.startup()
-    analyzer.analyseEvent(testevent)
-

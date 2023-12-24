@@ -1,0 +1,41 @@
+\begin{algorithm}
+    \caption{Delete policy from reachability matrix}
+    \label{algo:deletepolicy}
+    \begin{algorithmic}[1]
+        \Function{reachabilitydeleteNP}{policy}
+            \State new\_reachability $\gets$ kic.reachabilitymatrix
+            \State select\_containers $\gets$ \autoref{algo:select}
+            \State allow\_containers $\gets$ \autoref{algo:allow} 
+            \State opposite\_policies $\gets$ \{\}
+            \For{allow\_container in allow\_containers where bit == 1}
+                \For{label in allow\_container.labels}
+                    \If{policy is ingress}
+                        \State treenode = egressTree.find(label)
+                    \Else
+                        \State treenode = ingressTree.find(label)
+                    \EndIf
+                    \For{policy2 in treenode}
+                        \If{all labels in policy2.selector are in allow\_container.labels}
+                            \State  opposite\_policies.add((policy2, allow\_container))
+                        \EndIf
+                    \EndFor
+                \EndFor
+            \EndFor
+            
+            \For{(policy2, allow\_container) in opposite\_policies}
+                \For{select\_container in select\_containers where bit == 1}
+                    \For{allow in policy2.allow}
+                        \If{all labels from allow in select\_container.labels}
+                            \State remove policy and policy2 from resp\_policies for the containers
+                            \If{no responsible policies between the containers exist}
+                                \State set bit in reachabilitymatrix to 0
+                            \EndIf
+                        \EndIf
+                    \EndFor
+                \EndFor
+            \EndFor
+            \State update variables
+            \State \textbf{return} (new\_reachability)
+        \EndFunction
+  \end{algorithmic}
+\end{algorithm}
