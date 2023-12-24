@@ -6,11 +6,13 @@ from kubernetes.config import ConfigException
 import ipaddress
 
 
-# We only generate single IPs within 172.23.1.1 till 172.23.1.10 to increase chance of overlap
+# We only generate single IPs within 172.23.1.1 till 172.23.1.10 to increase chance of overlap in our test cluster.
+# Change this according to your needs
 def generate_random_ip():
     return f"172.23.1.{random.randint(1, 10)}"
 
-# We only generate IP ranges within 172.23.1.0 to 172.23.1.255 with subnetmask /24 or higher to increase chance of overlap
+# We only generate IP ranges within 172.23.1.0 to 172.23.1.255 with subnetmask /24 or higher to increase chance of overlap in our test cluster
+# Change this according to your needs
 def generate_random_ip_network():
     fourth = random.randint(0, 255)
     base_ip = f"172.23.1.{fourth}" 
@@ -18,7 +20,7 @@ def generate_random_ip_network():
     ip_network = f"{base_ip}/{subnet_mask}"
     return ip_network
 
-
+# Find the overlap between two IP (networks)
 def compare_overlap(original_ip1, original_ip2):
     parts_slash1 = original_ip1.split("/")
     parts_slash2 = original_ip2.split("/")
@@ -95,6 +97,9 @@ class Security_Groups_Information_Cluster:
             low = random.randint(1, nr_of_nodes - 2)
         else: 
             low = 1
+        # CONSTANT Random number of security groups. 
+        # min = between 1 and nr_of_nodes -2
+        # max = nr_of_nodes + 8
         nr_of_sg = random.randint(low, nr_of_nodes + 8)
         # For testing purposes we use a low range of Ips.
         port_max = 10
@@ -105,7 +110,7 @@ class Security_Groups_Information_Cluster:
 
         for sg_id in range(nr_of_sg):
             security_group_name = f'SecurityGroup-{sg_id}'
-            num_rules = random.randint(3, 5)  # Random number of rules per group
+            num_rules = random.randint(3, 5)  # CONSTANT Random number of rules per group
             rules = []
             for ruleId in range(num_rules):
                 port_nr = random.randint(0, port_max)
@@ -151,7 +156,7 @@ class Security_Groups_Information_Cluster:
             self.ingress_node_Graph.add_node(node)
             self.egress_node_Graph.add_node(node)
 
-            nr_of_sg_to_link = random.randint(3,5)
+            nr_of_sg_to_link = random.randint(3,5) # Constant nr of sg to link to a node 
             while nr_of_sg_to_link > 0:
                 sg_to_link = random.randint(0, nr_of_sg - 1)
                 security_groups[sg_to_link]
@@ -194,8 +199,8 @@ class Security_Groups_Information_Cluster:
 
         self.vmMatrix = tempMatrix
 
-    def print_info(self, verbose):
-        if verbose:
+    def print_info(self, debug, verbose):
+        if debug:
             print("# Security Groups and rules:\n#")
             for i in self.security_groups:
                 print(f"# {self.security_groups[i]}\n#")
@@ -236,11 +241,11 @@ class Security_Groups_Information_Cluster:
             print("#\n# NodeIds to Node names:")
             for name in self.nodeName_to_nodeId:
                 print(f"# node {name}'s id: {self.nodeName_to_nodeId[name]}")
-
-        print("#\n# VM matrix:")
-        for i in range(len(self.vmMatrix)):
-            print(f"# {self.vmMatrix[i]}")
-        print("#")
+        if verbose:
+            print("#\n# VM matrix:")
+            for i in range(len(self.vmMatrix)):
+                print(f"# {self.vmMatrix[i]}")
+            print("#")
             
     def check_sg_connectivity(self, nodeName1, nodeName2, connection_wanted):
         node1 = self.nodeName_to_nodeId[nodeName1]

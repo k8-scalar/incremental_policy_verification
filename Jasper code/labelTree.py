@@ -1,23 +1,24 @@
 from model import Container, Policy
 
-class TrieNode:
+class TreeNode:
     def __init__(self, label = ''):
         self.label = label
         self.children = dict()
         self.is_label = False
         self.objects = []
 
-class LabelTrie:
+class LabelTree:
     def __init__(self):
-        self.root = TrieNode()
-  
+        self.root = TreeNode()
+    # insert object into the tree at position of label
     def insert(self, label, obj):
         current = self.root
+        # split label in key and value part
         split = label.split(":")
         for i in range(len(split)):
             part = split[i]
             if part not in current.children:
-                current.children[part] = TrieNode(part)
+                current.children[part] = TreeNode(part)
             current = current.children[part]
             if i == len(split) - 1:  # If this is the last part of the label
                 current.is_label = True
@@ -25,9 +26,10 @@ class LabelTrie:
             if isinstance(obj, Container) or isinstance(obj, Policy):
                 current.objects.append(obj)
 
+    # Find object list related to label
     def find(self, label):
-    
         current = self.root
+        # split label in key and value part
         for part in label.split(":"):
             if part not in current.children:
                 return None
@@ -53,6 +55,7 @@ class LabelTrie:
 
         return traverse(self.root)
     
+    # delete the obj from the list at label
     def delete(self, label, obj):
         current = self.root
         nodes_to_delete = []
