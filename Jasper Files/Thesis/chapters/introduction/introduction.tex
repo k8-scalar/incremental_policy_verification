@@ -1,15 +1,5 @@
 %!TeX root=../../main.tex
 \chapter{Introduction}                                 \label{ch:introduction}
-
-% \unsure = red
-% \change = blue
-% \info = grey
-% \improvement = grey
-
-% \todo = orange
-
-% use [inline] to show more prominent
-
 \section{Context}  \label{sec:context}
 Application software is everywhere: ranging from social media apps to online web shops, login systems, healthcare systems and even Photoshop. The usage of these applications is irreversibly integrated with our way of living, powered by wireless internet connections, personal computers, mobile devices and many more technologies to access them whenever and wherever we want. It comes as no surprise that the demands of these systems have therefore increased over time which in turn introduced entire new ranges of problems. One of these problems is how to cost-effectively scale the computational resources to handle a fluctuating amount of end-users. For example, a web shop might have 20 times more clients during December due to the holiday season than any other month of the year, and as a result, the servers are not being used to their capacity for 11 months a year.
 \\[10pt]
@@ -20,7 +10,7 @@ Application software is everywhere: ranging from social media apps to online web
  However, new problems arise when demand increases and clusters of sometimes even thousands of containerised applications need to be created to meet those demands. This is where orchestration solutions such as Kubernetes (\acrshort{k8s}) \cite{Bernstein2014} and Mesos \cite{Mesos} come into play. They allow automatic handling of deployment, load balancing of users, scaling of resources and containers, defining security practices and monitoring of the applications, all based on settings defined by the cluster manager.
 \\[10pt]
 
-\acrshort{k8s} is currently the de facto standard container orchestration tool in the cloud community according to the 2022 Cloud Native Computing Foundation annual survey, as seen in the data excerpt shown in \autoref{tab:k8susage} \cite{CNCFSurvey}. A Kubernetes cluster consists of many different components such as nodes, which are the highest-level component that run on physical or virtual machines and are responsible for either managing the cluster, running one or more pods, or both. Pods are the lowest-level component in Kubernetes and specify how one or more containerised applications should be run. Pods give their containerised applications access to networking resources and shared storage and allow for duplication of these containerised applications to increase workload. To ensure the security of clusters Kubernetes has different solutions for different attack surfaces. One of these solutions is the network policies that define rules for traffic flow between pods. These network policies work based on key-value labels to select the pods they are applied to and are intended to restrict communication between pods to counter network congestion and the spread of malicious attacks from compromised pods \cite{nps}.
+\acrshort{k8s} is currently the standard container orchestration tool in the cloud community according to the 2022 Cloud Native Computing Foundation annual survey, as seen in the data excerpt shown in \autoref{tab:k8susage} \cite{CNCFSurvey}. A Kubernetes cluster consists of many different components such as nodes, which are the highest-level component that run on physical or virtual machines and are responsible for either managing the cluster, running one or more pods, or both. Pods are the lowest-level component in Kubernetes and specify how one or more containerised applications should be run. Pods give their containerised applications access to networking resources and shared storage and allow for duplication of these containerised applications to increase workload. To ensure the security of clusters Kubernetes has different solutions for different attack surfaces. One of these solutions is the network policies that define rules for traffic flow between pods. These network policies work based on key-value labels to select the pods they are applied to and are intended to restrict communication between pods to counter network congestion and the spread of malicious attacks from compromised pods \cite{nps}.
 \\[10pt]
 \begin{table}[h]
     \centering
