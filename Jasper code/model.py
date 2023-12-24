@@ -1,7 +1,5 @@
-from re import L
-from traceback import print_tb
 from typing import *
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from bitarray import bitarray
 from abc import abstractmethod
 from enum import Enum
@@ -251,12 +249,6 @@ class ReachabilityMatrix:
             for value in container.concat_labels:
                 labelMap[value][i] = True
 
-        # DEBUGGING PURPOSES
-        # print(f'index map pods: {dict_pods}\n' )
-        # print(f'index map policies: {dict_pols}\n' )
-        # for key in labelMap.keys():
-        #     print(f'label map {key}: {list(labelMap[key])}\n' )
-
         in_resp_policies = Store()
         out_resp_policies = Store()
 
@@ -314,15 +306,6 @@ class ReachabilityMatrix:
             elif policy.working_selector.is_deny_all:
                 select_set.setall(False)    
 
-            # DEBUGGING PURPOSES
-            # print(f"policy: {policy.name}")
-            # if(policy.direction.direction == False):
-            #     print("Policy type = Egress")
-            # else:
-            #     print("Policy type = Ingress")
-            # print(f"select set =  {select_set}")
-            # print(f"allow set = {allow_set}\n")
-
             # Now we create the in_matrix (Ingress) and out_matrix (Egress)
             for idx in range(n_container):
                 if allow_set[idx]:
@@ -351,36 +334,10 @@ class ReachabilityMatrix:
                             if value:
                                 out_resp_policies.add_item(idx, index, i)
 
-            # DEBUG PURPOSES    
-            # print(f"Matrices after accounting for this policy:")
-            # print(f"out_matrix: {out_matrix}")
-            # print(f"in_matrix: {in_matrix}\n")
-
-        # DEBUG PURPOSES    
-        # print("*******************************IN RESPONSIBLE POLICIES:*******************************")
-        # for i in range(n_container):
-        #     for j in range(n_container): 
-        #         if in_resp_policies.get_items(i, j) != []:
-        #             print(f'in_resp_policies for containers ({i}, {j}) = {in_resp_policies.get_items(i, j)}\n')
-
-        # DEBUG PURPOSES    
-        # print("*******************************OUT RESPONSIBLE POLICIES:*******************************")
-        # for i in range(n_container):
-        #     for j in range(n_container): 
-        #         if out_resp_policies.get_items(i, j) != []:
-        #             print(f'out_resp_policies for containers ({i}, {j}) = {out_resp_policies.get_items(i, j)}')   
-
-      
-
 
         # Time to create the final kano matrix.
         matrix = [bitarray('0' * n_container) for _ in range(n_container)]
         final_resp_policies = Store()
-        
-        # DEBUGGING PURPOSES
-        # print("-------------------MAKING THE FINAL MATRIX---------------------------\n")
-        # print(f"total out_matrix: {out_matrix}")
-        # print(f"total nin_matrix: {in_matrix}\n")
 
         for i in range(n_container):
             for j in range(n_container): 
@@ -390,30 +347,15 @@ class ReachabilityMatrix:
                         for l in out_resp_policies.get_items(i, j):
                             final_resp_policies.add_item(i, j, (k, l))
             
-        # DEBUG PURPOSES    
-        # print("*******************************FINAL RESPONSIBLE POLICIES:*******************************")
-        # for i in range(n_container):
-        #     for j in range(n_container): 
-        #         if final_resp_policies.get_items(i, j) != []:
-        #             print(f'final resp policies for containers ({i}, {j}) = {final_resp_policies.get_items(i, j)}')   
 
             #container accepting connections from itself
             if containers_talk_to_themselves:
                 matrix[i][i] = True
 
 
-            # These next 2 lines are for cleanly printing out the matrix BUT BREAKS DETECTION.PY DUE TO THE EXTRA SYMBOLS IN THE ARRAYS.
+            # These next 2 lines are for cleanly printing out the matrix BUT BREAKS THE REST OF THE ALGORITHM DUE TO THE EXTRA SYMBOLS IN THE ARRAYS.
             # matrix[i]=matrix[i].to01()
             # matrix[i]='[' + ' '.join(matrix[i]) + ']'
-
-            # DEBUGGING PURPOSES
-            # print(matrix[i])
-                  
-        # DEBUGGING PURPOSES
-        # for i in range(n_container):
-        #     for j in range(n_container): 
-        #         if final_resp_policies.get_items(i, j) != []:
-        #             print(f'final responsible policies for containers ({i}, {j}) = {final_resp_policies.get_items(i, j)}')   
 
         if build_transpose_matrix:
             self.build_tranpose()

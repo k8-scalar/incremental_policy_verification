@@ -1,7 +1,5 @@
 import array
-from sqlite3 import Time
-from turtle import pen
-from xmlrpc.client import Boolean, boolean
+from xmlrpc.client import boolean
 from kubernetes import client, config, watch
 from kubernetes.config import ConfigException
 import argparse
@@ -9,13 +7,11 @@ from urllib3.exceptions import ProtocolError
 import concurrent.futures
 import os, sys
 import yaml
-from contextlib import contextmanager
 import datetime
 from analyzer import EventAnalyzer
 import sys
 import time
 import queue
-from parser import ConfigParser
 import traceback
 import signal
 import threading
@@ -29,12 +25,15 @@ try:
 except ConfigException:
    config.load_kube_config()
 
+# The different API for pods and policies respectively
 pod_api_instance = client.CoreV1Api()
 policy_api_instance = client.NetworkingV1Api()
 
+# Simply colorizes a text using ANSI color codes
 def colorize(text, color_code):
     return f"\033[{color_code}m{text}\033[0m"
 
+# Prints the type of event that is caught in a corresponding color
 def prettyprint_event(event):
     kind = event['kind']
     name = event['metadata']['name']
@@ -51,6 +50,7 @@ def prettyprint_event(event):
         location = f"on node {event['spec']['nodeName']}" if kind == 'Pod' else ''
         print(colorize(f'\n{kind} {name} has been updated {location}\n', '33'))#orange
         
+# Prints the type of event that has been handled in a corresponding color
 def prettyprint_end_event(event):
     kind = event['kind']
     name = event['metadata']['name']
@@ -68,16 +68,11 @@ def prettyprint_end_event(event):
     print(text)
 
 class EventWatcher:
-    existing_pods: array
+    existing_pods: array 
     existing_pols: array
     event_queue: queue.Queue
     analyzer: EventAnalyzer
     stop: boolean
-    event_detected: threading.Event # to signal when an event has been detected, for experiment purposes
-    pods_started: threading.Event
-    policies_started: threading.Event
-    end_time: datetime.datetime
-    detected_time: datetime.datetime
     podwatch: watch
     polwatch: watch
     def __init__(self, ns, verbose = False, debug = False, startup = False):
@@ -86,9 +81,10 @@ class EventWatcher:
         self.existing_pols = []
         self.elapsed_time = 0
         self.memory_usage = None
-        self.analyzer = EventAnalyzer(verbose, debug) # to signal when an event has been detected, for experiment purposes
+        self.analyzer = EventAnalyzer(verbose, debug)
         self.podwatch = watch.Watch()
         self.polwatch = watch.Watch()
+
         print("\n##################################################################################")
         print(f"# Watching resources in namespace {ns}")
         print("# resources will de displayed in color codes:")
@@ -97,14 +93,15 @@ class EventWatcher:
         print(f"#   - {colorize('Orange', '33')} = modified resources")
 
 
-        # First get all the already existing resources on the cluster and save them in their files
         print("#")
         print("# STEP 1/2: Detecting existing resources")
         print("#")
+        # First get all the already existing resources on the cluster
         (init_pods, init_pols) = self.initial_loader(ns, verbose)
         print("#")
         print("# STEP 2/2: Creating base kanoMatrix and VMmatrix")
         print("#")
+        # Starting the analyzer will generate random sg groups and rules in the sgic and create the intial reachabilitymatrix
         self.analyzer.startup(init_pods, init_pols)
 
         if startup:
@@ -116,17 +113,17 @@ class EventWatcher:
         print("# Startup phase complete")
         print("##################################################################################\n")
 
+    # Main thread indicates whether or not this file is called directly or from another file, and guarantees that watcher will stop when requested
     def run(self, ns, main_thread=False):
         print("Starting to watch for new events on the cluster..\n\n")
         # Run the watcher
-        
-        self.pods_started = threading.Event()
-        self.policies_started = threading.Event()
-        self.event_detected = threading.Event() 
+    
         self.event_queue = queue.Queue()
 
+        # For correct interruption handling
         if main_thread:
             signal.signal(signal.SIGINT, self.handle_interrupt)
+        # 3 simultaneously running threads
         with concurrent.futures.ThreadPoolExecutor() as executor:
             p = executor.submit(self.pods, ns)
             n = executor.submit(self.policies, ns)
@@ -145,9 +142,6 @@ class EventWatcher:
                     print(exception3)
                     traceback.print_exception(type(exception3), exception3, exception3.__traceback__)
         
-    def get_time_and_memory(self):
-        return (self.detected_time, self.end_time, self.memory_usage)
-    
     def handle_interrupt(self, signum, frame):
         print("Terminating the event watcher...")
         self.stop_watching()
@@ -202,8 +196,8 @@ class EventWatcher:
             self.existing_pols.append(formatted_pol.name)
         return(init_pods, init_pols)
 
+    # This method captures all events in the pod api, filters them and adds the final ones to the queue
     def pods(self, ns):
-        self.pods_started.set()
         while not self.stop:
             for event in self.podwatch.stream(pod_api_instance.list_namespaced_pod, namespace = ns, timeout_seconds=10):
                 updatedPod = event["object"]
@@ -235,14 +229,10 @@ class EventWatcher:
                                             self.event_queue.put(u_pod)
                                     
                                     else:
-                                        # MODIFY
-                                        try:
-                                            namespaced_pod = pod_api_instance.read_namespaced_pod(name=podName, namespace=ns)
-                                            if  updatedPod.spec.node_name != namespaced_pod.spec.node_name  or updatedPod.metadata.labels != namespaced_pod.metadata.labels:
-                                                u_pod['custom']='update'
-                                                self.event_queue.put(u_pod)
-                                        except client.exceptions.ApiException as e:
-                                            print(e)
+                                        if updatedPod.status.pod_ip is not None:
+                                            u_pod['custom']='update'
+                                            self.event_queue.put(u_pod)
+                                
                                         
 
                 # Deleted pods
@@ -255,8 +245,8 @@ class EventWatcher:
         print("STOPPING PODS")
         self.pods_started.clear()
 
+    # This method captures all network policies in the policy api, filters them and adds the final ones to the queue
     def policies(self, ns):
-        self.policies_started.set()
         while not self.stop:
             for event in self.polwatch.stream(policy_api_instance.list_namespaced_network_policy, namespace = ns, timeout_seconds=10):
                 # stop the loop gracefully
@@ -280,46 +270,34 @@ class EventWatcher:
                         self.event_queue.put(NewPol)
 
                 elif event['type'] =="MODIFIED":
-                    if temp_NewPol.metadata != policy_api_instance.read_namespaced_network_policy(name=PolName, namespace=ns)['metadata']:
+                    if PolName in self.existing_pols:
                         NewPol['custom']='update'
                         self.event_queue.put(NewPol)
 
         print("STOPPING POLICIES")
         self.policies_started.clear()
 
+    # The consumer takes events from the queue and passes them to the analyzer.
     def consumer(self):
         try:
             while not self.stop:
                 event = self.event_queue.get() # blocks if no event is present untill a new one arrives
                 if event is not None:
                     prettyprint_event(event)
-
-                    tracemalloc.start()
-                    self.detected_time = datetime.datetime.now()
                     self.analyzer.analyseEvent(event)
-                    self.end_time = datetime.datetime.now()
-                    current, peak = tracemalloc.get_traced_memory()
-                    self.memory_usage = (current, peak)
-                    tracemalloc.stop()
-
                     prettyprint_end_event(event)
                     print("\n-------------------Waiting for next event-------------------")
                     self.event_queue.task_done()
-                    self.event_detected.set()  # Signal that an event has been detected, for experiment purposes
             print("STOPPING CONSUMER")
         except ProtocolError:
             print("Consumer ProtocolError, continuing..")
 
     def stop_watching(self):
         self.stop = True
+        # Putting none in the queue will stop the consumer
         self.event_queue.put(None)
         self.podwatch.stop()
         self.polwatch.stop()
-        while self.policies_started.is_set():
-            time.sleep(1)
-        while self.pods_started.is_set():
-            time.sleep(1)
-        
 
 
 
