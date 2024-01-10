@@ -11,11 +11,11 @@ In our evaluation we compared the incremental update functionality of our implem
 
 
 %======================================
-\section{Future work} \label{sec:futurework}
+\section{Limitations and future work} \label{sec:futurework}
 We briefly mentioned a startup-verification method to detect already existing conflicts within the cluster, which is implemented but remains untested due to time constraints for this thesis. When the memory consumption of the implemented algorithm proves to be too excessive the generative approach combined with the conflict detection could be executed periodically instead in order to detect existing conflict within the cluster. Some adaptations should be made such as the API monitoring and the removal of variables that were only required for the incremental update approach.
 \\[10pt]
 
-Our solution only provides conflict detection and does not offer a conflict solution nor an automatic conflict resolution step due to the multiple-truth problem of the different layers. This research problem would prove for an interesting study.
+Our solution assumes pod restarts as the only conflict resolution strategy. However, this strategy may not always be useful due to the multiple-truth problem of the different layers. A more comprehensive conflict resolution framework to this research problem would prove for an interesting study.
 \\[10pt]
 
 The solution algorithm does not monitor cloud-level changes to the cluster but instead mimics it by generating randomised OpenStack security groups and their rules. Future work could include the continuous monitoring for events that influence inter-VM connections similarly to the implemented cluster-layer watcher.
@@ -26,7 +26,7 @@ The solution algorithm does not monitor cloud-level changes to the cluster but i
 
 %======================================
 \section{Kano V2} \label{sec:kanov2}
-During the creation of this thesis, the researchers responsible for Kano released a second paper which partially overlaps with our solution.  Since a complete rework of the thesis was infeasible at the moment of the paper's release we decided to continue our heading. Additionally, we would not take into account their new ideas in order to reach our deadlines. As compensation, we introduce this section in which we will talk about the implications this new research paper might have on this thesis and its future work. To avoid confusion we will adapt the paper's annotation of nodes for objects that were called containers or pods in the previous parts of the thesis. \cite{kano2}
+During the creation of this thesis, the researchers responsible for Kano released a second paper which partially overlaps with our solution.  Since a complete rework of the thesis was infeasible at the moment of the paper's release we decided to continue our heading. Additionally, we would not take into account their new ideas in order to reach our deadlines. As compensation, we introduce this section in which we will talk about the implications this new research paper might have on this thesis and its future work. Please note that the second Kano paper uses the general term $node$ for components in which applications run, which correlates to \acrshort{k8s} pods in the context of this thesis and should therefore not be confused with \acrshort{k8s} nodes. When referring to nodes in the rest of this section we use it in the same manner as the second kano paper \cite{kano2}.
 \\[10pt]
 
 Within the new Kano paper, which we will Kano V2, they improve their initial solution by introducing a more general ABAC-formed cloud-native \acrshort{np} verification method that replaces their previous more \acrshort{k8s} network policy-specific approach. Additionally, they added incremental verification which only looks at affected parts of the network instead of regenerating the reachabilitymatrix. It is striking how similar our idea of the incremental update approach is to Kano V2's improvement even though these ideas were found independently. Both incremental approaches define the addition and deletion of \acrshort{np}s and nodes as the core events that necessitate the verification of the cluster state, although our solution also captures update events due to its Kubernetes-specific implementation.

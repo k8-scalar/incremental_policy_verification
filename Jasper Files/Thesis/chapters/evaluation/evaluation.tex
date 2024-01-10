@@ -35,16 +35,16 @@ Kano is a research solution that verifies \acrshort{np}s based on the reachabili
     \item \textit{Q2:} What is the difference in space cost between an incremental update of the Kano matrix compared to newly generating the Kano matrix for every event and how does this difference scale with pod/policy numbers
 \end{itemize}
 
-Before we delve into the experiment approach, setup and results we declare our hypotheses for these questions:
+Before we delve into the experiment approach, setup and results we declare our expectations for these questions:
 
 \begin{itemize}
-    \item \textit{Hypothesis Q1:} We predict that the time cost of our incremental approach will be higher in small clusters due to the writing times of variables, but will prove better than the time cost of the generative approach as the cluster increases since the incremental approach does not have to verify all \acrshort{np}s and containers.
-    \item \textit{Hypothesis Q2:} We predict that the space cost of the incremental approach will be higher than that of the generative approach due to the memory required for storing the current cluster state. We predict this difference will only increase as the cluster increases in size.
+    \item \textit{Expectation E1:} We expect that the time cost of our incremental approach will be higher in small clusters due to the writing times of variables, but will prove better than the time cost of the generative approach as the cluster increases since the incremental approach does not have to verify all \acrshort{np}s and containers.
+    \item \textit{Expectation E2:} We expect that the space cost of the incremental approach will be higher than that of the generative approach due to the memory required for storing the current cluster state. We predict this difference will only increase as the cluster increases in size.
 \end{itemize}
 
 % =========================================
 \subsection{Approach} \label{exp1:approach}
-Since our algorithm does much more than just updating the reachabilitymatrix we first have to remove the irrelevant parts from our codebase. The \acrlong{sgic} is removed from the algorithm altogether, while the Analyzer gets modified so that it only calls upon the \acrlong{kic} to update the reachabilitymatrix. As a result, the analyzer does not use the updated matrix to compare it with the previous cluster state nor does it print out any information anymore. This adapted algorithm for the incremental approach now allows for a direct comparison with Kano's generative approach.  For both approaches, we want to collect the time (ms), memory at the start of the method (MB), the highest memory peak during execution of the method (MB) and  the difference between the peak and start memory (MB)
+Since our algorithm does much more than just updating the reachabilitymatrix we first have to remove the irrelevant parts from our codebase. The \acrlong{sgic} is removed from the algorithm altogether, while the Analyzer gets modified so that it only calls upon the \acrlong{kic} to update the reachabilitymatrix. As a result, the analyzer does not use the updated matrix to compare it with the previous cluster state nor does it print out any information anymore. This adapted algorithm for the incremental approach now allows for a direct comparison with Kano's generative approach.  For both approaches, we want to collect the time (ms), memory at the start of the method (MB), the highest memory peak during execution of the method (MB) and the difference between the peak and start memory (MB). Memory and time usage are collected by leveraging the tracemalloc and time python libraries respectively \cite{tracemalloc} \cite{time}.
 \\[10pt]
 
 Each event type will be tested in 5 different setups which will be identical for each event and are described in \autoref{tab:exp1pars}. These parameter values are based on the parameters used in the evaluation of Kano \cite{kano}. However, our maximum number of pods and policies is lower than Kano's evaluation due to the limits of our experiment cluster. We will now summarize the meaning of each parameter:
@@ -117,11 +117,11 @@ Each event type will be tested in 5 different setups which will be identical for
 % =========================================
 \subsection{Experiment results} \label{exp1:results}
 
-The results of the experiment will be divided into eight different graphs: for each event type, we created a graph displaying average and median time as well as a graph that shows average and median memory consumption. All the graphs use the same values and increments on their axis to allow a direct comparison. We will start by looking at the time graphs after which continue with the memory results.
+The results of the experiment will be divided into eight different graphs: for each event type, we created a graph displaying average and median time as well as a graph that shows average and median memory consumption. This division of data is required since each type of event has a different method for updating the current cluster state in our algorithm and therefore might introduce differences between them. All the graphs use the same values and increments on their axis to allow a direct comparison. We will start by looking at the time graphs after which continue with the memory results.
 \\[10pt]
 
 \textbf{Time consumption}
-\newline When looking at the graphs in \autoref{fig:exp1-addNP-time}, \autoref{fig:exp1-addPod-time}, \autoref{fig:exp1-delNP-time}  and \autoref{fig:exp1-delPod-time} we can quickly deduce that our incremental approach starts more time expensive but becomes faster as the scale of the cluster increases. This trend seems to continue as the cluster grows and is in line with our hypothesis for Q1 described in \autoref{sec:experiment1}. We will now take a deeper look into the data and describe some additional observations:
+\newline When looking at the graphs in \autoref{fig:exp1-addNP-time}, \autoref{fig:exp1-addPod-time}, \autoref{fig:exp1-delNP-time}  and \autoref{fig:exp1-delPod-time} we can quickly deduce that our incremental approach starts more time expensive but becomes faster as the scale of the cluster increases. This trend seems to continue as the cluster grows and is in line with our expectation for Q1 described in \autoref{sec:experiment1}. We will now take a deeper look into the data and describe some additional observations:
 
 \begin{itemize}
     \item If we look at the intersection point of the generative and incremental averages we see a difference between \acrshort{np} and pod events. For the \acrshort{np} events, the intersection always appears between the third and fourth sub-experiment, while for the pod events, this is closer the the third sub-experiment. This can be explained due to the different approaches: when a \acrshort{np} is added or deleted all the pods with the corresponding labels must be retrieved, while a pod addition or deletion needs to find the corresponding network policies. Since our experiment settings always have more pods than \acrshort{np}s the search time for \acrshort{np} events naturally becomes higher.
@@ -161,7 +161,7 @@ The results of the experiment will be divided into eight different graphs: for e
 
 
 \textbf{Memory consumption}
-\newline When looking at the graphs in \autoref{fig:exp1-addNP-memory}, \autoref{fig:exp1-addPod-memory}, \autoref{fig:exp1-delNP-memory}  and \autoref{fig:exp1-delPod-memory} we can quickly deduce that our incremental approach is more expensive in terms of memory usage than the generative approach, with the difference only increasing as the cluster grows. This is in line with our hypothesis for Q2 described in \autoref{sec:experiment1}. Next, we present some additional observations we can deduce from these graphs:
+\newline When looking at the graphs in \autoref{fig:exp1-addNP-memory}, \autoref{fig:exp1-addPod-memory}, \autoref{fig:exp1-delNP-memory}  and \autoref{fig:exp1-delPod-memory} we can quickly deduce that our incremental approach is more expensive in terms of memory usage than the generative approach, with the difference only increasing as the cluster grows. This is in line with our expectation for Q2 described in \autoref{sec:experiment1}. Next, we present some additional observations we can deduce from these graphs:
 \begin{itemize}
     \item With a small exception for the fifth sub-experiment in the creation event of a network policy, the median values are almost identical to the average values, meaning little skewing of data between the runs occurs. This makes sense since the cluster state that we store always has the same amount of cluster objects to keep track of within each run. The exception mentioned before might be due to a high occurrence of matching labels between objects which in turn increases the size of data structures such as the Store keeping track of \acrshort{np}s responsible for connections between pods. However, this remains an educated guess at best.
     \item We can see that the ratio in which the memory increases for the incremental method decreases slightly between the fourth and fifth sub-experiments. We have no direct explanation for this, and further research would be necessary to deduct more from this. 
@@ -204,14 +204,14 @@ The second experiment aims to give more insight into the overhead created by run
     \item \textit{Q4:} What is the relationship between pod/policy numbers and the space cost of conflict detection?
 \end{itemize}
 
-Before we delve into the experiment approach, setup and results we declare our hypotheses for these questions:
+Before we delve into the experiment approach, setup and results we declare our expectations for the experiment:
 
 \begin{itemize}
-    \item \textit{Hypothesis Q3:} We predict that the time that the algorithm takes will be lower than the average deployment time* of a pod, but that the time cost of our algorithm will increase as the cluster size increases.
-    \item \textit{Hypothesis Q4:} We predict that the space cost of our algorithm will increase as the number of pods and \acrshort{np}s in the cluster increases as well.
+    \item \textit{Expectation E3:} We expect that the time that the algorithm takes will be less than 50\% of the average deployment time* of a pod, but that the time cost of our algorithm will increase as the cluster size increases. 
+    \item \textit{Expectation E4:} We expect that the space cost of our algorithm will increase as the number of pods and \acrshort{np}s in the cluster increases as well. 
 \end{itemize}
 
-* In the research paper of Grasshopper they found that t during their experiments the deployment time of an application can be up to 4 seconds in case of a cold start \cite{grashopper}. Since there is no default startup time for a container in a \acrshort{k8s} cluster we use this as a baseline.
+* In the research paper of Grasshopper they found that during their experiments the deployment time of an application can be up to 4 seconds in case of a cold start \cite{grashopper}. Since there is no default redeployment time for a container in a \acrshort{k8s} cluster we use this as a baseline. Note that an estimate for conflict detection and resolution can be found by adding the time usage of our algorithm and a cold start deployment together.
 
 % =========================================
 \subsection{Approach} \label{exp2:approach}
@@ -315,7 +315,7 @@ Similarly to experiment 1 we created two graphs for each of the four captured ev
 
 
 \textbf{Time consumption}
-\newline The time consumption for the full conflict detection solution for each of the four events are shown in \autoref{fig:exp2-addNP-time-conflict}, \autoref{fig:exp2-addPod-time-conflict}, \autoref{fig:exp2-delNP-time-conflict} and \autoref{fig:exp2-delPod-time-conflict}.  We can see that the conflict detection time remains safely below the 4-second pod deployment threshold stated in the hypothesis for Q3 with the highest average being 474ms for the deletion of a network policy. Furthermore, we can deduct some interesting information from the graphs:
+\newline The time consumption for the full conflict detection solution for each of the four events are shown in \autoref{fig:exp2-addNP-time-conflict}, \autoref{fig:exp2-addPod-time-conflict}, \autoref{fig:exp2-delNP-time-conflict} and \autoref{fig:exp2-delPod-time-conflict}.  We can see that the conflict detection time remains safely below the 4-second pod deployment threshold stated in the expectation for Q3 with the highest average being 474ms for the deletion of a network policy. Furthermore, we can deduct some interesting information from the graphs:
 \begin{itemize}
     \item For each of the events and cluster setup combinations the median value lies lower than the average value, indicating the presence of high values that pull the average up. We once again assume this is related to the amount of container connections.
     \item When we compare the graphs for experiment 2 to the incremental approach of the corresponding event graphs in experiment 1 we see that the incremental approach for updating the reachabilitymatrix is the main contributor to time consumption, while the conflict detection only adds a slight overhead.
@@ -349,7 +349,7 @@ Similarly to experiment 1 we created two graphs for each of the four captured ev
 
 
 \textbf{Memory consumption}
-\newline The memory consumption for the full conflict detection solution for each of the four events are shown in \autoref{fig:exp2-addNP-memory-conflict}, \autoref{fig:exp2-addPod-memory-conflict}, \autoref{fig:exp2-delNP-memory-conflict} and \autoref{fig:exp2-delPod-memory-conflict}. The average values are usually in line with the median values meaning little to no skewing of data occurs due to outliers. One exception is the addition of a \acrshort{np} where the median lies higher than the average, which was also visible in the corresponding graph in experiment 1. We, therefore, assume that this is due to the incremental update of the cluster state and not because of the conflict detection itself, although an exact reason could not be found and would require extra experimentation. We conclude that some small differences between events can be found but there are no specific outliers that catch the attention and that the memory increases as the cluster grows in size which is in line with our hypothesis for Q4.
+\newline The memory consumption for the full conflict detection solution for each of the four events are shown in \autoref{fig:exp2-addNP-memory-conflict}, \autoref{fig:exp2-addPod-memory-conflict}, \autoref{fig:exp2-delNP-memory-conflict} and \autoref{fig:exp2-delPod-memory-conflict}. The average values are usually in line with the median values meaning little to no skewing of data occurs due to outliers. One exception is the addition of a \acrshort{np} where the median lies higher than the average, which was also visible in the corresponding graph in experiment 1. We, therefore, assume that this is due to the incremental update of the cluster state and not because of the conflict detection itself, although an exact reason could not be found and would require extra experimentation. We conclude that some small differences between events can be found but there are no specific outliers that catch the attention and that the memory increases as the cluster grows in size which is in line with our expectation for Q4.
 
 \begin{figure}[H]
     \centering
