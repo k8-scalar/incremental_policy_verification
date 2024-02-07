@@ -1,0 +1,49 @@
+\begin{algorithm}
+    \caption{Delete container from reachability matrix}
+    \label{algo:deletecontainer}
+    \begin{algorithmic}[1]
+        \Function{reachabilityDeleteContainer}{container}
+            \State new\_reachability $\gets$ $nXn$ matrix of bitarrays of 0's, with  n = \# of containers
+            \State \Comment{Updating the reachability matrix}
+            \For{i, cont in enumerate(containers)}
+                \State row $\gets$ reachabilitymatrix[cont.matrix\_id]
+                \State row.pop(cont.matrix\_id) \Comment{bit for the removed container}
+                
+                \If{container.matrix\_id \texttt{>} container.id}
+                    \State container.matrix\_id -= 1
+                \EndIf
+                \State store row in new\_reachability
+            \EndFor
+            
+            \State \Comment{Updating the label\_map matrix}
+            \State new\_label\_map $\gets$ \{\}
+            \For{label, old\_arr in reachabilitymatrix.label\_map.items()}
+                \For{k in range(len(old\_arr))}
+                    \If{k \texttt{>} container.matrix\_id}
+                       \State new\_label\_map[label][k - 1] $\gets$ old\_arr[k] 
+                    \ElsIf{k \texttt{<} container.matrix\_id}
+                        \State new\_label\_map[label][k] $\gets$ old\_arr[k] 
+                    \EndIf
+                \EndFor
+            \EndFor
+
+            \State \Comment{Removing empty bitarrays from label\_map}
+            \State new\_label\_map\_v2 $\gets$ \{\}
+            \For{label, arr in new\_label\_map.items()}
+                \If{\textbf{not} any bits set in arr}
+                    \State delete new\_label\_map\_v2[label]
+                \EndIf
+            \EndFor
+        
+            \State new\_reachability.label\_map $\gets$ new\_label\_map\_v2
+        
+            \For{pod in pods}
+                \If{pod.matrix\_id \texttt{>} container.matrix\_id}
+                    \State pod.matrix\_id -= 1
+                \EndIf
+            \EndFor
+        
+            \State \textbf{return} (new\_reachability)
+        \EndFunction
+  \end{algorithmic}
+\end{algorithm}

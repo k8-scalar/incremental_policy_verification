@@ -1,0 +1,25 @@
+\begin{algorithm}
+    \caption{Conflict detection}
+    \label{algo:connectivity}
+    \begin{algorithmic}[1]
+    \Function{check\_sg\_connectivity}{node1, node2, connection\_wanted}
+        \State print security groups for node1
+        \State print security groups for node2
+        \If{vmMatrix[node1, node2] == 1}
+            \If{connection\_wanted == True}
+                \State print security group rules responsible for connection 
+            \Else
+                \State report conflict with responsible security group rules
+            \EndIf
+        \EndIf
+        \If{vmMatrix[node2, node1] == 1}
+            \If{connection\_wanted == True}
+                \State print security group rules responsible for connection 
+            \Else
+                \State report conflict with responsible security group rules
+            \EndIf
+        \EndIf
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+

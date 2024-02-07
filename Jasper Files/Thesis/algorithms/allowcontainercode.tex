@@ -1,0 +1,30 @@
+\begin{algorithm} 
+    \caption{Find containers matching the allow labelselectors of a given policy} 
+    \label{algo:allow}
+    \begin{algorithmic}[1]  
+    \State \textbf{Input:} a network policy
+    \State \textbf{Output:} bitarray of containers matching the allow labelselector
+    \State 
+    \State  allow\_containers\_final $\gets$ bitarray(0 * amount of containers)
+    \For{allow in policy.allow}
+        \State allow\_containers $\gets$ bitarray(0 * amount of containers)
+        \State first $\gets$ True
+        
+        \For{allow\_label in allow}
+           \State containers $\gets$ new\_reach.label\_map.get(allow\_label)
+           \If{containers is not empty}
+                \If{first}
+                    \State first $\gets$ False
+                    \State allow\_containers $\gets$ containers
+                \Else
+                    \State allow\_containers AND containers
+                \EndIf
+            \Else:
+                \State allow\_containers $\gets$ bitarray(0 * amount of containers)
+                \State break
+            \EndIf
+        \EndFor
+        \State allow\_containers\_final OR allow\_containers
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
