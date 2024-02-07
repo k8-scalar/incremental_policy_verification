@@ -1,7 +1,9 @@
+import re
 from model import *
 from parser import ConfigParser
 import copy
 from bitarray import bitarray
+import numpy as np
 from sgic import Security_Groups_Information_Cluster
 from kic import Kubernetes_Information_Cluster
 from labelTree import LabelTree
@@ -91,7 +93,7 @@ class EventAnalyzer:
         obj = self.cp.create_object_from_event(event)
         if isinstance(obj, Policy):
             if event['custom'] == "create":
-                if self.kic.reachabilitymatrix.dict_pols.keys():
+                if self.kic.reachabilitymatrix.dict_pols.keys() is not None:
                     obj.id = max(self.kic.reachabilitymatrix.dict_pols.keys()) + 1
                 else:
                     obj.id = 0
@@ -246,12 +248,9 @@ class EventAnalyzer:
 
         elif isinstance(obj, Container):
             if event['custom'] == "create":
-                if (self.kic.reachabilitymatrix.dict_pods.keys()):
-                    obj.id = max(self.kic.reachabilitymatrix.dict_pods.keys()) + 1
-                else: 
-                    obj.id = 0
-
+                obj.id = max(self.kic.reachabilitymatrix.dict_pods.keys()) + 1
                 new_reach = self.kic.reachabilityAddContainer(obj)
+
                 any_connection = False
                 for j, i in new_reach.dict_pods.items():
                     if new_reach.matrix[obj.matrix_id][i.matrix_id] == 1:
@@ -477,3 +476,11 @@ class EventAnalyzer:
                         if resp1 or resp2:
                             return False 
         return True
+if __name__ == '__main__':
+    # Create a fake event for testing
+
+    testevent = {'api_version': 'networking.k8s.io/v1', 'kind': 'NetworkPolicy', 'metadata': {'annotations': {'kubectl.kubernetes.io/last-applied-configuration': '{"apiVersion":"networking.k8s.io/v1","kind":"NetworkPolicy","metadata":{"annotations":{},"name":"green-from-blue","namespace":"test"},"spec":{"ingress":[{"from":[{"podSelector":{"matchLabels":{"color":"blue"}}}],"ports":[{"port":80}]}],"podSelector":{"matchLabels":{"color":"green"}},"policyTypes":["Ingress"]}}\n'}, 'creation_timestamp': None, 'deletion_grace_period_seconds': None, 'deletion_timestamp': None, 'finalizers': None, 'generate_name': None, 'generation': 1, 'labels': None, 'managed_fields': [{'api_version': 'networking.k8s.io/v1', 'fields_type': 'FieldsV1', 'fields_v1': {'f:metadata': {'f:annotations': {'.': {}, 'f:kubectl.kubernetes.io/last-applied-configuration': {}}}, 'f:spec': {'f:ingress': {}, 'f:podSelector': {}, 'f:policyTypes': {}}}, 'manager': 'kubectl-client-side-apply', 'operation': 'Update', 'subresource': None, 'time': None}], 'name': 'green-from-blue', 'namespace': 'test', 'owner_references': None, 'resource_version': '38841157', 'self_link': None, 'uid': '0df34ecd-dc19-4eb1-b2c7-59132fca9314'}, 'spec': {'egress': None, 'ingress': [{'_from': [{'ip_block': None, 'namespace_selector': None, 'pod_selector': {'match_expressions': None, 'match_labels': {'color': 'blue'}}}], 'ports': [{'end_port': None, 'port': 80, 'protocol': 'TCP'}]}], 'pod_selector': {'match_expressions': None, 'match_labels': {'color': 'green'}}, 'policy_types': ['Ingress']}, 'status': None, 'custom': 'create'}
+    analyzer = EventAnalyzer()
+    analyzer.startup()
+    analyzer.analyseEvent(testevent)
+

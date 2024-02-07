@@ -6,13 +6,11 @@ from kubernetes.config import ConfigException
 import ipaddress
 
 
-# We only generate single IPs within 172.23.1.1 till 172.23.1.10 to increase chance of overlap in our test cluster.
-# Change this according to your needs
+# We only generate single IPs within 172.23.1.1 till 172.23.1.10 to increase chance of overlap
 def generate_random_ip():
     return f"172.23.1.{random.randint(1, 10)}"
 
-# We only generate IP ranges within 172.23.1.0 to 172.23.1.255 with subnetmask /24 or higher to increase chance of overlap in our test cluster
-# Change this according to your needs
+# We only generate IP ranges within 172.23.1.0 to 172.23.1.255 with subnetmask /24 or higher to increase chance of overlap
 def generate_random_ip_network():
     fourth = random.randint(0, 255)
     base_ip = f"172.23.1.{fourth}" 
@@ -20,7 +18,7 @@ def generate_random_ip_network():
     ip_network = f"{base_ip}/{subnet_mask}"
     return ip_network
 
-# Find the overlap between two IP (networks)
+
 def compare_overlap(original_ip1, original_ip2):
     parts_slash1 = original_ip1.split("/")
     parts_slash2 = original_ip2.split("/")
